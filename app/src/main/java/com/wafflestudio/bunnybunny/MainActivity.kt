@@ -10,6 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,29 +24,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             BunnybunnyTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                StartPage()
             }
         }
     }
-}
+    @Composable
+    private fun MyApp(
+        modifier: Modifier = Modifier,
+        navController: NavHostController = rememberNavController(),
+        startDestination: String = "StartPage"
+    ){
+        NavHost(navController = navController, startDestination = startDestination){
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BunnybunnyTheme {
-        Greeting("Android")
+        }
     }
 }
