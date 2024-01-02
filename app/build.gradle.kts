@@ -54,6 +54,8 @@ android {
 
 dependencies {
 
+    implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     // Retrofit
@@ -64,7 +66,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
     //Dagger-Hilt
     implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.47")
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")

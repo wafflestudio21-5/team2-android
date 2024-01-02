@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny.pages
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +20,13 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +35,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wafflestudio.bunnybunny.data.example.LoginRequest
+import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.viewModel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.ThreadPoolExecutor.DiscardPolicy
+import javax.inject.Inject
+
+
 @Preview(showBackground = true)
 @Composable
 fun StartPage(
@@ -41,9 +57,12 @@ fun StartPage(
     //onNavigateToSignIn : () -> Unit,
     //onNavigateToKakaoSignIn : () -> Unit,
     //onNavigateToGoogleSignIn : () -> Unit,
+    //onNavigateToMain : () -> Unit
 ){
+    val viewModel = hiltViewModel<MainViewModel>()
     var idInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
+
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -55,48 +74,79 @@ fun StartPage(
                 BasicTextField(
                     value = idInput,
                     onValueChange = { newText -> idInput = newText},
-                    modifier = Modifier.padding(12.dp),
-                    decorationBox = {
-                            innerTextField ->
-                        Row(
+                    modifier = Modifier.padding(5.dp),
+                    decorationBox = { innerTextField ->
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
                                     color = Color(0xFFFF8000),
-                                    shape = RoundedCornerShape(size = 16.dp)
+                                    shape = RoundedCornerShape(percent = 40)
                                 )
-                                .padding(16.dp),
+                                .padding(12.dp),
                         ){
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "",
-                                tint = Color.DarkGray,
-                            )
+                            if(idInput.isEmpty()){
+                                Text("Input ID", color = Color.Gray)
+                            }
+                            innerTextField()
                         }
                     }
                 )
+
                 //PW Input
                 BasicTextField(
                     value = pwInput,
                     onValueChange = { newText -> pwInput = newText},
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(5.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            // TODO
+                            CoroutineScope(Dispatchers.IO).launch{
+                                val loginRequest = viewModel.tryLogin(idInput, pwInput)
+                                //val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
+                                withContext(Dispatchers.Main){
+                                    // TODO onNavigateToMain
+                                }
+                            }
                         }
                     ),
                     decorationBox = {
-                        // TODO
+                            innerTextField ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = Color(0xFFFF8000),
+                                    shape = RoundedCornerShape(percent = 40)
+                                )
+                                .padding(12.dp),
+                        ){
+                            if(idInput.isEmpty()){
+                                Text("Input PW", color = Color.Gray)
+                            }
+                            innerTextField()
+                        }
                     }
                 )
             }
+
             //ID & PW Sign in Button
             Button(
-                modifier = Modifier.padding(12.dp).weight(1f),
-                onClick = {print("a")}
+                modifier = Modifier
+                    .padding(12.dp)
+                    .weight(1f),
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch{
+                        val loginRequest = viewModel.tryLogin(idInput, pwInput)
+                        //val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
+                        withContext(Dispatchers.Main){
+                            // TODO onNavigateToMain
+                        }
+                    }
+                }
+
             ){
                 Text("Sign in")
             }
@@ -105,6 +155,7 @@ fun StartPage(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+
             //Sign up Button
             Button(
                 modifier = Modifier.padding(12.dp),
@@ -112,6 +163,7 @@ fun StartPage(
             ){
                 Text("Sign up")
             }
+
             //Kakao Sign-in Button
             Button(
                 modifier = Modifier.padding(12.dp),
@@ -123,6 +175,7 @@ fun StartPage(
             ){
                 Text("K")
             }
+
             //Google Sign-in Button
             Button(
                 modifier = Modifier.padding(12.dp),
