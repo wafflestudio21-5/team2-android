@@ -35,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +55,7 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @Composable
 fun TabPage(navController: NavController, viewModel: MainViewModel){
     //viewModel.currentTab.value=tabName
-    Scaffold(bottomBar = { TabView(viewModel,tabBarItems, navController) }, topBar = { TopBarView()}) {paddingValues->
+    Scaffold(bottomBar = { TabView(viewModel,tabBarItems) }, topBar = { TopBarView()}) {paddingValues->
 
         Column(
             Modifier.fillMaxSize().padding(paddingValues = paddingValues),
@@ -84,9 +83,7 @@ fun TabPage(navController: NavController, viewModel: MainViewModel){
 }
 
 @Composable
-fun TabView(viewModel: MainViewModel,tabBarItems: List<BottomNavItem>, navController: NavController) {
-
-
+fun TabView(viewModel: MainViewModel,tabBarItems: List<BottomNavItem>) {
     NavigationBar {
         // looping over each tab to generate the views and navigation for each item
         tabBarItems.forEachIndexed { index, tabBarItem ->
@@ -158,7 +155,7 @@ fun HomeTabPageView(viewModel:MainViewModel){
 
     LazyColumn{
         item {
-
+            //물품 필터
         }
         items(viewModel.goodsPostList.value){
             Box(modifier = Modifier

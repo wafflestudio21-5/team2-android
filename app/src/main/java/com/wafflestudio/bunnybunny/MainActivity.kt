@@ -1,26 +1,25 @@
 package com.wafflestudio.bunnybunny
 
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostSample
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -47,7 +46,7 @@ class MainActivity : ComponentActivity() {
         navController: NavHostController = rememberNavController(),
         startDestination: String = "StartPage"
     ){
-        NavHost(navController = navController, startDestination = startDestination) {
+        NavHost(navController = navController, startDestination = startDestination){
             composable("TabPage") {
                 TabPage(navController = navController, viewModel = viewModel)
             }
