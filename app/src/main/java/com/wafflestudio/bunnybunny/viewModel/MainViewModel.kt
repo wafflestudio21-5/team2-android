@@ -21,16 +21,18 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     val api: BunnyApi
 ): ViewModel() {
-    //홈 탭:Home
-    //동네생활 탭: Community
-    //채팅 탭:Chat
-    //나의당근 탭:My
-    var currentTab= mutableStateOf("Home")
+    //홈 탭:Home,0
+    //동네생활 탭:Community,1
+    //채팅 탭:Chat,2
+    //나의당근 탭:My,3
+    var selectedTabIndex= mutableStateOf(0)
 
     val goodsPostList : MutableState<List<GoodsPostPreview>> = mutableStateOf(listOf())
+
     companion object {}
     suspend fun tryLogin(email: String, password: String): LoginResponse{
             return api.loginRequest(LoginRequest(email, password))
     }
+
 
 }
