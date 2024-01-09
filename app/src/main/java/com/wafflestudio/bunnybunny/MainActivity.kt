@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BunnybunnyTheme {
                 // A surface container using the 'background' color from the theme
-                StartPage()
+                MyApp()
             }
         }
     }
@@ -37,7 +38,17 @@ class MainActivity : ComponentActivity() {
         startDestination: String = "StartPage"
     ){
         NavHost(navController = navController, startDestination = startDestination){
-
+            composable("StartPage"){
+                StartPage(
+                    onNavigateToSignUp = {navController.navigate("SignupPage")}
+                )
+            }
+            composable("SignupPage"){
+                SignupPage(
+                    onNavigateToStart = {navController.navigate("StartPage")},
+                    context = this@MainActivity
+                )
+            }
         }
     }
 }

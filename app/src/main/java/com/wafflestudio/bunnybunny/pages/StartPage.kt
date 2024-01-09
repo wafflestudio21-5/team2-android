@@ -49,18 +49,17 @@ import java.util.concurrent.ThreadPoolExecutor.DiscardPolicy
 import javax.inject.Inject
 
 
-@Preview(showBackground = true)
 @Composable
 fun StartPage(
     modifier: Modifier = Modifier,
-    //onNavigateToSignUp : () -> Unit,
+    onNavigateToSignUp : () -> Unit,
     //onNavigateToSignIn : () -> Unit,
     //onNavigateToKakaoSignIn : () -> Unit,
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ){
     val viewModel = hiltViewModel<MainViewModel>()
-    var idInput by rememberSaveable { mutableStateOf("") }
+    var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
 
     Column {
@@ -72,8 +71,8 @@ fun StartPage(
             ) {
                 //ID Input
                 BasicTextField(
-                    value = idInput,
-                    onValueChange = { newText -> idInput = newText},
+                    value = emailInput,
+                    onValueChange = { newText -> emailInput = newText},
                     modifier = Modifier.padding(5.dp),
                     decorationBox = { innerTextField ->
                         Box(
@@ -85,8 +84,8 @@ fun StartPage(
                                 )
                                 .padding(12.dp),
                         ){
-                            if(idInput.isEmpty()){
-                                Text("Input ID", color = Color.Gray)
+                            if(emailInput.isEmpty()){
+                                Text("Input E-mail", color = Color.Gray)
                             }
                             innerTextField()
                         }
@@ -104,8 +103,7 @@ fun StartPage(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             CoroutineScope(Dispatchers.IO).launch{
-                                val loginRequest = viewModel.tryLogin(idInput, pwInput)
-                                //val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
+                                val loginRequest = viewModel.tryLogin(emailInput, pwInput)
                                 withContext(Dispatchers.Main){
                                     // TODO onNavigateToMain
                                 }
@@ -123,7 +121,7 @@ fun StartPage(
                                 )
                                 .padding(12.dp),
                         ){
-                            if(idInput.isEmpty()){
+                            if(pwInput.isEmpty()){
                                 Text("Input PW", color = Color.Gray)
                             }
                             innerTextField()
@@ -139,7 +137,7 @@ fun StartPage(
                     .weight(1f),
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch{
-                        val loginRequest = viewModel.tryLogin(idInput, pwInput)
+                        val loginRequest = viewModel.tryLogin(emailInput, pwInput)
                         //val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
                         withContext(Dispatchers.Main){
                             // TODO onNavigateToMain
@@ -159,7 +157,7 @@ fun StartPage(
             //Sign up Button
             Button(
                 modifier = Modifier.padding(12.dp),
-                onClick = {print("a")}
+                onClick = onNavigateToSignUp
             ){
                 Text("Sign up")
             }

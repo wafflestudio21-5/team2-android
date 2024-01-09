@@ -5,6 +5,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.data.example.SignupRequest
+import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -16,12 +18,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val api: BunnyApi
+    private val api: BunnyApi
 ): ViewModel() {
 
     companion object {}
     suspend fun tryLogin(email: String, password: String): LoginResponse{
             return api.loginRequest(LoginRequest(email, password))
+    }
+    suspend fun trySignup(data: SignupRequest): UserInfo{
+        return api.signupRequest(data)
     }
 
 }
