@@ -32,13 +32,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wafflestudio.bunnybunny.MainActivity
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.lib.network.checkUserData
+import com.wafflestudio.bunnybunny.lib.network.getKakaoOAuthToken
+import com.wafflestudio.bunnybunny.lib.network.loginWithTokenVerification
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +67,7 @@ fun StartPage(
     val viewModel = hiltViewModel<MainViewModel>()
     var idInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column {
         Row(
@@ -167,7 +173,11 @@ fun StartPage(
             //Kakao Sign-in Button
             Button(
                 modifier = Modifier.padding(12.dp),
-                onClick = {print("a")},
+                onClick = { CoroutineScope(Dispatchers.IO).launch {
+                    loginWithTokenVerification(context) // 여기에서는 idToken이 null인데
+                    getKakaoOAuthToken(context) // 여기에서는 idToken이 잘 나옴..
+                    checkUserData(context)
+                }  },
                 colors = ButtonDefaults.buttonColors(
                     Color.Yellow,
                     contentColor = Color.Black
