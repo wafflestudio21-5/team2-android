@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.lib.network.api
 
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreviewList
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -16,5 +17,12 @@ interface BunnyApi {
     @POST("/auth/login")
     suspend fun loginRequest(
         @Body request: LoginRequest) : LoginResponse
+
+    @GET("/posts")
+    suspend fun GetGoodsPostPreviewList(
+        @Query("cur") cur:Long,
+        @Query("seed") seed:Int,
+        @Query("distance") distance:Int,
+        ) : GoodsPostPreviewList
 
 }
