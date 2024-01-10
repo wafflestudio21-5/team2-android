@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.pages
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +66,7 @@ fun TabPage(navController: NavController, viewModel: MainViewModel){
             
             when(viewModel.selectedTabIndex.value){
                 0-> {
-                    HomeTabPageView(viewModel = viewModel)
+                    HomeTabPageView(viewModel = viewModel, navController = navController)
                     WritePostButton()
                 }
                 1-> {
@@ -151,7 +152,7 @@ fun WritePostButton(){
 }
 
 @Composable
-fun HomeTabPageView(viewModel:MainViewModel){
+fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
 
     LazyColumn{
         item {
@@ -161,6 +162,9 @@ fun HomeTabPageView(viewModel:MainViewModel){
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
+                .clickable {
+                    navController.navigate("GoodsPostPage?id=${it.id}")
+                }
             ){
                 Row {
                     val painter = rememberImagePainter(data = it.repImg)

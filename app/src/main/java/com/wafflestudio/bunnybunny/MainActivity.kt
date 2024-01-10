@@ -12,8 +12,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostSample
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 //StartPage()
                 viewModel.goodsPostList.value=GoodsPostSample
+                viewModel.goodsPostContent.value=GoodsPostContentSample
                 MyApp(startDestination = "TabPage")
             }
         }
@@ -50,6 +53,11 @@ class MainActivity : ComponentActivity() {
             composable("TabPage") {
                 TabPage(navController = navController, viewModel = viewModel)
             }
+            composable("GoodsPostPage") {
+                val id=it.arguments!!.getLong("id")
+                GoodsPostPage(id= id, viewModel = viewModel,navController=navController)
+            }
+
 
         }
     }
