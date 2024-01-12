@@ -16,12 +16,24 @@ data class LoginResponse(
     @Json(name = "isAdmin") val isAdmin: Boolean
 )
 
+@JsonClass(generateAdapter = true)
 data class SignupRequest(
     @Json(name = "email") val email : String,
     @Json(name = "password") val password : String,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "profileImage") val profileImage: String?,
     @Json(name = "refAreaIds") val refAreaIds: List<Int>,
+)
+
+data class SocialLoginRequest(
+    @Json(name = "idToken") val idToken: String,
+)
+
+data class SocialSignupRequest(
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "profileImage") val profileImage: String?,
+    @Json(name = "refAreaIds") val refAreaIds: List<Int>,
+    @Json(name = "idToken") val idToken: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -35,11 +47,22 @@ data class UserInfo(
     @Json(name = "nickname") val nickname: String,
     @Json(name = "mannerTemp") val mannerTemp: Int,
     @Json(name = "createdAt") val createdAt: String,
-    @Json(name = "refAreaIds") val refAreaIds: List<Int>
+    @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>
 )
 
 @JsonClass(generateAdapter = true)
 data class ErrorResponse(
     @Json(name = "code") val code: Int,
     @Json(name = "message") val message: String,
+)
+
+data class RefAreaId(
+    @Json(name = "id") val id: Int,
+    @Json(name = "code") val code: String,
+    @Json(name = "fullName") val fullName: String,
+    @Json(name = "name") val name: String,
+    @Json(name = "sggName") val sggName: String,
+    @Json(name = "sdName") val sdName: String,
+    @Json(name = "authenticatedAt") val authenticatedAt: Long,
+    @Json(name = "count") val count: Int
 )

@@ -1,51 +1,42 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.wafflestudio.bunnybunny.data.example.LoginRequest
-import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation.findNavController
+import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
+import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
+import com.wafflestudio.bunnybunny.lib.network.getKakaoOAuthToken
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ThreadPoolExecutor.DiscardPolicy
 import javax.inject.Inject
 
 
@@ -53,7 +44,8 @@ import javax.inject.Inject
 fun StartPage(
     modifier: Modifier = Modifier,
     onNavigateToSignUp : () -> Unit,
-    //onNavigateToSignIn : () -> Unit,
+    onNavigateToSocialSignUp: (idToken: String) -> Unit,
+    onNavigateToSignIn : () -> Unit,
     //onNavigateToKakaoSignIn : () -> Unit,
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
@@ -61,6 +53,7 @@ fun StartPage(
     val viewModel = hiltViewModel<MainViewModel>()
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column {
         Row(
@@ -137,10 +130,13 @@ fun StartPage(
                     .weight(1f),
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch{
-                        val loginRequest = viewModel.tryLogin(emailInput, pwInput)
-                        //val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
+                        val loginResponse = viewModel.tryLogin(emailInput, pwInput)
+                        Log.d("loginResponse", "${loginResponse}")
+//                        val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
                         withContext(Dispatchers.Main){
-                            // TODO onNavigateToMain
+                            if (loginResponse != null) {
+                                onNavigateToSignIn()
+                            }
                         }
                     }
                 }
@@ -165,7 +161,28 @@ fun StartPage(
             //Kakao Sign-in Button
             Button(
                 modifier = Modifier.padding(12.dp),
-                onClick = {print("a")},
+                onClick = {CoroutineScope(Dispatchers.IO).launch {
+                    val oAuthToken = getKakaoOAuthToken(context)
+                    try {
+                        if (oAuthToken != null) {
+                            val socialLoginResponse = viewModel.trySocialLogin(SocialLoginRequest(oAuthToken.idToken!!))
+                            Log.d("socialLoginResponse", "${socialLoginResponse}")
+                        } else {
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "토큰이 만료되었습니다", Toast.LENGTH_SHORT).show()
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main){
+                            val idToken = oAuthToken!!.idToken
+                            Toast.makeText(context, "회원가입부터 진행해주세요!", Toast.LENGTH_SHORT).show()
+                            onNavigateToSocialSignUp(idToken!!)
+
+                        }
+                    }
+
+                }},
                 colors = ButtonDefaults.buttonColors(
                     Color.Yellow,
                     contentColor = Color.Black
@@ -175,16 +192,16 @@ fun StartPage(
             }
 
             //Google Sign-in Button
-            Button(
-                modifier = Modifier.padding(12.dp),
-                onClick = {print("a")},
-                colors = ButtonDefaults.buttonColors(
-                    Color.White,
-                    contentColor = Color.Black
-                )
-            ){
-                Text("G")
-            }
+//            Button(
+//                modifier = Modifier.padding(12.dp),
+//                onClick = {print("a")},
+//                colors = ButtonDefaults.buttonColors(
+//                    Color.White,
+//                    contentColor = Color.Black
+//                )
+//            ){
+//                Text("G")
+//            }
         }
     }
 

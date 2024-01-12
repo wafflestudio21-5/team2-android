@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -11,11 +13,20 @@ android {
     compileSdk = 34
 
     defaultConfig {
+
+        val keystoreFile = project.rootProject.file("apikeys.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        //load the values from .properties file
+
         applicationId = "com.wafflestudio.bunnybunny"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        manifestPlaceholders["kakao_api_key"] = properties.getProperty("kakao_api_key")
+        buildConfigField("String", "KAKAO_API_KEY", properties.getProperty("kakao_api_key"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -39,7 +50,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+
+
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -74,6 +89,9 @@ dependencies {
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    //Kakao Login
+    implementation("com.kakao.sdk:v2-user:2.19.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
