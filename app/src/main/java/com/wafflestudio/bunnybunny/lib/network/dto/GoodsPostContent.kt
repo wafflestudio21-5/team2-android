@@ -24,6 +24,7 @@ data class GoodsPostContent(
     @Json(name = "deadline") val deadline: Long,
     @Json(name = "hiddenYn") val hiddenYn: Boolean,
     @Json(name = "sellPrice") val sellPrice: Int,
-    @Json(name = "wishCnt") val wishCnt: Int,
+    @Json(name = "wishCnt") var wishCnt: Int,
+    @Json(name = "wishPressed") var wishPressed: Boolean,
     @Json(name = "chatCnt") val chatCnt: Int,
 )

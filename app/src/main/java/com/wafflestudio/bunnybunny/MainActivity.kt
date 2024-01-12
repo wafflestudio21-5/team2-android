@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 //StartPage()
                 viewModel.goodsPostList.value=GoodsPostSample
-                viewModel.goodsPostContent.value=GoodsPostContentSample
+                viewModel.updateGoodsPostContent(GoodsPostContentSample)
                 MyApp(startDestination = "TabPage")
             }
         }

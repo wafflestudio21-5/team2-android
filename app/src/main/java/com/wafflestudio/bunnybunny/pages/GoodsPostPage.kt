@@ -7,10 +7,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +27,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
@@ -41,6 +46,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -49,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,13 +66,15 @@ import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.ImagePager
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun GoodsPostPage(id:Long, viewModel: MainViewModel,navController: NavController){
-    if(id!=viewModel.goodsPostContent.value.id){
+    val goodsPostContent by viewModel.goodsPostContent.collectAsState()
+    if(id!=goodsPostContent.id){
         //api로 새로운 게시물 받아와서 viewModel에 저장
     }
     val listState = rememberLazyListState()
@@ -90,47 +99,61 @@ fun GoodsPostPage(id:Long, viewModel: MainViewModel,navController: NavController
             ).toFloat()//.coerceIn(0f, 1f)
         }
     }*/
-    Scaffold(bottomBar = {  }, topBar = {ToolbarWithMenu(alpha = alpha.value, navController = navController) }) {
+    Scaffold(bottomBar = { GoodsPostBottomBar(viewModel,goodsPostContent,navController) }, topBar = {GoodsPostToolbar(alpha = alpha.value, navController = navController) }) {paddingValues->
 
-        LazyColumn(state = listState){
+        LazyColumn(state = listState, modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())){
             item{
-                ImagePager(images = viewModel.goodsPostContent.value.images, modifier = Modifier
+                ImagePager(images = goodsPostContent.images, modifier = Modifier
                     .fillMaxWidth()
                     .height(imgHeight.dp))
             }
-            item {
+            item{
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(color = MaterialTheme.colorScheme.secondary),
-                    verticalAlignment = Alignment.CenterVertically
+                    .padding(start = 16.dp, end = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ){
-                    val painter = rememberImagePainter(data = viewModel.goodsPostContent.value.repImg)
+                    val painter = rememberImagePainter(data = goodsPostContent.repImg)
                     Image(
                         painter = painter,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(60.dp).clip(shape = CircleShape),
+                            .size(60.dp)
+                            .clip(shape = CircleShape),
                         contentScale =  ContentScale.Crop
                     )
                     Column{
-                        Text(text=viewModel.goodsPostContent.value.authorId.toString())
-                        Text(text=viewModel.goodsPostContent.value.sellingArea)
+                        Text(text=goodsPostContent.authorId.toString())
+                        Text(text=goodsPostContent.sellingArea)
 
                     }
                 }
-                Divider(modifier = Modifier.width(1.dp))
-                Text(text=viewModel.goodsPostContent.value.title, fontSize = 50.sp)
-                Text(text=viewModel.goodsPostContent.value.refreshedAt.toString(), fontSize = 50.sp)
-                Text(text=viewModel.goodsPostContent.value.description, fontSize = 50.sp, lineHeight = 50.sp)
+                Column (modifier = Modifier.padding(start = 16.dp, end = 16.dp)){
+                    Divider(modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth())
+                    Text(text=goodsPostContent.title, fontSize = 30.sp)
+                    Text(text=goodsPostContent.refreshedAt.toString(), fontSize = 15.sp)
+                    Text(text=goodsPostContent.description, fontSize = 20.sp, lineHeight = 20.sp)
+                    Text(text=(if(goodsPostContent.chatCnt>0)
+                        "채팅 ${goodsPostContent.chatCnt}·" else "")+
+                            (if(goodsPostContent.wishCnt>0)
+                                "관심 ${goodsPostContent.wishCnt}·" else "")+
+                            "조회 ${goodsPostContent.viewCnt}",
+                        fontSize = 15.sp)
+                }
+
             }
         }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToolbarWithMenu(alpha:Float,navController: NavController) {
+fun GoodsPostToolbar(alpha:Float,navController: NavController) {
+    val interpolatedColor = lerp(Color.White, Color.Black, alpha)
     TopAppBar(
+
         title = { },
         navigationIcon = {
             Row{
@@ -142,12 +165,50 @@ fun ToolbarWithMenu(alpha:Float,navController: NavController) {
             ShareButton()
             MoreVertButton()
         },
+
         colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = alpha),
-            navigationIconContentColor = Color.White,
-            titleContentColor = Color.White, // Color for the title
-            actionIconContentColor = Color.White // Color for action icons
+            containerColor = Color.White.copy(alpha = alpha),
+            navigationIconContentColor = interpolatedColor,
+            titleContentColor = interpolatedColor, // Color for the title
+            actionIconContentColor = interpolatedColor // Color for action icons
         ),
     )
 
+}
+@Composable
+fun GoodsPostBottomBar(viewModel: MainViewModel,goodsPostContent:GoodsPostContent,navController: NavController){
+    Divider(modifier = Modifier
+        .height(1.dp)
+        .fillMaxWidth())
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(80.dp)
+        .padding(top = 16.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically){
+        IconButton(onClick = {
+
+
+            viewModel.updateGoodsPostContent(goodsPostContent.copy(wishPressed = !goodsPostContent.wishPressed,wishCnt=goodsPostContent.wishCnt+if(goodsPostContent.wishPressed)-1 else 1))            //api 통해서 wish 변화를 서버로 전달
+            Log.d("aaaa",goodsPostContent.wishPressed.toString())
+        }) {
+            Icon(
+                imageVector = if(goodsPostContent.wishPressed)Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                contentDescription = "Wish"
+            )
+        }
+        Divider(modifier = Modifier
+            .width(1.dp)
+            .fillMaxHeight())
+        Column(Modifier.padding(start = 16.dp),verticalArrangement = Arrangement.Center){
+            Text("${goodsPostContent.sellPrice}원", fontSize = 20.sp)
+            Text(if(goodsPostContent.offerYn)"가격 제안 가능" else "가격 제안 불가", fontSize = 15.sp)
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier.padding(end = 16.dp).height(50.dp).width(100.dp).clip(shape= RoundedCornerShape(4.dp)).background(color = MaterialTheme.colorScheme.secondary).clickable {
+            //채팅 화면으로 이동
+        }, contentAlignment = Alignment.Center){
+            Text("채팅하기")
+        }
+
+    }
 }
