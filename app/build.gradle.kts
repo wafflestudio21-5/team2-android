@@ -53,6 +53,10 @@ android {
 }
 
 dependencies {
+    //icon
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    //Coli
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
