@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny.components.compose
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,17 +22,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImagePager(images:List<String>){
+fun ImagePager(
+    images:List<String>,
+    modifier: Modifier
+){
     val pagerState = rememberPagerState(pageCount = {
         images.size
     })
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         // HorizontalPager
         HorizontalPager(
@@ -44,8 +49,8 @@ fun ImagePager(images:List<String>){
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
+                    .fillMaxSize(),
+                contentScale =  ContentScale.Crop
             )
         }
 

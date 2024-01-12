@@ -51,6 +51,8 @@ class MainActivity : ComponentActivity() {
     ){
         NavHost(navController = navController, startDestination = startDestination){
             composable("TabPage") {
+                val index= it.arguments?.getInt("index")
+                if(index!=null) viewModel.selectedTabIndex.value=index
                 TabPage(navController = navController, viewModel = viewModel)
             }
             composable("GoodsPostPage") {
