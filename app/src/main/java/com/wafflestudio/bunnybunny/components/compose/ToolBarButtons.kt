@@ -1,10 +1,17 @@
 package com.wafflestudio.bunnybunny.components.compose
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.ArrowBackIos
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +53,42 @@ fun MoreVertButton(){
         Icon(
             imageVector = Icons.Outlined.MoreVert,
             contentDescription = "MoreVert"
+        )
+    }
+}
+@Composable
+fun SearchButton(){
+    IconButton(onClick = {}) {
+        Icon(
+            imageVector = Icons.Outlined.Search,
+            contentDescription = "Search"
+        )
+    }
+}
+@Composable
+fun NotificationsButton(){
+    IconButton(onClick = {}) {
+        Icon(
+            imageVector = Icons.Outlined.Notifications,
+            contentDescription = "Notifications"
+        )
+    }
+}
+@Composable
+fun PersonButton(){
+    IconButton(onClick = {}) {
+        Icon(
+            imageVector = Icons.Outlined.Person,
+            contentDescription = "Person"
+        )
+    }
+}
+@Composable
+fun SettingsButton(){
+    IconButton(onClick = {}) {
+        Icon(
+            imageVector = Icons.Outlined.Settings,
+            contentDescription = "Settings"
         )
     }
 }

@@ -29,18 +29,30 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.wafflestudio.bunnybunny.components.compose.BackButton
+import com.wafflestudio.bunnybunny.components.compose.HomeButton
+import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
+import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
+import com.wafflestudio.bunnybunny.components.compose.PersonButton
+import com.wafflestudio.bunnybunny.components.compose.SearchButton
+import com.wafflestudio.bunnybunny.components.compose.SettingsButton
+import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.model.BottomNavItem
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
@@ -56,10 +68,12 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @Composable
 fun TabPage(navController: NavController, viewModel: MainViewModel){
     //viewModel.currentTab.value=tabName
-    Scaffold(bottomBar = { TabView(viewModel,tabBarItems) }, topBar = { TopBarView()}) {paddingValues->
+    Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
 
         Column(
-            Modifier.fillMaxSize().padding(paddingValues = paddingValues),
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -84,7 +98,7 @@ fun TabPage(navController: NavController, viewModel: MainViewModel){
 }
 
 @Composable
-fun TabView(viewModel: MainViewModel,tabBarItems: List<BottomNavItem>) {
+fun TabNavigationBar(viewModel: MainViewModel,tabBarItems: List<BottomNavItem>) {
     NavigationBar {
         // looping over each tab to generate the views and navigation for each item
         tabBarItems.forEachIndexed { index, tabBarItem ->
@@ -132,19 +146,59 @@ fun TabBarBadgeView(count: Int? = null) {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarView(){
-    Column{
-        Box (modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp), contentAlignment = Alignment.Center
-            ){
-            Text(text = "TitleBar", fontSize = 50.sp)
-        }
-        Divider(Modifier.height(1.dp).fillMaxWidth())
-    }
-}
+fun TabPageToolBar(viewModel: MainViewModel,navController: NavController) {
+    Column {
+        TopAppBar(
+            title = {
+                    Text(text=when(viewModel.selectedTabIndex.value){
+                        0->""
+                        1->""
+                        2->"채팅"
+                        3->"나의당근"
+                        else->""
+                    })
+            },
+            navigationIcon = {
+                Row{
 
+                }
+            },
+            actions = {
+                when(viewModel.selectedTabIndex.value){
+                    0-> {
+                        SearchButton()
+                        NotificationsButton()
+                    }
+                    1-> {
+                        PersonButton()
+                        SearchButton()
+                        NotificationsButton()
+                    }
+                    2-> {
+                        NotificationsButton()
+                    }
+                    3-> {
+                        SettingsButton()
+                    }
+                }
+
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                navigationIconContentColor = Color.Black,
+                titleContentColor = Color.Black, // Color for the title
+                actionIconContentColor = Color.Black // Color for action icons
+            ),
+        )
+        Divider(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp))
+    }
+
+
+}
 
 @Composable
 fun WritePostButton(){
@@ -154,7 +208,7 @@ fun WritePostButton(){
 @Composable
 fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
 
-    LazyColumn{
+    LazyColumn(){
         item {
             //물품 필터
         }
@@ -162,6 +216,7 @@ fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
+                .padding(start = 16.dp, end = 16.dp)
                 .clickable {
                     navController.navigate("GoodsPostPage?id=${it.id}")
                 }
@@ -183,7 +238,11 @@ fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
                     }
                 }
             }
-            Divider(Modifier.height(1.dp).fillMaxWidth())
+            Divider(
+                Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp))
         }
 
     }
