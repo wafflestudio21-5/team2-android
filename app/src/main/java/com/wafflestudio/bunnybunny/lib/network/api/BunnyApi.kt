@@ -19,8 +19,7 @@ import retrofit2.http.Path
 interface BunnyApi {
 
     @POST("/auth/login")
-    suspend fun loginRequest(
-        @Body request: LoginRequest) : LoginResponse
+    suspend fun loginRequest(@Body request: LoginRequest) : LoginResponse
 
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): UserInfo

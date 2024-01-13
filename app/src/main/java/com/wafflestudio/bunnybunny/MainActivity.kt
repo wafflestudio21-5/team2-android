@@ -5,8 +5,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -44,31 +48,41 @@ class MainActivity : ComponentActivity() {
         modifier: Modifier = Modifier,
         navController: NavHostController = rememberNavController(),
         startDestination: String = "StartPage"
-    ){
-        NavHost(navController = navController, startDestination = startDestination){
-            composable("StartPage"){
-                StartPage(
-                    modifier = Modifier,
-                    onNavigateToSignUp = {navController.navigate("SignupPage")},
-                    onNavigateToSocialSignUp = {navController.navigate("SocialSignupPage/{idToken}")},
-                    onNavigateToSignIn = {navController.navigate("TabPage")
-                    }
-                )
-            }
-            composable("SignupPage"){
-                SignupPage(
-                    onNavigateToStart = {navController.navigate("StartPage")},
-                    context = this@MainActivity
-                )
-            }
-            composable("SocialSignupPage/{idToken}",  arguments = listOf(navArgument("idToken") { type = NavType.StringType })) {
-                SocialSignupPage(
-                    onNavigateToStart = { navController.navigate("StartPage") },
-                    context = this@MainActivity,
-                )
-            }
-            composable("TabPage") {
-                TabPage(navController = navController, viewModel = viewModel)
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
+        ) {
+
+            NavHost(navController = navController, startDestination = startDestination) {
+                composable("StartPage") {
+                    StartPage(
+                        modifier = Modifier,
+                        onNavigateToSignUp = { navController.navigate("SignupPage") },
+                        onNavigateToSocialSignUp = { navController.navigate("SocialSignupPage/{idToken}") },
+                        onNavigateToSignIn = {
+                            navController.navigate("TabPage")
+                        }
+                    )
+                }
+                composable("SignupPage") {
+                    SignupPage(
+                        onNavigateToStart = { navController.navigate("StartPage") },
+                        context = this@MainActivity
+                    )
+                }
+                composable(
+                    "SocialSignupPage/{idToken}",
+                    arguments = listOf(navArgument("idToken") { type = NavType.StringType })
+                ) {
+                    SocialSignupPage(
+                        onNavigateToStart = { navController.navigate("StartPage") },
+                        context = this@MainActivity,
+                    )
+                }
+                composable("TabPage") {
+                    TabPage(navController = navController, viewModel = viewModel)
+                }
             }
         }
     }
