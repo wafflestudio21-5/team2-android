@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.lib.network.api
 
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreviewList
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
@@ -22,6 +23,13 @@ interface BunnyApi {
     suspend fun loginRequest(
         @Body request: LoginRequest) : LoginResponse
 
+    @GET("/posts")
+    suspend fun GetGoodsPostPreviewList(
+        @Query("cur") cur:Long,
+        @Query("seed") seed:Int,
+        @Query("distance") distance:Int,
+        ) : GoodsPostPreviewList
+  
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): UserInfo
 

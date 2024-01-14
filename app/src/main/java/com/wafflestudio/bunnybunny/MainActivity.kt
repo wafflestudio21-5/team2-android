@@ -12,9 +12,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
+import com.wafflestudio.bunnybunny.SampleData.GoodsPostSample
+import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.SignupPage
-import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
@@ -34,6 +37,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BunnybunnyTheme {
+                // A surface container using the 'background' color from the theme
+                //StartPage()
+                viewModel.goodsPostList.value=GoodsPostSample
+                viewModel.updateGoodsPostContent(GoodsPostContentSample)
                 MyApp()
             }
         }
@@ -68,7 +75,13 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable("TabPage") {
+                val index= it.arguments?.getInt("index")
+                if(index!=null) viewModel.selectedTabIndex.value=index
                 TabPage(navController = navController, viewModel = viewModel)
+            }
+            composable("GoodsPostPage") {
+                val id=it.arguments!!.getLong("id")
+                GoodsPostPage(id= id, viewModel = viewModel,navController=navController)
             }
         }
     }
