@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.lib.network.api
 
+import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
@@ -15,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface BunnyApi {
 
@@ -29,5 +31,8 @@ interface BunnyApi {
 
     @POST("/signup/{provider}")
     suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): UserInfo
+
+    @GET("/area/search")
+    suspend fun areaSearch(@Query("query") query: String, @Path("cursor") cursor: Int): AreaSearchResponse
 
 }

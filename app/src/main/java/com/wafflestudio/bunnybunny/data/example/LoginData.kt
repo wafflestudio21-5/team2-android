@@ -56,6 +56,7 @@ data class ErrorResponse(
     @Json(name = "message") val message: String,
 )
 
+@JsonClass(generateAdapter = true)
 data class RefAreaId(
     @Json(name = "id") val id: Int,
     @Json(name = "code") val code: String,

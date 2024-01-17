@@ -3,8 +3,10 @@ package com.wafflestudio.bunnybunny.viewModel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
@@ -13,6 +15,9 @@ import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +31,9 @@ class MainViewModel @Inject constructor(
     var selectedTabIndex= mutableStateOf(0)
 
     val goodsPostList : MutableState<List<GoodsPostPreview>> = mutableStateOf(listOf())
+
+    private val _areaDetails: MutableStateFlow<List<RefAreaId>> = MutableStateFlow(listOf())
+    val areaDetails: StateFlow<List<RefAreaId>> = _areaDetails.asStateFlow()
 
     companion object {}
     suspend fun tryLogin(email: String, password: String): LoginResponse {
@@ -41,6 +49,11 @@ class MainViewModel @Inject constructor(
 
     suspend fun trySocialSignUp(data: SocialSignupRequest): UserInfo {
         return api.socialSignUpRequest(data, "kakao")
+    }
+
+    suspend fun tryAreaSearch(query: String, cursor: Int): List<RefAreaId> {
+        _areaDetails.value = api.areaSearch(query, cursor).areas;
+        return areaDetails.value;
     }
 
 
