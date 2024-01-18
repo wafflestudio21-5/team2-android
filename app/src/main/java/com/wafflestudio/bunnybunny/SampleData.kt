@@ -1,43 +1,40 @@
 package com.wafflestudio.bunnybunny
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
-import java.sql.Timestamp
-import java.time.LocalDateTime
 
 
 object SampleData {
 
-    val GoodsPostSample= listOf(
+    val GoodsPostListSample= GoodsPostList(data=listOf(
         GoodsPostPreview(
             id = 1,
             title="코멧5단정리함",
             repImg="https://dnvefa72aowie.cloudfront.net/origin/article/202401/5169264e8d830f83fc1547435761333f4ce68c47d2d4723fa2b185e1bd30fd3b_0.webp?q=82&s=300x300&t=crop&f=webp",
-            createdAt = System.currentTimeMillis(),
-            refreshedAt = System.currentTimeMillis(),
+            createdAt = 0,
+            refreshedAt = 0,
             wishCnt = 2,
             chatCnt = 1,
             sellPrice = 3000,
             tradingLocation = "경기도 평택시 고덕동",
-            deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            deadline = 0,
+            type = "",
+            status = "",
         ),
         GoodsPostPreview(
             id = 2,
             title="Z플립4 기계값 15만원",
             repImg = "https://dnvefa72aowie.cloudfront.net/origin/article/202401/11f6a028b850d3ae41fcb740aeea8c25fc8325d14197c7496487a97602ca37d4.jpg?q=82&s=300x300&t=crop&f=webp",
-            createdAt = System.currentTimeMillis(),
-            refreshedAt = System.currentTimeMillis(),
+            createdAt = 0,
+            refreshedAt = 0,
             wishCnt = 30,
             chatCnt = 7,
             sellPrice = 100000,
             tradingLocation = "경기도 파주시 금촌3동",
             deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            type = "0",
+            status = "0",
         ),
         GoodsPostPreview(
             id = 3,
@@ -50,8 +47,8 @@ object SampleData {
             sellPrice = 8000,
             tradingLocation = "서울 노원구 상계1동",
             deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            type = "0",
+            status = "0",
         ),
         GoodsPostPreview(
             id = 4,
@@ -64,8 +61,8 @@ object SampleData {
             sellPrice = 150000,
             tradingLocation = "광주 동구 동명동",
             deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            type = "0",
+            status = "0",
         ),
         GoodsPostPreview(
             id = 5,
@@ -78,8 +75,8 @@ object SampleData {
             sellPrice = 10000,
             tradingLocation = "충남 아산시 배방읍",
             deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            type = "0",
+            status = "0",
         ),
         GoodsPostPreview(
             id = 6,
@@ -92,13 +89,16 @@ object SampleData {
             sellPrice = 54000,
             tradingLocation = "서울 노원구 상계3.4동",
             deadline = System.currentTimeMillis(),
-            type = "TRADE",
-            status = "NEW",
+            type = "0",
+            status = "0",
         ),
-    )
+    ),cur=null,seed=null, isLast = true,count=6)
+    val DefaultGoodsPostListSample= GoodsPostList(
+        data =listOf(),cur = null,seed=null,isLast=false,count=null)
+
 
     val GoodsPostContentSample=GoodsPostContent(
-        id = 1,
+        id = 0,
         title="코멧5단정리함",
         description = "라탄 무늬의 코멧 5단 서랍장입니다 흰색입니다\n" +
                 "수납방식을 바꾸어서 팝니다\n" +
@@ -164,6 +164,7 @@ object SampleData {
         type = "TRADE",
         status = "NEW",
         authorId = 1,
+        authorName = "이히히",
         buyerId = -1,
         sellingArea = "경기도 평택시 고덕동",
         repImg="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
@@ -174,20 +175,20 @@ object SampleData {
         refreshedAt = System.currentTimeMillis(),
         createdAt = System.currentTimeMillis(),
         deadline = System.currentTimeMillis(),
-        hiddenYn = true,
         sellPrice = 3000,
         wishCnt = 2,
         chatCnt = 1,
-        wishPressed = false,
+        isWish = false,
     )
 
     val DefaultGoodsPostContentSample=GoodsPostContent(
-        id = 0,
+        id = -1,
         title="",
         description = "",
         type = "TRADE",
         status = "NEW",
-        authorId = 0,
+        authorId = -1,
+        authorName = "",
         buyerId = -1,
         sellingArea = "",
         repImg="",
@@ -198,10 +199,9 @@ object SampleData {
         refreshedAt = System.currentTimeMillis(),
         createdAt = System.currentTimeMillis(),
         deadline = System.currentTimeMillis(),
-        hiddenYn = true,
         sellPrice = 0,
         wishCnt = 0,
         chatCnt = 0,
-        wishPressed = false
+        isWish=false,
     )
 }

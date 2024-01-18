@@ -1,6 +1,7 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diversity3
 import androidx.compose.material.icons.filled.Forum
@@ -37,12 +39,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
@@ -66,7 +73,9 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(navController: NavController, viewModel: MainViewModel){
+fun TabPage(viewModel:MainViewModel,navController: NavController){
+
+
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
 
@@ -207,18 +216,24 @@ fun WritePostButton(){
 
 @Composable
 fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
-
-    LazyColumn(){
+    val listState = rememberLazyListState()
+    val isNeedNewRequest= remember { derivedStateOf {
+        listState.firstVisibleItemIndex>viewModel.goodsPostList.value.data.size-10&&!viewModel.goodsPostList.value.isLast&&viewModel.goodsPostList.value.count!=0
+    }
+    }
+    LazyColumn(state = listState){
         item {
             //물품 필터
         }
-        items(viewModel.goodsPostList.value){
+        items(viewModel.goodsPostList.value.data){
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
                 .padding(start = 16.dp, end = 16.dp)
                 .clickable {
-                    navController.navigate("GoodsPostPage?id=${it.id}")
+                    Log.d("aaaa", it.id.toString())
+                    //Log.d("aaaa","GoodsPostPage/${it.id}")
+                    navController.navigate("GoodsPostPage/${it.id}")
                 }
             ){
                 Row {
@@ -245,6 +260,11 @@ fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
                     .padding(start = 16.dp, end = 16.dp))
         }
 
+    }
+    if(isNeedNewRequest.value&&!viewModel.isgettingNewPostList){
+        viewModel.isgettingNewPostList=true
+        Log.d("aaaa","scroll call")
+        viewModel.getGoodsPostList(0,viewModel.refAreaId[0])
     }
 }
 @Composable

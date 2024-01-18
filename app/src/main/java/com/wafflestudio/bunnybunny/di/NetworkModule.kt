@@ -24,9 +24,12 @@ class NetworkModule {
         return OkHttpClient.Builder().addNetworkInterceptor(interceptor)
             .addInterceptor{ chain ->
                 val newRequest = chain.request().
-                newBuilder().build()
+                newBuilder()
+                    .build()
                 chain.proceed(newRequest)
             }
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+
             .build()
     }
     @Provides

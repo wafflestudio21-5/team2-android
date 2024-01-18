@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
@@ -72,10 +73,14 @@ import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun GoodsPostPage(id:Long, viewModel: MainViewModel,navController: NavController){
+fun GoodsPostPage(viewModel: MainViewModel,id:Long,navController: NavController){
     val goodsPostContent by viewModel.goodsPostContent.collectAsState()
-    if(id!=goodsPostContent.id){
+    Log.d("aaaa",id.toString()+" and "+goodsPostContent.id.toString())
+    if(id!=goodsPostContent.id&&!viewModel.isgettingNewPostContent){
+        viewModel.isgettingNewPostContent=true
         //api로 새로운 게시물 받아와서 viewModel에 저장
+
+        viewModel.getGoodsPostContent(id)
     }
     val listState = rememberLazyListState()
     val imgHeight=400
@@ -124,7 +129,7 @@ fun GoodsPostPage(id:Long, viewModel: MainViewModel,navController: NavController
                         contentScale =  ContentScale.Crop
                     )
                     Column{
-                        Text(text=goodsPostContent.authorId.toString())
+                        Text(text=goodsPostContent.authorName)
                         Text(text=goodsPostContent.sellingArea)
 
                     }
@@ -186,13 +191,13 @@ fun GoodsPostBottomBar(viewModel: MainViewModel,goodsPostContent:GoodsPostConten
         .padding(top = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically){
         IconButton(onClick = {
+            viewModel.wishToggle(goodsPostContent.id,!goodsPostContent.isWish)
+            Log.d("aaaa",(!goodsPostContent.isWish).toString())
+            viewModel.updateGoodsPostContent(goodsPostContent.copy(isWish = !goodsPostContent.isWish,wishCnt=goodsPostContent.wishCnt+if(goodsPostContent.isWish)-1 else 1))            //api 통해서 wish 변화를 서버로 전달
 
-
-            viewModel.updateGoodsPostContent(goodsPostContent.copy(wishPressed = !goodsPostContent.wishPressed,wishCnt=goodsPostContent.wishCnt+if(goodsPostContent.wishPressed)-1 else 1))            //api 통해서 wish 변화를 서버로 전달
-            Log.d("aaaa",goodsPostContent.wishPressed.toString())
         }) {
             Icon(
-                imageVector = if(goodsPostContent.wishPressed)Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                imageVector = if(goodsPostContent.isWish)Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                 contentDescription = "Wish"
             )
         }
