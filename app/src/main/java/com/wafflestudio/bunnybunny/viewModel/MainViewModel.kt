@@ -121,17 +121,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun wishToggle(id:Long,enable:Boolean) {
-        Log.d("aaaa","wishToggle called")
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
-                api.wishToggle(authToken=getToken(),id,enable)
-                //Log.d("aaaa",response.toString())
-            }catch(e: Exception){
-                Log.d("aaaa", "wishToggle failed:$e")
-            }
-        }
+    suspend fun wishToggle(id:Long,enable:Boolean) {
+        Log.d("wish","enable:$enable")
+        api.wishToggle(authToken=getToken(),id,enable)
     }
+
     suspend fun tryLogin(email: String, password: String): LoginResponse {
             return api.loginRequest(LoginRequest(email, password))
     }
