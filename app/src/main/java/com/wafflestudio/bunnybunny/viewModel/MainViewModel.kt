@@ -20,6 +20,7 @@ import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -124,6 +125,10 @@ class MainViewModel @Inject constructor(
     suspend fun wishToggle(id:Long,enable:Boolean) {
         Log.d("wish","enable:$enable")
         api.wishToggle(authToken=getToken(),id,enable)
+    }
+
+    suspend fun submitPost(request: SubmitPostRequest){
+        api.submitPostRequest(authToken=getToken(),request)
     }
 
     suspend fun tryLogin(email: String, password: String): LoginResponse {

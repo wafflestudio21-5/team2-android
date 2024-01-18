@@ -9,6 +9,7 @@ import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -37,6 +38,12 @@ interface BunnyApi {
         @Header("Authorization") authToken:String,
         @Path("post_id") postId:Long,
     ) : GoodsPostContent
+
+    @POST("/posts")
+    suspend fun submitPostRequest(
+        @Header("Authorization") authToken:String,
+        @Body request:SubmitPostRequest,
+    )
 
 
     @POST("/posts/wish/{post_id}")

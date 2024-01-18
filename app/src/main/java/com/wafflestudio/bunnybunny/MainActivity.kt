@@ -22,6 +22,7 @@ import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
+import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,6 +97,9 @@ class MainActivity : ComponentActivity() {
                 if (id != null) {
                     GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
                 }
+            }
+            composable("WriteGoodsPostPage") {
+                WriteGoodsPostPage(viewModel, navController)
             }
         }
     }
