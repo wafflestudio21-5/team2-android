@@ -42,6 +42,7 @@ import javax.inject.Inject
 
 @Composable
 fun StartPage(
+    viewModel: MainViewModel,
     modifier: Modifier = Modifier,
     onNavigateToSignUp : () -> Unit,
     onNavigateToSocialSignUp: (idToken: String) -> Unit,
@@ -50,7 +51,6 @@ fun StartPage(
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ){
-    val viewModel = hiltViewModel<MainViewModel>()
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -135,6 +135,11 @@ fun StartPage(
 //                        val ifLogin = viewModel.api.testLogin("Bearer " + loginRequest.token)
                         withContext(Dispatchers.Main){
                             if (loginResponse != null) {
+
+
+                                viewModel.accessToken=loginResponse.token
+                                viewModel.refAreaId=loginResponse.refAreaIds
+                                //Log.d("aaaa",viewModel.accessToken)
                                 onNavigateToSignIn()
                             }
                         }

@@ -2,9 +2,8 @@ package com.wafflestudio.bunnybunny.lib.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.sql.Timestamp
-import java.time.LocalDateTime
 
+@JsonClass(generateAdapter = true)
 data class GoodsPostPreview(
     @Json(name = "id") val id: Long,
     @Json(name = "title") val title: String,
@@ -21,10 +20,10 @@ data class GoodsPostPreview(
 
 )
 @JsonClass(generateAdapter = true)
-data class GoodsPostPreviewList(
+data class GoodsPostList(
     @Json(name = "data") val data: List<GoodsPostPreview>,
-    @Json(name = "cur") val cur: Long,
-    @Json(name = "seed") val seed: Int,
+    @Json(name = "cur") val cur: Long?,
+    @Json(name = "seed") val seed: Int?,
     @Json(name = "isLast") val isLast: Boolean,
-
-)
+    @Json(name = "count") val count: Int?,
+    )

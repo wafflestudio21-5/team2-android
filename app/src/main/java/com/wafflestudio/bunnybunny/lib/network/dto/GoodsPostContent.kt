@@ -2,7 +2,6 @@ package com.wafflestudio.bunnybunny.lib.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.time.LocalDateTime
 
 @JsonClass(generateAdapter = true)
 data class GoodsPostContent(
@@ -12,8 +11,10 @@ data class GoodsPostContent(
     @Json(name = "type") val type: String,
     @Json(name = "status") val status: String,
     @Json(name = "authorId") val authorId: Long,
+    @Json(name = "authorName") val authorName: String,
     @Json(name = "buyerId") val buyerId: Long,
     @Json(name = "sellingArea") val sellingArea: String,
+    @Json(name = "sellPrice") val sellPrice: Int,
     @Json(name = "repImg") val repImg: String,
     @Json(name = "images") val images: List<String>,
     @Json(name = "viewCnt") val viewCnt: Int,
@@ -22,9 +23,7 @@ data class GoodsPostContent(
     @Json(name = "refreshedAt") val refreshedAt: Long,
     @Json(name = "createdAt") val createdAt: Long,
     @Json(name = "deadline") val deadline: Long,
-    @Json(name = "hiddenYn") val hiddenYn: Boolean,
-    @Json(name = "sellPrice") val sellPrice: Int,
     @Json(name = "wishCnt") var wishCnt: Int,
-    @Json(name = "wishPressed") var wishPressed: Boolean,
     @Json(name = "chatCnt") val chatCnt: Int,
+    @Json(name = "isWish") var isWish: Boolean,
 )
