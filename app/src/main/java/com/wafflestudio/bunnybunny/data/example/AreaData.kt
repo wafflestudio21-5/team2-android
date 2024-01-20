@@ -12,5 +12,13 @@ data class MetaData(
 @JsonClass(generateAdapter = true)
 data class AreaSearchResponse(
     @Json(name = "meta") val meta: MetaData,
-    @Json(name = "areas") val areas: List<RefAreaId>
+    @Json(name = "areas") val areas: List<SimpleAreaData>
+)
+
+@JsonClass(generateAdapter = true)
+data class SimpleAreaData(
+    @Json(name = "id") val id: Int,
+    @Json(name = "code") val code: String,
+    @Json(name = "name") val name: String,
+    @Json(name = "fullName") val fullName: String
 )

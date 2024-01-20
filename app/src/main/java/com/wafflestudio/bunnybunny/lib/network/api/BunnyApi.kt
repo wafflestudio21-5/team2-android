@@ -33,6 +33,6 @@ interface BunnyApi {
     suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): UserInfo
 
     @GET("/area/search")
-    suspend fun areaSearch(@Query("query") query: String, @Path("cursor") cursor: Int): AreaSearchResponse
+    suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
 }

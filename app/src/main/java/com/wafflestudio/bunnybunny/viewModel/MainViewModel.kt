@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
+import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
@@ -32,8 +34,8 @@ class MainViewModel @Inject constructor(
 
     val goodsPostList : MutableState<List<GoodsPostPreview>> = mutableStateOf(listOf())
 
-    private val _areaDetails: MutableStateFlow<List<RefAreaId>> = MutableStateFlow(listOf())
-    val areaDetails: StateFlow<List<RefAreaId>> = _areaDetails.asStateFlow()
+    private val _areaDetails: MutableStateFlow<List<SimpleAreaData>> = MutableStateFlow(listOf())
+    val areaDetails: StateFlow<List<SimpleAreaData>> = _areaDetails.asStateFlow()
 
     companion object {}
     suspend fun tryLogin(email: String, password: String): LoginResponse {
@@ -51,9 +53,10 @@ class MainViewModel @Inject constructor(
         return api.socialSignUpRequest(data, "kakao")
     }
 
-    suspend fun tryAreaSearch(query: String, cursor: Int): List<RefAreaId> {
+    suspend fun tryAreaSearch(query: String, cursor: Int): List<SimpleAreaData> {
         _areaDetails.value = api.areaSearch(query, cursor).areas;
-        return areaDetails.value;
+        Log.d("VM", "${_areaDetails.value}")
+        return _areaDetails.value;
     }
 
 

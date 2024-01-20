@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,9 +39,14 @@ fun AreaSearchBar(modifier: Modifier) {
                 imeAction = ImeAction.Done // 엔터 키를 Done으로 설정합니다.
             ),
             keyboardActions = KeyboardActions(onDone = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    viewModel.tryAreaSearch(text, 0);
+                try {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        viewModel.tryAreaSearch(text, 0);
+                    }
+                } catch (e: HttpException) {
+
                 }
+
             }),
             leadingIcon = {
                 Icon (

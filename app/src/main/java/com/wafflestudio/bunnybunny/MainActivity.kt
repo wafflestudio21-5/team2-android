@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
@@ -67,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("SignupPage") {
                     SignupPage(
-                        onNavigateToStart = { navController.navigate("StartPage") },
+                        onNavigateToAreaSearch  = { navController.navigate("AreaChoosePage") },
                         context = this@MainActivity
                     )
                 }
@@ -76,10 +77,16 @@ class MainActivity : ComponentActivity() {
                     arguments = listOf(navArgument("idToken") { type = NavType.StringType })
                 ) {
                     SocialSignupPage(
-                        onNavigateToStart = { navController.navigate("StartPage") },
+                        onNavigateToAreaSearch  = { navController.navigate("AreaChoosePage") },
                         context = this@MainActivity,
                     )
                 }
+                composable("AreaChoosePage") {
+                    AreaChoosePage (
+
+                    )
+                }
+
                 composable("TabPage") {
                     TabPage(navController = navController, viewModel = viewModel)
                 }

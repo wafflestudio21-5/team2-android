@@ -118,12 +118,10 @@ fun StartPage(
                     CoroutineScope(Dispatchers.IO).launch {
                         val loginRequest = viewModel.tryLogin(emailInput, pwInput)
                         withContext(Dispatchers.Main) {
-                            // TODO onNavigateToMain
                         }
                     }
                 }
             )
-
 
             Column {
                 Button(
@@ -183,7 +181,6 @@ fun StartPage(
                                                 .makeText(context, "토큰이 만료되었습니다", Toast.LENGTH_SHORT)
                                                 .show()
                                         }
-
                                     }
                                 } catch (e: Exception) {
                                     withContext(Dispatchers.Main) {

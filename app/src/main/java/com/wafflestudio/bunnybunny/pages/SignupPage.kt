@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.addAdapter
+import com.wafflestudio.bunnybunny.components.compose.BasicButton
+import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
+import com.wafflestudio.bunnybunny.components.compose.LoginPasswordTextField
 import com.wafflestudio.bunnybunny.data.example.ErrorResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
@@ -39,7 +42,7 @@ import java.util.logging.Handler
 @Composable
 fun SignupPage(
     modifier: Modifier = Modifier,
-    onNavigateToStart : () -> Unit,
+    onNavigateToAreaSearch : () -> Unit,
     context: Context
 ){
     val handler = android.os.Handler(Looper.getMainLooper())
@@ -49,90 +52,19 @@ fun SignupPage(
     var nickname by rememberSaveable { mutableStateOf("") }
     //var pwInput by rememberSaveable { mutableStateOf("") }
     Column {
-        BasicTextField(
+        LoginInputTextField(
             value = emailInput,
-            onValueChange = { newText -> emailInput = newText},
-            modifier = Modifier.padding(5.dp),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xFFFF8000),
-                            shape = RoundedCornerShape(percent = 40)
-                        )
-                        .padding(12.dp),
-                ){
-                    if(emailInput.isEmpty()){
-                        Text("Input E-mail", color = Color.Gray)
-                    }
-                    innerTextField()
-                }
-            }
+            onValueChange = { newText -> emailInput = newText },
+            placeholder = "이메일을 입력해주세요"
         )
-        BasicTextField(
-            value = pwInput,
-            onValueChange = { newText -> pwInput = newText},
-            modifier = Modifier.padding(5.dp),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xFFFF8000),
-                            shape = RoundedCornerShape(percent = 40)
-                        )
-                        .padding(12.dp),
-                ){
-                    if(pwInput.isEmpty()){
-                        Text("Input PW", color = Color.Gray)
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        BasicTextField(
+        LoginInputTextField(value = pwInput,
+            onValueChange ={ newText -> pwInput = newText },
+            placeholder = "비밀번호를 입력해주세요")
+        LoginInputTextField(
             value = nickname,
-            onValueChange = { newText -> nickname = newText},
-            modifier = Modifier.padding(5.dp),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xFFFF8000),
-                            shape = RoundedCornerShape(percent = 40)
-                        )
-                        .padding(12.dp),
-                ){
-                    if(nickname.isEmpty()){
-                        Text("Input Nickname", color = Color.Gray)
-                    }
-                    innerTextField()
-                }
-            }
+            onValueChange = { newText -> nickname = newText },
+            placeholder = "닉네임을 입력해주세요"
         )
-        Button(
-            modifier = Modifier.padding(5.dp),
-            onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            viewModel.trySignup(
-                                SignupRequest(
-                                    emailInput, pwInput, nickname,
-                                    "https://some.domain.name/path", listOf(0)
-                                )
-                            )
-                            onNavigateToStart()
-                        }
-                        catch (e: HttpException){
-                            val message = e.response()?.errorBody()?.string()
-                            handler.postDelayed(Runnable{Toast.makeText(context, message, Toast.LENGTH_SHORT).show()}, 0)
-                        }
-                    }
-            }
-        ){
-
-        }
+        BasicButton(modifier = Modifier, onClick = { onNavigateToAreaSearch() }, text = "지역 선택하기", networkBoolean = false)
     }
 }
