@@ -1,6 +1,7 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
@@ -23,18 +24,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.addAdapter
-import com.wafflestudio.bunnybunny.data.example.ErrorResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
+import com.wafflestudio.bunnybunny.lib.network.data.HttpResult
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.util.logging.Handler
+import kotlin.math.sign
+
 @Composable
 fun SignupPage(
     modifier: Modifier = Modifier,
@@ -46,7 +51,6 @@ fun SignupPage(
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
     var nickname by rememberSaveable { mutableStateOf("") }
-    //var pwInput by rememberSaveable { mutableStateOf("") }
     Column {
         BasicTextField(
             value = emailInput,
@@ -116,22 +120,45 @@ fun SignupPage(
             onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            viewModel.trySignup(
+                            val signupInfo = viewModel.trySignup(
                                 SignupRequest(
                                     emailInput, pwInput, nickname,
                                     "https://some.domain.name/path", listOf(0)
                                 )
                             )
-                            onNavigateToStart()
+                            withContext(Dispatchers.Main){
+                                onNavigateToStart()
+                            }
+
                         }
                         catch (e: HttpException){
-                            val message = e.response()?.errorBody()?.string()
-                            handler.postDelayed(Runnable{Toast.makeText(context, message, Toast.LENGTH_SHORT).show()}, 0)
+                            val jObjError = JSONObject(e.response()?.errorBody()!!.string()).getJSONObject("error")
+                            val message = jObjError.getString("message")
+                            handler.postDelayed({Toast.makeText(context, message, Toast.LENGTH_SHORT).show()}, 0)
                         }
                     }
             }
         ){
-
+            Text("회원가입")
         }
+        /*Button(
+            modifier = Modifier.padding(5.dp),
+            onClick = {
+                when{
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+
+                    }
+
+
+
+                    else ->
+                }
+            }
+        ){
+
+        }*/
     }
 }

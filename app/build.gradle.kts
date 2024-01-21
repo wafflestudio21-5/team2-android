@@ -60,6 +60,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     // moshi
     implementation("com.squareup.moshi:moshi:1.14.0")

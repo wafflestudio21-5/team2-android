@@ -4,6 +4,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.data.HttpResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response

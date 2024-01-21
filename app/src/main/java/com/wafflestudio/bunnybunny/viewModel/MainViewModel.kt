@@ -25,8 +25,6 @@ class MainViewModel @Inject constructor(
     suspend fun tryLogin(email: String, password: String): LoginResponse{
             return api.loginRequest(LoginRequest(email, password))
     }
-    suspend fun trySignup(data: SignupRequest): UserInfo{
-        return api.signupRequest(data)
-    }
+    suspend fun trySignup(data: SignupRequest) = api.signupRequest(data)
 
 }

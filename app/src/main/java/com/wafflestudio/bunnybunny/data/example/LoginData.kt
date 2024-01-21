@@ -26,20 +26,25 @@ data class SignupRequest(
 
 @JsonClass(generateAdapter = true)
 data class UserInfo(
-    @Json(name = "id") val id: Int,
-    @Json(name = "email") val email: String,
-    @Json(name = "provider") val provider: String,
-    @Json(name = "sub") val sub: String,
-    @Json(name = "role") val role: String,
-    @Json(name = "profileImageUrl") val profileImageUrl: String,
-    @Json(name = "nickname") val nickname: String,
-    @Json(name = "mannerTemp") val mannerTemp: Int,
-    @Json(name = "createdAt") val createdAt: String,
-    @Json(name = "refAreaIds") val refAreaIds: List<Int>
+    @Json(name = "id") val id: Int?,
+    @Json(name = "email") val email: String?,
+    @Json(name = "provider") val provider: String?,
+    @Json(name = "sub") val sub: String?,
+    @Json(name = "role") val role: String?,
+    @Json(name = "profileImageUrl") val profileImageUrl: String?,
+    @Json(name = "nickname") val nickname: String?,
+    @Json(name = "mannerTemp") val mannerTemp: Int?,
+    @Json(name = "createdAt") val createdAt: String?,
+    @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>?
 )
 
-@JsonClass(generateAdapter = true)
-data class ErrorResponse(
-    @Json(name = "code") val code: Int,
-    @Json(name = "message") val message: String,
+data class RefAreaId(
+    @Json(name = "id") val id: Int?,
+    @Json(name = "code") val code: String,
+    @Json(name = "fullName") val fullName: String,
+    @Json(name = "name") val name: String,
+    @Json(name = "sggName") val sggName: String,
+    @Json(name = "sdName") val sdName: String,
+    @Json(name = "authenticatedAt") val authenticatedAt: Long,
+    @Json(name = "count") val count: Int
 )
