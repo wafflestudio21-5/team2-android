@@ -66,6 +66,7 @@ import javax.inject.Inject
 
 @Composable
 fun StartPage(
+    viewModel: MainViewModel,
     modifier: Modifier = Modifier,
     onNavigateToSignUp : () -> Unit,
     onNavigateToSocialSignUp: (idToken: String) -> Unit,
@@ -139,6 +140,8 @@ fun StartPage(
                                 Log.d("loginResponse", "${loginResponse}")
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
+                                        viewModel.accessToken=loginResponse.token
+                                        viewModel.refAreaId=loginResponse.refAreaIds
                                         onNavigateToSignIn()
                                     }
                                 }
@@ -170,7 +173,7 @@ fun StartPage(
                         .fillMaxWidth(0.4f),
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(1.0f, 0.647f, 0.0f, 1.0f)),
-                    onClick = onNavigateToSignUp
+                    onClick = { onNavigateToSignUp }
                 ) {
                     Text("회원가입")
                 }

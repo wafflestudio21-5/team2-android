@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -17,6 +18,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
+import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
@@ -38,10 +42,17 @@ class MainActivity : ComponentActivity() {
     lateinit var api:BunnyApi
     private val viewModel: MainViewModel by viewModels()
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BunnybunnyTheme {
+                // A surface container using the 'background' color from the theme
+                //StartPage()
+                //viewModel.updateGoodsPostList(Goods)
+                //viewModel.updateGoodsPostContent(GoodsPostContentSample)
+                //viewModel.wishToggleExample(1,true)
                 MyApp()
             }
         }
@@ -120,7 +131,23 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("TabPage") {
-                    TabPage(navController = navController, viewModel = viewModel)
+                  if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                    Log.d("aaaa","nav call")
+                    viewModel.isgettingNewPostList=true
+                    viewModel.getGoodsPostList(0,viewModel.refAreaId[0])
+
+                }
+                  val index= it.arguments?.getInt("index")
+                  if(index!=null) viewModel.selectedTabIndex.intValue=index
+                  TabPage(viewModel, navController = navController)
+            }
+                composable("GoodsPostPage/{id}") {
+                    val id=it.arguments!!.getString("id")
+                    //Log.d("aaaa","nav에서$id")
+                    if (id != null) {
+                        GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
+    ){
+        
                 }
             }
         }
