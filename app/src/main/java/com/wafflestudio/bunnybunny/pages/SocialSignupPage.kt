@@ -40,30 +40,21 @@ import retrofit2.HttpException
 import java.util.logging.Handler
 
 @Composable
-fun SignupPage(
+fun SocialSignupPage(
     modifier: Modifier = Modifier,
-    onNavigateToAreaSearch : (emailInput: String, pwInput: String, nickname: String) -> Unit,
+    idToken: String,
+    onNavigateToAreaSearch : (nickname: String, idToken: String) -> Unit,
     context: Context
 ){
     val viewModel = hiltViewModel<MainViewModel>()
-    var emailInput by rememberSaveable { mutableStateOf("") }
-    var pwInput by rememberSaveable { mutableStateOf("") }
     var nickname by rememberSaveable { mutableStateOf("") }
-
+    //var pwInput by rememberSaveable { mutableStateOf("") }
     Column {
-        LoginInputTextField(
-            value = emailInput,
-            onValueChange = { newText -> emailInput = newText },
-            placeholder = "이메일을 입력해주세요"
-        )
-        LoginInputTextField(value = pwInput,
-            onValueChange ={ newText -> pwInput = newText },
-            placeholder = "비밀번호를 입력해주세요")
         LoginInputTextField(
             value = nickname,
             onValueChange = { newText -> nickname = newText },
             placeholder = "닉네임을 입력해주세요"
         )
-        BasicButton(modifier = Modifier, onClick = { onNavigateToAreaSearch(emailInput, pwInput, nickname) }, text = "지역 선택하기", networkBoolean = false)
+        BasicButton(modifier = Modifier, onClick = { onNavigateToAreaSearch(nickname, idToken) }, text = "지역 선택하기", networkBoolean = false)
     }
 }
