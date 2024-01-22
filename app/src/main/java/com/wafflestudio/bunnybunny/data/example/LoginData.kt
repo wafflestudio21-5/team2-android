@@ -63,8 +63,8 @@ data class SocialUserInfo(
     @Json(name = "role") val role: String,
     @Json(name = "profileImageUrl") val profileImageUrl: String,
     @Json(name = "nickname") val nickname: String,
-    @Json(name = "mannerTemp") val mannerTemp: Int,
-    @Json(name = "createdAt") val createdAt: String,
+    @Json(name = "mannerTemp") val mannerTemp: Double,
+    @Json(name = "createdAt") val createdAt: Double,
     @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>
 )
 
@@ -83,6 +83,6 @@ data class RefAreaId(
     @Json(name = "name") val name: String,
     @Json(name = "sggName") val sggName: String,
     @Json(name = "sdName") val sdName: String,
-    @Json(name = "authenticatedAt") val authenticatedAt: Long,
+    @Json(name = "authenticatedAt") val authenticatedAt: Double,
     @Json(name = "count") val count: Int
 )

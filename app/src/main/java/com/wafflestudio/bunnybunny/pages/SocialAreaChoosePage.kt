@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @Composable
-fun SocialAreaChoosePage(nickname: String, idToken: String) {
+fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: () -> Unit) {
     val refAreaIds = mutableListOf<Int>()
     val viewModel = hiltViewModel<MainViewModel>()
     val context = LocalContext.current;
@@ -45,6 +45,9 @@ fun SocialAreaChoosePage(nickname: String, idToken: String) {
                 try {
                     val response = viewModel.trySocialSignUp(SocialSignupRequest(nickname, "profile.com", refAreaIds.toIntArray().toList(), idToken))
                     Log.d("ACP", "success: ${response}")
+                    withContext(Dispatchers.Main) {
+
+                    }
                 }
                 catch (e: HttpException){
                     val message = e.response()?.errorBody()?.toString()

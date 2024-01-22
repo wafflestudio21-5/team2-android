@@ -23,7 +23,6 @@ import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.SignupPage
-import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
@@ -111,7 +110,7 @@ class MainActivity : ComponentActivity() {
                         val nickname = navBackStackEntry.arguments?.getString("nickname") ?: ""
                         Log.d("MA_CHECK", "$emailInput")
                         AreaChoosePage (
-                            emailInput, pwInput, nickname
+                            emailInput, pwInput, nickname, onNavigateToStart = {navController.navigate("StartPage")}
                         )
                 }
 
@@ -126,7 +125,7 @@ class MainActivity : ComponentActivity() {
                     val idToken = navBackStackEntry.arguments?.getString("idToken") ?: ""
 
                     SocialAreaChoosePage (
-                        nickname, idToken
+                        nickname, idToken, onNavigateToSignIn = {navController.navigate("StartPage")}
                     )
                 }
 
@@ -146,10 +145,7 @@ class MainActivity : ComponentActivity() {
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
-    ){
-        
-                }
             }
         }
     }
-}
+}}}

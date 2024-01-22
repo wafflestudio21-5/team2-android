@@ -66,7 +66,6 @@ import javax.inject.Inject
 
 @Composable
 fun StartPage(
-    viewModel: MainViewModel,
     modifier: Modifier = Modifier,
     onNavigateToSignUp : () -> Unit,
     onNavigateToSocialSignUp: (idToken: String) -> Unit,

@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @Composable
-fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String) {
+fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, onNavigateToStart: () -> Unit) {
     val refAreaIds = mutableListOf<Int>()
     val viewModel = hiltViewModel<MainViewModel>()
     val context = LocalContext.current;
@@ -44,6 +44,10 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String) 
                 try {
                     val response = viewModel.trySignup(SignupRequest(emailInput, passwordInput, nickname, "profile.com", refAreaIds.toIntArray().toList()))
                     Log.d("ACP", "success: ${response}")
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
+                        onNavigateToStart()
+                    }
                 }
                 catch (e: HttpException){
                     val message = e.response()?.errorBody()?.toString()
