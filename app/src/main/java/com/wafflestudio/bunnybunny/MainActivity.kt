@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
             NavHost(navController = navController, startDestination = startDestination) {
                 composable("StartPage") {
                     StartPage(
+                        viewModel,
                         modifier = Modifier,
                         onNavigateToSignUp = { navController.navigate("SignupPage")},
                         onNavigateToSocialSignUp = { idToken -> navController.navigate("SocialSignupPage/$idToken") },
@@ -133,7 +134,7 @@ class MainActivity : ComponentActivity() {
                   if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
                     Log.d("aaaa","nav call")
                     viewModel.isgettingNewPostList=true
-                    viewModel.getGoodsPostList(0,viewModel.refAreaId[0])
+                    viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
 
                 }
                   val index= it.arguments?.getInt("index")

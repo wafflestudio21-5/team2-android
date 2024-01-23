@@ -47,7 +47,7 @@ fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList
             .clickable {
                 if ((!isClicked)&&(areaIds.size == 2)) {
                     CoroutineScope(Dispatchers.Main).launch() {
-                        Toast.makeText(context, "최대 2개의 지역만 선택 가능합니다.", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "최대 2개의 지역만 선택 가능합니다.", Toast.LENGTH_SHORT).show()
                     }
                 } else if (isClicked) {
                     areaIds.remove(areaId)

@@ -66,6 +66,7 @@ import javax.inject.Inject
 
 @Composable
 fun StartPage(
+    viewModel: MainViewModel,
     modifier: Modifier = Modifier,
     onNavigateToSignUp : () -> Unit,
     onNavigateToSocialSignUp: (idToken: String) -> Unit,
@@ -74,7 +75,6 @@ fun StartPage(
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ) {
-    val viewModel = hiltViewModel<MainViewModel>()
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -139,8 +139,8 @@ fun StartPage(
                                 Log.d("loginResponse", "${loginResponse}")
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
-                                        viewModel.accessToken=loginResponse.token
-                                        viewModel.refAreaId=loginResponse.refAreaIds
+                                        viewModel.setToken(loginResponse.token)
+                                        viewModel.setRefAreaId(loginResponse.refAreaIds)
                                         onNavigateToSignIn()
                                     }
                                 }
@@ -148,8 +148,7 @@ fun StartPage(
                                 val message = e.response()?.code().toString()
                                 if (message == "401") {
                                     withContext(Dispatchers.Main) {
-                                        Toast.makeText(context, "회원가입부터 해 주세요!", Toast.LENGTH_SHORT).show()
-                                        onNavigateToSignUp()
+                                        Toast.makeText(context, "존재하지 않거나 잘못된 사용자 정보입니다.", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                                 Log.d("StartPage", "error: $message")
@@ -172,7 +171,7 @@ fun StartPage(
                         .fillMaxWidth(0.4f),
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(1.0f, 0.647f, 0.0f, 1.0f)),
-                    onClick = { onNavigateToSignUp }
+                    onClick = { onNavigateToSignUp() }
                 ) {
                     Text("회원가입")
                 }

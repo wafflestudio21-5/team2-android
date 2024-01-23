@@ -46,8 +46,11 @@ class MainViewModel @Inject constructor(
     var isgettingNewPostList= false
     var isgettingNewPostContent= false
 
-    var accessToken=""
-    var refAreaId= listOf<Int>()
+    private val _accessToken = MutableStateFlow("");
+    val accessToken : StateFlow<String> = _accessToken.asStateFlow()
+
+    private val _refAreaId = MutableStateFlow(listOf<Int>());
+    val refAreaId : StateFlow<List<Int>> = _refAreaId.asStateFlow()
 
     private val _goodsPostList = MutableStateFlow(DefaultGoodsPostListSample)
     val goodsPostList: StateFlow<GoodsPostList> = _goodsPostList.asStateFlow()
@@ -70,8 +73,21 @@ class MainViewModel @Inject constructor(
     companion object {}
     fun getToken():String{
         //Log.d("aaaa", "tag:$accessToken")
-        return "Bearer $accessToken"
+        return "Bearer ${_accessToken.value}"
     }
+
+    fun setToken(token: String) {
+        _accessToken.value = token
+    }
+
+    fun getRefAreaId(): List<Int> {
+        return _refAreaId.value
+    }
+
+    fun setRefAreaId(refAreaId: List<Int>) {
+        _refAreaId.value = refAreaId
+    }
+
     fun getGoodsPostList(distance:Int,areaId: Int){
         Log.d("aaaa","getGoodsPostList called:")
         if(goodsPostList.value.count!=0&&goodsPostList.value.isLast){
