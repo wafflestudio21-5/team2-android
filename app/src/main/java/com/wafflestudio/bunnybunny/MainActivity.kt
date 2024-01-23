@@ -30,6 +30,7 @@ import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var api:BunnyApi
     private val viewModel: MainViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
 
 
@@ -139,7 +141,7 @@ class MainActivity : ComponentActivity() {
                 }
                   val index= it.arguments?.getInt("index")
                   if(index!=null) viewModel.selectedTabIndex.intValue=index
-                  TabPage(viewModel, navController = navController)
+                  TabPage(viewModel, chatViewModel, navController = navController)
             }
                 composable("GoodsPostPage/{id}") {
                     val id=it.arguments!!.getString("id")

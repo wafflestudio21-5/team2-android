@@ -1,6 +1,7 @@
 package com.wafflestudio.bunnybunny.lib.network.api
 
 import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
+import com.wafflestudio.bunnybunny.data.example.ChatListResponse
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
@@ -58,5 +59,8 @@ interface BunnyApi {
 
     @GET("/area/search")
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
+
+    @GET("/channels")
+    suspend fun chatChannelRequest(): ChatListResponse
 
 }
