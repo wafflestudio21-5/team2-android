@@ -41,7 +41,7 @@ class NetworkModule {
         okHttpClient: OkHttpClient,
         moshi: Moshi
     ): Retrofit {
-        return Retrofit.Builder().baseUrl("http://43.202.236.170:8080/")
+        return Retrofit.Builder().baseUrl("http://banibani.shop/")
             .client(okHttpClient).addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }

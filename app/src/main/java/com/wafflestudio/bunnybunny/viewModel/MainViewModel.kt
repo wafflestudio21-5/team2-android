@@ -1,9 +1,11 @@
 package com.wafflestudio.bunnybunny.viewModel
 
 import android.util.Log
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostListSample
@@ -13,6 +15,8 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
+import com.wafflestudio.bunnybunny.data.example.SignupResponse
+import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
@@ -42,8 +46,11 @@ class MainViewModel @Inject constructor(
     var isgettingNewPostList= false
     var isgettingNewPostContent= false
 
-    var accessToken=""
-    var refAreaId= listOf<Int>()
+    private val _accessToken = MutableStateFlow("");
+    val accessToken : StateFlow<String> = _accessToken.asStateFlow()
+
+    private val _refAreaId = MutableStateFlow(listOf<Int>());
+    val refAreaId : StateFlow<List<Int>> = _refAreaId.asStateFlow()
 
     private val _goodsPostList = MutableStateFlow(DefaultGoodsPostListSample)
     val goodsPostList: StateFlow<GoodsPostList> = _goodsPostList.asStateFlow()
@@ -60,11 +67,27 @@ class MainViewModel @Inject constructor(
     }
 
 
+    private val _areaDetails: MutableStateFlow<List<SimpleAreaData>> = MutableStateFlow(listOf())
+    val areaDetails: StateFlow<List<SimpleAreaData>> = _areaDetails.asStateFlow()
+
     companion object {}
     fun getToken():String{
         //Log.d("aaaa", "tag:$accessToken")
-        return "Bearer $accessToken"
+        return "Bearer ${_accessToken.value}"
     }
+
+    fun setToken(token: String) {
+        _accessToken.value = token
+    }
+
+    fun getRefAreaId(): List<Int> {
+        return _refAreaId.value
+    }
+
+    fun setRefAreaId(refAreaId: List<Int>) {
+        _refAreaId.value = refAreaId
+    }
+
     fun getGoodsPostList(distance:Int,areaId: Int){
         Log.d("aaaa","getGoodsPostList called:")
         if(goodsPostList.value.count!=0&&goodsPostList.value.isLast){
@@ -135,7 +158,7 @@ class MainViewModel @Inject constructor(
     suspend fun tryLogin(email: String, password: String): LoginResponse {
             return api.loginRequest(LoginRequest(email, password))
     }
-    suspend fun trySignup(data: SignupRequest): UserInfo{
+    suspend fun trySignup(data: SignupRequest): SignupResponse {
         return api.signupRequest(data)
     }
 
@@ -143,8 +166,14 @@ class MainViewModel @Inject constructor(
         return api.socialLoginRequest(data, "kakao")
     }
 
-    suspend fun trySocialSignUp(data: SocialSignupRequest): UserInfo {
+    suspend fun trySocialSignUp(data: SocialSignupRequest): SignupRequest {
         return api.socialSignUpRequest(data, "kakao")
+    }
+
+    suspend fun tryAreaSearch(query: String, cursor: Int): List<SimpleAreaData> {
+        _areaDetails.value = api.areaSearch(query, cursor).areas;
+        Log.d("VM", "${_areaDetails.value}")
+        return _areaDetails.value;
     }
 
 

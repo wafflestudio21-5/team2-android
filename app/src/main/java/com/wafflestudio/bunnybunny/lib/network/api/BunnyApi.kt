@@ -1,8 +1,10 @@
 package com.wafflestudio.bunnybunny.lib.network.api
 
+import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
+import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
@@ -19,8 +21,7 @@ import retrofit2.http.Query
 interface BunnyApi {
 
     @POST("/auth/login")
-    suspend fun loginRequest(
-        @Body request: LoginRequest) : LoginResponse
+    suspend fun loginRequest(@Body request: LoginRequest) : LoginResponse
 
     @GET("/posts")
     suspend fun getGoodsPostList(
@@ -47,12 +48,15 @@ interface BunnyApi {
     )
   
     @POST("/signup")
-    suspend fun signupRequest(@Body request: SignupRequest): UserInfo
+    suspend fun signupRequest(@Body request: SignupRequest): SignupResponse
 
     @POST("/auth/login/{provider}")
     suspend fun socialLoginRequest(@Body request: SocialLoginRequest, @Path("provider") provider: String): SocialLoginResponse
 
     @POST("/signup/{provider}")
-    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): UserInfo
+    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): SignupRequest
+
+    @GET("/area/search")
+    suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
 }
