@@ -1,7 +1,15 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +27,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -36,10 +48,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,13 +61,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
@@ -64,21 +82,56 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
+    val context=LocalContext.current
 
-    var title by remember { mutableStateOf("") }
+    val uploadImages by viewModel.uploadImages.collectAsState()
+
+    var title by rememberSaveable { mutableStateOf("") }
     var isTitleFocused by remember { mutableStateOf(false) }
     val titleScrollState = rememberScrollState()
-    var sellPrice by remember { mutableStateOf("") }
+    var sellPrice by rememberSaveable { mutableStateOf("") }
     var isSellPriceFocused by remember { mutableStateOf(false) }
-    var offerYn by remember { mutableStateOf(false) }
-    var description by remember { mutableStateOf("") }
+    var offerYn by rememberSaveable { mutableStateOf(false) }
+    var description by rememberSaveable { mutableStateOf("") }
     var isDescriptionFocused by remember { mutableStateOf(false) }
     val localFocusManager = LocalFocusManager.current
+
+    val (permissionRequested, setPermissionRequested) = remember { mutableStateOf(false) }
+
+    val allPermissionsGranted = viewModel.neededStoragePermissions().all {
+        ContextCompat.checkSelfPermission(LocalContext.current, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    val multiplePermissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        // 권한 요청 결과 처리. permissions는 Map<String, Boolean> 형태입니다.
+        if(permissions.entries.all { it.value }){
+            Log.d("aaaa","all_granted")
+            navController.navigate("GalleryViewPage")
+        }
+    }
+    LaunchedEffect(permissionRequested) {
+        if (permissionRequested) {
+            if (allPermissionsGranted) {
+                // 모든 권한이 이미 부여되었을 경우의 처리
+                Log.d("aaaa","already_granted")
+                navController.navigate("GalleryViewPage")
+            } else {
+                // 하나 이상의 권한이 부여되지 않았을 경우 권한 요청 로직
+                multiplePermissionsLauncher.launch(viewModel.neededStoragePermissions())
+            }
+
+            setPermissionRequested(false) // 상태를 다시 초기화
+        }
+    }
 
     Scaffold(bottomBar = {
         Box (modifier = Modifier
@@ -91,13 +144,15 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                 if (title.isNotEmpty() && sellPrice.isNotEmpty() && description.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
+                            val images=viewModel.uploadImages(uploadImages,context).images
                             viewModel.submitPost(
                                 SubmitPostRequest(
                                     areaId = viewModel.refAreaId[0],
                                     title = title,
                                     description = description,
                                     type = if (sellPrice.toInt() == 0) "SHARE" else "TRADE",
-                                    images = listOf(),
+                                    repImg=images[0],
+                                    images = images,
                                     deadline = 0L,
                                     offerYn = offerYn,
                                     sellPrice = sellPrice.toInt()
@@ -106,6 +161,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             withContext(Dispatchers.Main) {
                                 //게시글 작성에 성공.
                                 // 내가 쓴 글 페이지로 이동(현재 페이지를 stack에서 지우면서)
+                                navController.popBackStack()
                             }
                         } catch (e: Exception) {
                             //
@@ -148,7 +204,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                                     shape = RoundedCornerShape(7.dp)
                                 )
                                 .clickable {
-                                    //사진 첨부
+                                    setPermissionRequested(true)
                                 },
                             contentAlignment = Alignment.Center
                         ){
@@ -157,15 +213,44 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                                     imageVector = Icons.Outlined.CameraAlt,
                                     contentDescription = "CameraAlt"
                                 )
-                                Text("0/10")
+                                Text("${uploadImages.size}/10")
+                            }
+                        }
+                        LazyRow{
+                            itemsIndexed(uploadImages){index,uri->
+                                Spacer(modifier = Modifier.fillMaxHeight().width(16.dp))
+                                Box(modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color.Gray,
+                                        shape = RoundedCornerShape(7.dp))
+                                    .clickable {
+                                        val updateList=uploadImages.toMutableList()
+                                        updateList.remove(uri)
+                                        viewModel.updateUploadImages(updateList)
+                                    }){
+                                    Image(
+                                        painter = rememberImagePainter(data = uri),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        contentScale =  ContentScale.FillWidth
+                                    )
+                                }
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp))
 
                     Text("제목")
-                    Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp))
                     BasicTextField(
                         value = title,
                         onValueChange = { title = it},
@@ -204,10 +289,14 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                     LaunchedEffect(title) {
                         titleScrollState.scrollTo(titleScrollState.maxValue)
                     }
-                    Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp))
 
                     Text("거래 방식")
-                    Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp))
                     BasicTextField(
                         value = sellPrice,
                         onValueChange = {newText->
@@ -252,7 +341,9 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             }
                         }
                     )
-                    Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp))
                     Row(verticalAlignment = Alignment.CenterVertically){
                         Checkbox(
                             checked = offerYn,
@@ -261,10 +352,14 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                         Box(contentAlignment = Alignment.Center){Text("가격 제안 받기")}
                     }
 
-                    Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp))
 
                     Text("자세한 설명")
-                    Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp))
                     BasicTextField(
                         value = description,
                         onValueChange = { description = it},
@@ -282,7 +377,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min=160.dp)
+                                    .heightIn(min = 160.dp)
                                     .clip(RoundedCornerShape(5.dp))
                                     .border(
                                         width = 2.dp,
@@ -307,3 +402,5 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
         }
     }
 }
+
+

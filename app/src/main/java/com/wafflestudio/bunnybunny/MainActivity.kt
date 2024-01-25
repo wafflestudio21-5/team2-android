@@ -18,11 +18,13 @@ import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
+import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
+import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -100,6 +102,11 @@ class MainActivity : ComponentActivity() {
             }
             composable("WriteGoodsPostPage") {
                 WriteGoodsPostPage(viewModel, navController)
+            }
+            composable("GalleryViewPage"){
+                viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
+                viewModel.updateSelectedImages(listOf())
+                GalleryViewPage(viewModel,navController)
             }
         }
     }

@@ -10,10 +10,14 @@ import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
+import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -38,6 +42,13 @@ interface BunnyApi {
         @Header("Authorization") authToken:String,
         @Path("post_id") postId:Long,
     ) : GoodsPostContent
+
+    @Multipart
+    @POST("/image/upload")
+    suspend fun postImages(
+        @Header("Authorization") authToken:String,
+        @Part images: List<MultipartBody.Part>,
+    ): postImagesResponse
 
     @POST("/posts")
     suspend fun submitPostRequest(
