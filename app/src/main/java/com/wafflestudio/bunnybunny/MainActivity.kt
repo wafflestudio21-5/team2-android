@@ -134,30 +134,31 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("TabPage") {
-                  if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
-                    Log.d("aaaa","nav call")
-                    viewModel.isgettingNewPostList=true
-                    viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
-
+                    if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                        Log.d("aaaa","nav call")
+                        viewModel.isgettingNewPostList=true
+                        viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
+                    }
+                    val index= it.arguments?.getInt("index")
+                    if(index!=null) viewModel.selectedTabIndex.intValue=index
+                    TabPage(viewModel, navController = navController)
                 }
-                  val index= it.arguments?.getInt("index")
-                  if(index!=null) viewModel.selectedTabIndex.intValue=index
-                  TabPage(viewModel, navController = navController)
-            }
                 composable("GoodsPostPage/{id}") {
                     val id=it.arguments!!.getString("id")
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
-            }
-            composable("WriteGoodsPostPage") {
-                WriteGoodsPostPage(viewModel, navController)
-            }
-            composable("GalleryViewPage"){
-                viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
-                viewModel.updateSelectedImages(listOf())
-                GalleryViewPage(viewModel,navController)
+                    }
+                }
+                composable("WriteGoodsPostPage") {
+                    WriteGoodsPostPage(viewModel, navController)
+                }
+                composable("GalleryViewPage"){
+                    viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
+                    viewModel.updateSelectedImages(listOf())
+                    GalleryViewPage(viewModel,navController)
+                }
             }
         }
     }
-}}}
+}
