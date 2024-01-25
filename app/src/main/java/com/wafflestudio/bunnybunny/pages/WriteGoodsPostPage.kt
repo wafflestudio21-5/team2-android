@@ -147,7 +147,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             val images=viewModel.uploadImages(uploadImages,context).images
                             viewModel.submitPost(
                                 SubmitPostRequest(
-                                    areaId = viewModel.refAreaId[0],
+                                    areaId = viewModel.refAreaId.value[0],
                                     title = title,
                                     description = description,
                                     type = if (sellPrice.toInt() == 0) "SHARE" else "TRADE",
