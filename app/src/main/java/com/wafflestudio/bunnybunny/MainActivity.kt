@@ -6,9 +6,13 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,6 +24,9 @@ import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
+import com.wafflestudio.bunnybunny.model.ParcelableMutableList
+import com.wafflestudio.bunnybunny.pages.AreaChoosePage
+import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
@@ -58,47 +65,90 @@ class MainActivity : ComponentActivity() {
         modifier: Modifier = Modifier,
         navController: NavHostController = rememberNavController(),
         startDestination: String = "StartPage"
-    ){
-        NavHost(navController = navController, startDestination = startDestination){
-            composable("StartPage"){
-                StartPage(
-                    viewModel,
-                    modifier = Modifier,
-                    onNavigateToSignUp = {navController.navigate("SignupPage")},
-                    onNavigateToSocialSignUp = {navController.navigate("SocialSignupPage/{idToken}")},
-                    onNavigateToSignIn = {navController.navigate("TabPage")
-                    }
-                )
-            }
-            composable("SignupPage"){
-                SignupPage(
-                    onNavigateToStart = {navController.navigate("StartPage")},
-                    context = this@MainActivity
-                )
-            }
-            composable("SocialSignupPage/{idToken}",  arguments = listOf(navArgument("idToken") { type = NavType.StringType })) {
-                SocialSignupPage(
-                    onNavigateToStart = { navController.navigate("StartPage") },
-                    context = this@MainActivity,
-                )
-            }
-            composable("TabPage") {
-                if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
+        ) {
+
+            NavHost(navController = navController, startDestination = startDestination) {
+                composable("StartPage") {
+                    StartPage(
+                        viewModel,
+                        modifier = Modifier,
+                        onNavigateToSignUp = { navController.navigate("SignupPage")},
+                        onNavigateToSocialSignUp = { idToken -> navController.navigate("SocialSignupPage/$idToken") },
+                        onNavigateToSignIn = {
+                            navController.navigate("TabPage")
+                        }
+                    )
+                }
+                composable("SignupPage") { navBackStackEntry ->
+                    SignupPage(
+                        onNavigateToAreaSearch  = { emailInput, pwInput, nickname -> navController.navigate("AreaChoosePage/${emailInput}/${pwInput}/${nickname}") {
+                        } },
+                        context = this@MainActivity
+                    )
+                }
+                composable(
+                    "SocialSignupPage/{idToken}",
+                    arguments = listOf(
+                        navArgument("idToken") { type = NavType.StringType })
+                ) {navBackStackEntry ->
+                    val idToken = navBackStackEntry.arguments?.getString("idToken") ?: ""
+                    SocialSignupPage(
+                        onNavigateToAreaSearch  = { nickname, idToken -> navController.navigate("SocialAreaChoosePage/${nickname}/${idToken}") },
+                        idToken = idToken,
+                        context = this@MainActivity,
+                    )
+                }
+                composable("AreaChoosePage/{emailInput}/{pwInput}/{nickname}",
+                    arguments = listOf(
+                        navArgument("emailInput") { type = NavType.StringType; },
+                        navArgument("pwInput") { type = NavType.StringType },
+                        navArgument("nickname") { type = NavType.StringType }) )
+                    { navBackStackEntry ->
+                    // NavBackStackEntry에서 변수들을 추출
+                        val emailInput = navBackStackEntry.arguments?.getString("emailInput") ?: ""
+                        val pwInput = navBackStackEntry.arguments?.getString("pwInput") ?: ""
+                        val nickname = navBackStackEntry.arguments?.getString("nickname") ?: ""
+                        Log.d("MA_CHECK", "$emailInput")
+                        AreaChoosePage (
+                            emailInput, pwInput, nickname, onNavigateToStart = {navController.navigate("StartPage")}
+                        )
+                }
+
+                composable("SocialAreaChoosePage/{nickname}/{idToken}",
+                    arguments = listOf(
+                        navArgument("nickname") { type = NavType.StringType },
+                        navArgument("idToken") { type = NavType.StringType }))
+                { navBackStackEntry ->
+                    // NavBackStackEntry에서 변수들을 추출
+
+                    val nickname = navBackStackEntry.arguments?.getString("nickname") ?: ""
+                    val idToken = navBackStackEntry.arguments?.getString("idToken") ?: ""
+
+                    SocialAreaChoosePage (
+                        nickname, idToken, onNavigateToSignIn = {navController.navigate("StartPage")}
+                    )
+                }
+
+                composable("TabPage") {
+                  if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
                     Log.d("aaaa","nav call")
                     viewModel.isgettingNewPostList=true
-                    viewModel.getGoodsPostList(0,viewModel.refAreaId[0])
+                    viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
 
                 }
-                val index= it.arguments?.getInt("index")
-                if(index!=null) viewModel.selectedTabIndex.intValue=index
-                TabPage(viewModel, navController = navController)
+                  val index= it.arguments?.getInt("index")
+                  if(index!=null) viewModel.selectedTabIndex.intValue=index
+                  TabPage(viewModel, navController = navController)
             }
-            composable("GoodsPostPage/{id}") {
-                val id=it.arguments!!.getString("id")
-                //Log.d("aaaa","nav에서$id")
-                if (id != null) {
-                    GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
-                }
+                composable("GoodsPostPage/{id}") {
+                    val id=it.arguments!!.getString("id")
+                    //Log.d("aaaa","nav에서$id")
+                    if (id != null) {
+                        GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
             }
             composable("WriteGoodsPostPage") {
                 WriteGoodsPostPage(viewModel, navController)
@@ -110,4 +160,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
+}}}

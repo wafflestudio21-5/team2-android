@@ -37,18 +37,37 @@ data class SocialSignupRequest(
 )
 
 @JsonClass(generateAdapter = true)
+data class SignupResponse(
+    @Json(name = "user") val user: UserInfo
+)
+@JsonClass(generateAdapter = true)
 data class UserInfo(
     @Json(name = "id") val id: Int,
     @Json(name = "email") val email: String,
     @Json(name = "provider") val provider: String,
-    @Json(name = "sub") val sub: String,
+    @Json(name = "sub") val sub: String?,
     @Json(name = "role") val role: String,
     @Json(name = "profileImageUrl") val profileImageUrl: String,
     @Json(name = "nickname") val nickname: String,
-    @Json(name = "mannerTemp") val mannerTemp: Int,
+    @Json(name = "mannerTemp") val mannerTemp: Double,
     @Json(name = "createdAt") val createdAt: String,
     @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>
 )
+
+@JsonClass(generateAdapter = true)
+data class SocialUserInfo(
+    @Json(name = "id") val id: Int,
+    @Json(name = "email") val email: String?,
+    @Json(name = "provider") val provider: String,
+    @Json(name = "sub") val sub: String?,
+    @Json(name = "role") val role: String,
+    @Json(name = "profileImageUrl") val profileImageUrl: String,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "mannerTemp") val mannerTemp: Double,
+    @Json(name = "createdAt") val createdAt: Double,
+    @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>
+)
+
 
 @JsonClass(generateAdapter = true)
 data class ErrorResponse(
@@ -56,6 +75,7 @@ data class ErrorResponse(
     @Json(name = "message") val message: String,
 )
 
+@JsonClass(generateAdapter = true)
 data class RefAreaId(
     @Json(name = "id") val id: Int,
     @Json(name = "code") val code: String,
@@ -63,6 +83,6 @@ data class RefAreaId(
     @Json(name = "name") val name: String,
     @Json(name = "sggName") val sggName: String,
     @Json(name = "sdName") val sdName: String,
-    @Json(name = "authenticatedAt") val authenticatedAt: Long,
+    @Json(name = "authenticatedAt") val authenticatedAt: Double,
     @Json(name = "count") val count: Int
 )

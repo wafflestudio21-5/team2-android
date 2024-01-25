@@ -271,7 +271,7 @@ fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
     if(isNeedNewRequest.value&&!viewModel.isgettingNewPostList){
         viewModel.isgettingNewPostList=true
         Log.d("aaaa","scroll call")
-        viewModel.getGoodsPostList(0,viewModel.refAreaId[0])
+        viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
     }
 }
 @Composable
