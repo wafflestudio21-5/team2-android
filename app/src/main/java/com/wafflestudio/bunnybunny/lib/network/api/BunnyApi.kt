@@ -61,6 +61,6 @@ interface BunnyApi {
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
     @GET("/channels")
-    suspend fun chatChannelRequest(): ChatListResponse
+    suspend fun chatChannelRequest(@Header("Authorization") authToken:String): ChatListResponse
 
 }
