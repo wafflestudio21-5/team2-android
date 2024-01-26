@@ -15,7 +15,7 @@ data class GoodsPostContent(
     @Json(name = "buyerId") val buyerId: Long,
     @Json(name = "sellingArea") val sellingArea: String,
     @Json(name = "sellPrice") val sellPrice: Int,
-    @Json(name = "repImg") val repImg: String,
+    @Json(name = "profileImg") val profileImg: String,
     @Json(name = "images") val images: List<String>,
     @Json(name = "viewCnt") val viewCnt: Int,
     @Json(name = "offerYn") val offerYn: Boolean,

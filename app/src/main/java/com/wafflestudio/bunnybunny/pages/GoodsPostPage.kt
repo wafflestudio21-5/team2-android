@@ -60,6 +60,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
@@ -69,6 +70,10 @@ import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -119,7 +124,7 @@ fun GoodsPostPage(viewModel: MainViewModel,id:Long,navController: NavController)
                     .padding(start = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ){
-                    val painter = rememberImagePainter(data = goodsPostContent.repImg)
+                    val painter = rememberImagePainter(data = if(goodsPostContent.profileImg!="")goodsPostContent.profileImg else "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
                     Image(
                         painter = painter,
                         contentDescription = null,
@@ -191,9 +196,21 @@ fun GoodsPostBottomBar(viewModel: MainViewModel,goodsPostContent:GoodsPostConten
         .padding(top = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically){
         IconButton(onClick = {
-            viewModel.wishToggle(goodsPostContent.id,!goodsPostContent.isWish)
-            Log.d("aaaa",(!goodsPostContent.isWish).toString())
-            viewModel.updateGoodsPostContent(goodsPostContent.copy(isWish = !goodsPostContent.isWish,wishCnt=goodsPostContent.wishCnt+if(goodsPostContent.isWish)-1 else 1))            //api 통해서 wish 변화를 서버로 전달
+            Log.d("aaaa","wishToggle called")
+            CoroutineScope(Dispatchers.IO).launch {
+                try{
+                    viewModel.wishToggle(goodsPostContent.id,!goodsPostContent.isWish)
+                    withContext(Dispatchers.Main){
+                        Log.d("aaaa",(!goodsPostContent.isWish).toString())
+                        viewModel.updateGoodsPostContent(goodsPostContent.copy(isWish = !goodsPostContent.isWish,wishCnt=goodsPostContent.wishCnt+if(goodsPostContent.isWish)-1 else 1))
+                    }
+                    //api 통해서 wish 변화를 서버로 전달
+                    //Log.d("aaaa",response.toString())
+                }catch(e: Exception){
+                    Log.d("aaaa", "wishToggle failed:$e")
+                }
+            }
+
 
         }) {
             Icon(

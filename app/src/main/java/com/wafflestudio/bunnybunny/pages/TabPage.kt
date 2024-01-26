@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diversity3
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -30,6 +31,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -78,23 +80,24 @@ fun TabPage(viewModel:MainViewModel,navController: NavController){
 
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
-
-        Column(
+        Box(
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues = paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
             
             when(viewModel.selectedTabIndex.value){
                 0-> {
                     HomeTabPageView(viewModel = viewModel, navController = navController)
-                    WritePostButton()
+                    WritePostButton(modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)){
+                        navController.navigate("WriteGoodsPostPage")
+                    }
                 }
                 1-> {
                     CommunityTabPageView()
-                    WritePostButton()
+                    WritePostButton(modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)){
+                        //navController.navigate(대출 동네생활 글쓰기 페이지)
+                    }
                 }
                 2-> ChatTabPageView()
                 3-> MyTabPageView()
@@ -210,10 +213,14 @@ fun TabPageToolBar(viewModel: MainViewModel,navController: NavController) {
 }
 
 @Composable
-fun WritePostButton(){
-
+fun WritePostButton(modifier: Modifier= Modifier, onClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        modifier = modifier,
+        onClick = { onClick() },
+        icon = { Icon(Icons.Filled.Edit, "Edit") },
+        text = { Text(text = "글쓰기") },
+    )
 }
-
 @Composable
 fun HomeTabPageView(viewModel:MainViewModel,navController: NavController){
     val listState = rememberLazyListState()
