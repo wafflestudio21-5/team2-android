@@ -47,7 +47,6 @@ interface BunnyApi {
     @Multipart
     @POST("/image/upload")
     suspend fun postImages(
-        @Header("Authorization") authToken:String,
         @Part images: List<MultipartBody.Part>,
     ): postImagesResponse
 

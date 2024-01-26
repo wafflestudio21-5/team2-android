@@ -194,7 +194,7 @@ class MainViewModel @Inject constructor(
         }
     }
     suspend fun uploadImages(imageUris:List<Uri>,context:Context):postImagesResponse{
-        return api.postImages(getToken(),prepareMultiPartList(imageUris, context))
+        return api.postImages(prepareMultiPartList(imageUris, context))
     }
 
     suspend fun wishToggle(id:Long,enable:Boolean) {
@@ -236,14 +236,14 @@ class MainViewModel @Inject constructor(
     fun prepareMultiPartList(imageUris: List<Uri>, context: Context): List<MultipartBody.Part> {
         val parts: MutableList<MultipartBody.Part> = ArrayList()
         imageUris.forEach { uri ->
-            parts.add(prepareFilePart("image", uri, context))
+            parts.add(prepareFilePart("multipartFiles", uri, context))
         }
         return parts
     }
 
     fun prepareFilePart(partName: String, fileUri: Uri, context: Context): MultipartBody.Part {
         // Uri로부터 파일을 얻음
-        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}")
+        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}.png")
         val inputStream = context.contentResolver.openInputStream(fileUri)
         val outputStream = FileOutputStream(file)
         inputStream?.copyTo(outputStream)
