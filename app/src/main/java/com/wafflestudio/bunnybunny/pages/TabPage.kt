@@ -55,6 +55,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.ChatContents
+import com.wafflestudio.bunnybunny.components.compose.ChatRoomScreen
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
@@ -281,7 +282,8 @@ fun CommunityTabPageView(){
 @Composable
 fun ChatTabPageView(chatViewModel: ChatViewModel, navController: NavController){
     chatViewModel.getChannelList()
-    ChatContents(modifier = Modifier, viewModel = chatViewModel)
+//    ChatContents(modifier = Modifier, viewModel = chatViewModel)
+    ChatRoomScreen(viewModel = chatViewModel)
 }
 @Composable
 fun MyTabPageView(){

@@ -80,7 +80,7 @@ class MainViewModel @Inject constructor(
 
     fun setToken(token: String) {
         _accessToken.value = token
-        sharedPreferences.edit().putString("origianlToken", token).apply()
+        sharedPreferences.edit().putString("originalToken", token).apply()
         sharedPreferences.edit().putString("token", getToken()).apply()
     }
 
