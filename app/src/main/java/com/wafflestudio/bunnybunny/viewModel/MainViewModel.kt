@@ -12,8 +12,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostListSample
+import com.wafflestudio.bunnybunny.SampleData.DefaultUserInfo
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostListSample
+import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
@@ -26,6 +28,7 @@ import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
@@ -65,6 +68,9 @@ class MainViewModel @Inject constructor(
 
     private val _goodsPostList = MutableStateFlow(DefaultGoodsPostListSample)
     val goodsPostList: StateFlow<GoodsPostList> = _goodsPostList.asStateFlow()
+
+    private val _wishList = MutableStateFlow(DefaultGoodsPostListSample.data)
+    val wishList: StateFlow<List<GoodsPostPreview>> = _wishList.asStateFlow()
     fun updateGoodsPostList(newContent: GoodsPostList) {
         _goodsPostList.value = newContent
     }
@@ -120,6 +126,15 @@ class MainViewModel @Inject constructor(
     private val _areaDetails: MutableStateFlow<List<SimpleAreaData>> = MutableStateFlow(listOf())
     val areaDetails: StateFlow<List<SimpleAreaData>> = _areaDetails.asStateFlow()
 
+    private val _userInfo: MutableStateFlow<UserInfo> = MutableStateFlow(DefaultUserInfo)
+    val userInfo : StateFlow<UserInfo> = _userInfo.asStateFlow()
+
+    suspend fun getUserInfo(){
+        _userInfo.value = api.getUserInfo(getToken())
+    }
+    suspend fun editProfile(request: EditProfileRequest){
+        _userInfo.value = api.putUserInfo(getToken(), request)
+    }
     companion object {}
     fun getToken():String{
         //Log.d("aaaa", "tag:$accessToken")
@@ -261,6 +276,8 @@ class MainViewModel @Inject constructor(
         Log.d("VM", "${_areaDetails.value}")
         return _areaDetails.value;
     }
-
+    suspend fun getWishList(){
+        _wishList.value = api.getWishList(getToken())
+    }
 
 }
