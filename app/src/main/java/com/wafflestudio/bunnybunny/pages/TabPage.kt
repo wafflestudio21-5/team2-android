@@ -282,8 +282,8 @@ fun CommunityTabPageView(){
 @Composable
 fun ChatTabPageView(chatViewModel: ChatViewModel, navController: NavController){
     chatViewModel.getChannelList()
-//    ChatContents(modifier = Modifier, viewModel = chatViewModel)
-    ChatRoomScreen(viewModel = chatViewModel)
+    ChatContents(modifier = Modifier, viewModel = chatViewModel, navController = navController)
+//    ChatRoomScreen(viewModel = chatViewModel)
 }
 @Composable
 fun MyTabPageView(){

@@ -25,6 +25,7 @@ import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
+import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
@@ -148,7 +149,18 @@ class MainActivity : ComponentActivity() {
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
-            }
-        }
+                    }
+                }
+                composable("ChatRoomPage/{channelId}",
+                    arguments = listOf(
+                        navArgument("channelId") { type = NavType.LongType }))
+                { navBackStackEntry ->
+                    // NavBackStackEntry에서 변수들을 추출
+                    val channelId = navBackStackEntry.arguments?.getLong("channelId") ?: 0
+
+                    ChatRoomPage (
+                        modifier = Modifier, viewModel = chatViewModel, channelId
+                    )
+                }
     }
 }}}

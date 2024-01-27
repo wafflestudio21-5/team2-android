@@ -13,35 +13,43 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @Composable
-fun ChatContents(modifier: Modifier, viewModel: ChatViewModel) {
+fun ChatContents(modifier: Modifier, viewModel: ChatViewModel, navController: NavController) {
 //    val viewModel: ChatViewModel = hiltViewModel()
     val chatListResponse by viewModel.chatListResponse.collectAsState()
-    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color=Color.Red),
+    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+//        .background(color=Color.Red),
         verticalArrangement = Arrangement.Top) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().background(color = Color.Blue),
+            modifier = Modifier.fillMaxWidth(),
+//                .background(color = Color.Blue),
+            reverseLayout = true,
             verticalArrangement = Arrangement.Top
         ) {
             items(chatListResponse.pinned.size) { position ->
                 ChatBox(
                     modifier = Modifier,
                     chatChannel = chatListResponse.pinned[chatListResponse.pinned.size - position - 1],
+                    navController = navController
                 )
             }
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().background(color = Color.Green),
+            modifier = Modifier.fillMaxWidth(),
+//                .background(color = Color.Green),
+            reverseLayout = true,
             verticalArrangement = Arrangement.Top
         ) {
             items(chatListResponse.normal.size) { position ->
                 ChatBox(
                     modifier = Modifier,
                     chatChannel = chatListResponse.normal[chatListResponse.normal.size - position - 1],
+                    navController = navController
                 )
             }
         }

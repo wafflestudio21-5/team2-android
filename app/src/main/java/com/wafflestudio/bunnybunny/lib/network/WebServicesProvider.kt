@@ -6,7 +6,9 @@ import com.wafflestudio.bunnybunny.data.example.RecentMessagesResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 class WebServicesProvider @Inject constructor(
+    private val messageStorage: MessageStorage,
     private val sharedPreference: SharedPreferences,
     @Named("WebSocketOkHttpClient") private val okHttpClient: OkHttpClient,
     private val webSocketListener: BunnyWebSocketListener,
@@ -28,8 +31,8 @@ class WebServicesProvider @Inject constructor(
     private val _isConnected = MutableStateFlow(false)
     val isConnected = _isConnected.asStateFlow()
 
-    private val _messages = MutableStateFlow(emptyList<Pair<Boolean, String>>())
-    val messages = _messages.asStateFlow()
+    private val _messageState = MutableStateFlow("")
+    val messageState : StateFlow<String> = _messageState.asStateFlow()
 
     fun connectChannel(channelId: Long): WebSocket {
         val address = "banibani.shop"
@@ -65,11 +68,9 @@ class WebServicesProvider @Inject constructor(
     }
 
 
-    fun sendRecentMessageRequest(channelWebSocket: WebSocket, cur: Int) {
+    fun sendRecentMessageRequest(channelWebSocket: WebSocket, cur: Int)  {
         // RECENT_MESSAGE 메시지 포맷 작성
         val formattedMessage = "RECENT_MESSAGE\ncur:$cur\n"
-
-        // channelWebSocket을 사용하여 메시지 전송
         channelWebSocket.send(formattedMessage)
     }
 

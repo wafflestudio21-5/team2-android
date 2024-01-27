@@ -13,17 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.wafflestudio.bunnybunny.data.example.ChatChannel
 
 @Composable
-fun ChatBox(modifier: Modifier, chatChannel: ChatChannel) {
+fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, navController: NavController) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
             .clickable() {
-
+                navController.navigate("ChatRoomPage/${chatChannel.channelId}")
             }
             .height(64.dp)
             .padding(8.dp)

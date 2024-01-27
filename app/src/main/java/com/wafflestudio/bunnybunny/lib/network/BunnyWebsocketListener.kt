@@ -1,14 +1,22 @@
 package com.wafflestudio.bunnybunny.lib.network
 
 import android.util.Log
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import javax.inject.Inject
 
-class BunnyWebSocketListener (
+class BunnyWebSocketListener @Inject constructor (
+    private val messageStorage: MessageStorage
 ): WebSocketListener() {
 
     private val TAG = "WSL"
+
+    var recentMessages: String = ""
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         super.onOpen(webSocket, response)
@@ -19,8 +27,9 @@ class BunnyWebSocketListener (
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         super.onMessage(webSocket, text)
-        // viewModel 관련 있으면 추가
         Log.d(TAG, "onMessage: $text")
+        messageStorage.updateLatestMessage(text)
+
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -38,4 +47,9 @@ class BunnyWebSocketListener (
         Log.d(TAG, "onFailure: ${t.message} $response")
         super.onFailure(webSocket, t, response)
     }
+
+    fun getRecentMessage(): String {
+        return messageStorage.latestMessage.value
+    }
+
 }
