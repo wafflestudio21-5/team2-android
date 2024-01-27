@@ -8,6 +8,7 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
@@ -47,8 +48,7 @@ interface BunnyApi {
     @Multipart
     @POST("/image/upload")
     suspend fun postImages(
-        @Header("Authorization") authToken:String,
-        @Part images: List<MultipartBody.Part>,
+        @Part multipartFiles: List<MultipartBody.Part>,
     ): postImagesResponse
 
     @POST("/posts")
@@ -64,6 +64,16 @@ interface BunnyApi {
         @Path("post_id") postId: Long,
         @Query("enable") enable:Boolean,
     )
+
+    @GET("/community")
+    suspend fun getCommunityPostList(
+        @Header("Authorization") authToken:String,
+        @Query("cur") cur: Long?,
+        @Query("seed") seed: Int?,
+        @Query("distance") distance:Int,
+        @Query("areaId") areaId: Int,
+        @Query("count") count:Int?,
+    ) : CommunityPostList
   
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): SignupResponse

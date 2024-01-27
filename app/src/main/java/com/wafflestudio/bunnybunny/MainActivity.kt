@@ -55,7 +55,15 @@ class MainActivity : ComponentActivity() {
                 //viewModel.updateGoodsPostList(Goods)
                 //viewModel.updateGoodsPostContent(GoodsPostContentSample)
                 //viewModel.wishToggleExample(1,true)
-                MyApp()
+                //viewModel.setSelectedTabIndex(0)
+                //Log.d("aaaa","Token:${viewModel.getToken()}")
+                if(viewModel.getToken()!=""){
+                    MyApp(startDestination = "TabPage")
+                }
+                else{
+                    MyApp()
+                }
+
             }
         }
     }
@@ -134,14 +142,27 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("TabPage") {
-                    if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
-                        Log.d("aaaa","nav call")
-                        viewModel.isgettingNewPostList=true
-                        viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
-                    }
                     val index= it.arguments?.getInt("index")
-                    if(index!=null) viewModel.selectedTabIndex.intValue=index
-                    TabPage(viewModel, navController = navController)
+                    /*
+                    when(index){
+                        0->{
+
+                            if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                                Log.d("aaaa","nav call")
+                                viewModel.isgettingNewPostList=true
+                                viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
+                            }
+                        }
+                        1->{
+                            if(viewModel.communityPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                                Log.d("aaaa","nav call")
+                                viewModel.isgettingNewPostList=true
+                                viewModel.getCommunityPostList(0,viewModel.getRefAreaId()[0])
+                            }
+                        }
+                    }*/
+                    TabPage(index = index, navController = navController)
+
                 }
                 composable("GoodsPostPage/{id}") {
                     val id=it.arguments!!.getString("id")

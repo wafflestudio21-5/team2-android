@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.pages
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -75,6 +76,7 @@ fun StartPage(
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ) {
+
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current

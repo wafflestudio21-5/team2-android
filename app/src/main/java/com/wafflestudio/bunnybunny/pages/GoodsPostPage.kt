@@ -46,6 +46,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -81,10 +82,7 @@ import kotlinx.coroutines.withContext
 fun GoodsPostPage(viewModel: MainViewModel,id:Long,navController: NavController){
     val goodsPostContent by viewModel.goodsPostContent.collectAsState()
     Log.d("aaaa",id.toString()+" and "+goodsPostContent.id.toString())
-    if(id!=goodsPostContent.id&&!viewModel.isgettingNewPostContent){
-        viewModel.isgettingNewPostContent=true
-        //api로 새로운 게시물 받아와서 viewModel에 저장
-
+    LaunchedEffect(key1 = true){
         viewModel.getGoodsPostContent(id)
     }
     val listState = rememberLazyListState()
@@ -226,9 +224,15 @@ fun GoodsPostBottomBar(viewModel: MainViewModel,goodsPostContent:GoodsPostConten
             Text(if(goodsPostContent.offerYn)"가격 제안 가능" else "가격 제안 불가", fontSize = 15.sp)
         }
         Spacer(modifier = Modifier.weight(1f))
-        Box(modifier = Modifier.padding(end = 16.dp).height(50.dp).width(100.dp).clip(shape= RoundedCornerShape(4.dp)).background(color = MaterialTheme.colorScheme.secondary).clickable {
-            //채팅 화면으로 이동
-        }, contentAlignment = Alignment.Center){
+        Box(modifier = Modifier
+            .padding(end = 16.dp)
+            .height(50.dp)
+            .width(100.dp)
+            .clip(shape = RoundedCornerShape(4.dp))
+            .background(color = MaterialTheme.colorScheme.secondary)
+            .clickable {
+                //채팅 화면으로 이동
+            }, contentAlignment = Alignment.Center){
             Text("채팅하기")
         }
 

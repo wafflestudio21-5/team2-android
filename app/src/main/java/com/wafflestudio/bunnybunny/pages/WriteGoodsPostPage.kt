@@ -145,6 +145,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val images=viewModel.uploadImages(uploadImages,context).images
+                            Log.d("submitpost", "image success")
                             viewModel.submitPost(
                                 SubmitPostRequest(
                                     areaId = viewModel.refAreaId.value[0],

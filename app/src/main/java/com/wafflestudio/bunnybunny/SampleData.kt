@@ -1,5 +1,7 @@
 package com.wafflestudio.bunnybunny
 
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
@@ -203,5 +205,25 @@ object SampleData {
         wishCnt = 0,
         chatCnt = 0,
         isWish=false,
+    )
+    val CommunityPostListSample=CommunityPostList(
+        data = listOf(CommunityPostPreview(
+            id=1,
+            title = "gg",
+            repImg = "https://dnvefa72aowie.cloudfront.net/origin/article/202401/fca0eac67f3a09d5aa863dc09493a59923c5e62bc6c8ed6e0864430d9328cf88.jpg?q=95&s=1440x1440&t=inside&f=webp",
+            createdAt = 0L,
+            viewCnt=30,
+            likeCnt=20,
+            chatCnt=15,
+            description = "dlglgl",
+            areaId = 0,
+        )),
+        cur = null,seed = null,isLast = true,count = null)
+    val DefaultCommunityPostListSample=CommunityPostList(
+        data = listOf(),
+        cur = null,
+        seed = null,
+        isLast = false,
+        count = null,
     )
 }
