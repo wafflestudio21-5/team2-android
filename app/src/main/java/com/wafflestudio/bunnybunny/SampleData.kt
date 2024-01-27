@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny
 
+import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
@@ -95,7 +96,6 @@ object SampleData {
     ),cur=null,seed=null, isLast = true,count=6)
     val DefaultGoodsPostListSample= GoodsPostList(
         data =listOf(),cur = null,seed=null,isLast=false,count=null)
-
 
     val GoodsPostContentSample=GoodsPostContent(
         id = 0,
@@ -203,5 +203,17 @@ object SampleData {
         wishCnt = 0,
         chatCnt = 0,
         isWish=false,
+    )
+    val DefaultUserInfo = UserInfo(
+        id = 0,
+        email = "",
+        provider = "",
+        sub = "",
+        role = "",
+        profileImageUrl = "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
+        nickname = "HI",
+        mannerTemp = 0.0,
+        createdAt = 0L,
+        refAreaIds = listOf()
     )
 }

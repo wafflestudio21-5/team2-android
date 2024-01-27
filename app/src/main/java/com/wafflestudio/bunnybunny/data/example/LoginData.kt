@@ -50,7 +50,7 @@ data class UserInfo(
     @Json(name = "profileImageUrl") val profileImageUrl: String,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "mannerTemp") val mannerTemp: Double,
-    @Json(name = "createdAt") val createdAt: String,
+    @Json(name = "createdAt") val createdAt: Long,
     @Json(name = "refAreaIds") val refAreaIds: List<RefAreaId>
 )
 
@@ -85,4 +85,11 @@ data class RefAreaId(
     @Json(name = "sdName") val sdName: String,
     @Json(name = "authenticatedAt") val authenticatedAt: Double,
     @Json(name = "count") val count: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class EditProfileRequest(
+    @Json(name = "password") val password: String,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "profileImage") val profileImage: String
 )
