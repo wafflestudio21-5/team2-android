@@ -347,6 +347,7 @@ class MainViewModel @Inject constructor(
                 //updateGoodsPostList(GoodsPostListSample)
             }
         }
+
     }
     suspend fun uploadImages(imageUris:List<Uri>,context:Context):postImagesResponse{
         Log.d("aaaa", imageUris.toString())
@@ -400,7 +401,7 @@ class MainViewModel @Inject constructor(
 
     fun prepareFilePart(partName: String, fileUri: Uri, context: Context): MultipartBody.Part {
         // Uri로부터 파일을 얻음
-        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}")
+        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}.png")
         val inputStream = context.contentResolver.openInputStream(fileUri)
         val outputStream = FileOutputStream(file)
         inputStream?.copyTo(outputStream)

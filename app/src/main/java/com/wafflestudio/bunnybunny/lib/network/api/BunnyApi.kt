@@ -48,7 +48,8 @@ interface BunnyApi {
     @Multipart
     @POST("/image/upload")
     suspend fun postImages(
-        @Part multipartFiles: List<MultipartBody.Part>,
+
+        @Part images: List<MultipartBody.Part>,
     ): postImagesResponse
 
     @POST("/posts")
