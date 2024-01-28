@@ -181,7 +181,7 @@ fun GoodsPostToolbar(alpha:Float,navController: NavController) {
 
 }
 @Composable
-fun GoodsPostBottomBar(viewModel: MainViewModel,goodsPostContent:GoodsPostContent,navController: NavController){
+fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostContent,navController: NavController){
     Divider(modifier = Modifier
         .height(1.dp)
         .fillMaxWidth())

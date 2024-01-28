@@ -140,6 +140,7 @@ fun StartPage(
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
                                         viewModel.setToken(loginResponse.token)
+                                        Log.d("StartPage", "${viewModel.getToken()}")
                                         viewModel.setRefAreaId(loginResponse.refAreaIds)
                                         onNavigateToSignIn()
                                     }

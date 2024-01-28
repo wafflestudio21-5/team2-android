@@ -39,10 +39,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,6 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
+import com.wafflestudio.bunnybunny.components.compose.ChatContents
+import com.wafflestudio.bunnybunny.components.compose.ChatRoomScreen
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
@@ -61,7 +67,14 @@ import com.wafflestudio.bunnybunny.components.compose.SearchButton
 import com.wafflestudio.bunnybunny.components.compose.SettingsButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.model.BottomNavItem
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.WebSocket
+import retrofit2.HttpException
 
 val homeTab = BottomNavItem(tag = "홈", title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
 val communityTab = BottomNavItem(tag="동네생활", title="Community", selectedIcon = Icons.Filled.Diversity3, unselectedIcon = Icons.Outlined.Diversity3)
@@ -73,8 +86,23 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(viewModel:MainViewModel,navController: NavController){
+fun TabPage(viewModel:MainViewModel,chatViewModel: ChatViewModel, navController: NavController){
 
+    val token = viewModel.getOriginalToken()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(token) {
+        try {
+            coroutineScope.launch {
+                chatViewModel.connectToUser()
+                chatViewModel.getRecentMessages(255)
+                delay(200)
+                chatViewModel.getRecentMessages(255)
+            }
+        } catch (e: Exception) {
+            Log.d("CHAT", e.message!!)
+        }
+    }
 
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
@@ -96,7 +124,7 @@ fun TabPage(viewModel:MainViewModel,navController: NavController){
                     CommunityTabPageView()
                     WritePostButton()
                 }
-                2-> ChatTabPageView()
+                2-> ChatTabPageView(chatViewModel, navController)
                 3-> MyTabPageView()
 
             }
@@ -272,8 +300,12 @@ fun CommunityTabPageView(){
 
 }
 @Composable
-fun ChatTabPageView(){
+fun ChatTabPageView(chatViewModel: ChatViewModel, navController: NavController){
+    chatViewModel.getChannelList()
 
+
+    ChatContents(modifier = Modifier, viewModel = chatViewModel, navController = navController)
+//    ChatRoomScreen(viewModel = chatViewModel)
 }
 @Composable
 fun MyTabPageView(){
