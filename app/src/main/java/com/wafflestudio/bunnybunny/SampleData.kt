@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny
 
+import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
@@ -96,7 +97,6 @@ object SampleData {
     val DefaultGoodsPostListSample= GoodsPostList(
         data =listOf(),cur = null,seed=null,isLast=false,count=null)
 
-
     val GoodsPostContentSample=GoodsPostContent(
         id = 0,
         title="코멧5단정리함",
@@ -167,7 +167,7 @@ object SampleData {
         authorName = "이히히",
         buyerId = -1,
         sellingArea = "경기도 평택시 고덕동",
-        repImg="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
+        profileImg ="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
         images= listOf("https://dnvefa72aowie.cloudfront.net/origin/article/202401/5169264e8d830f83fc1547435761333f4ce68c47d2d4723fa2b185e1bd30fd3b_0.webp?q=82&s=300x300&t=crop&f=webp","https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTbZwffvLNKJyX9SWN9Mal4FtZyblWwSYnN2SsZknKHWTWpYACnfWz4Hms88Yyl4TKKkTTAIpj4HtYY385q0doAG6Ts6E_3IVWEVQqXPvILDCIcaKHlZSG2VnFYLk87K_Stqlzg0XY&usqp=CAc"),
         viewCnt=50,
         offerYn=true,
@@ -191,7 +191,7 @@ object SampleData {
         authorName = "",
         buyerId = -1,
         sellingArea = "",
-        repImg="",
+        profileImg ="",
         images= listOf(),
         viewCnt=0,
         offerYn=true,
@@ -203,5 +203,17 @@ object SampleData {
         wishCnt = 0,
         chatCnt = 0,
         isWish=false,
+    )
+    val DefaultUserInfo = UserInfo(
+        id = 0,
+        email = "",
+        provider = "",
+        sub = "",
+        role = "",
+        profileImageUrl = "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
+        nickname = "HI",
+        mannerTemp = 0.0,
+        createdAt = 0L,
+        refAreaIds = listOf()
     )
 }

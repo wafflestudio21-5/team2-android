@@ -75,8 +75,8 @@ fun StartPage(
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ) {
-    var emailInput by rememberSaveable { mutableStateOf("") }
-    var pwInput by rememberSaveable { mutableStateOf("") }
+    var emailInput by rememberSaveable { mutableStateOf("example@snu.ac.kr") }
+    var pwInput by rememberSaveable { mutableStateOf("exampletest1!") }
     val context = LocalContext.current
 
     Column(

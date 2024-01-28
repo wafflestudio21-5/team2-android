@@ -22,14 +22,20 @@ import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
+import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
+import com.wafflestudio.bunnybunny.pages.ProfileEditPage
+import com.wafflestudio.bunnybunny.pages.ProfilePage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
+import com.wafflestudio.bunnybunny.pages.WishListPage
+import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
+import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
@@ -134,16 +140,15 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("TabPage") {
-                  if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
-                    Log.d("aaaa","nav call")
-                    viewModel.isgettingNewPostList=true
-                    viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
-
+                    if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                        Log.d("aaaa","nav call")
+                        viewModel.isgettingNewPostList=true
+                        viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
+                    }
+                    val index= it.arguments?.getInt("index")
+                    if(index!=null) viewModel.selectedTabIndex.intValue=index
+                    TabPage(viewModel, chatViewModel, navController = navController)
                 }
-                  val index= it.arguments?.getInt("index")
-                  if(index!=null) viewModel.selectedTabIndex.intValue=index
-                  TabPage(viewModel, chatViewModel, navController = navController)
-            }
                 composable("GoodsPostPage/{id}") {
                     val id=it.arguments!!.getString("id")
                     //Log.d("aaaa","nav에서$id")
@@ -162,5 +167,27 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier, viewModel = chatViewModel, channelId
                     )
                 }
+                composable("WriteGoodsPostPage") {
+                    WriteGoodsPostPage(viewModel, navController)
+                }
+                composable("GalleryViewPage"){
+                    viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
+                    viewModel.updateSelectedImages(listOf())
+                    GalleryViewPage(viewModel,navController)
+                }
+                composable("WishListPage") {
+                    WishListPage(
+                        viewModel = viewModel,
+                        navController = navController
+                    )
+                }
+                composable("ProfilePage"){
+                    ProfilePage(viewModel,navController)
+                }
+                composable("ProfileEditPage"){
+                    ProfileEditPage(viewModel, navController)
+                }
+            }
+        }
     }
-}}}
+}
