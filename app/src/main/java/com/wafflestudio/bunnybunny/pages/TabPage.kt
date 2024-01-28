@@ -74,6 +74,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
+import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
@@ -253,7 +254,7 @@ fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         icon = { Icon(Icons.Filled.Add, "Edit") },
         text = { Text(text = "글쓰기") },
         contentColor = Color.White,
-        containerColor = Color(0xFFFF6822),
+        containerColor = bunnyColor,
         shape = CircleShape
     )
 }
