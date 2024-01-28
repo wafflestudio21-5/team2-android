@@ -34,6 +34,7 @@ fun ChatContents(modifier: Modifier, viewModel: ChatViewModel, navController: Na
                 ChatBox(
                     modifier = Modifier,
                     chatChannel = chatListResponse.pinned[chatListResponse.pinned.size - position - 1],
+                    viewModel = viewModel,
                     navController = navController
                 )
             }
@@ -49,6 +50,7 @@ fun ChatContents(modifier: Modifier, viewModel: ChatViewModel, navController: Na
                 ChatBox(
                     modifier = Modifier,
                     chatChannel = chatListResponse.normal[chatListResponse.normal.size - position - 1],
+                    viewModel = viewModel,
                     navController = navController
                 )
             }

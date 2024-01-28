@@ -78,6 +78,11 @@ class MainViewModel @Inject constructor(
         return "Bearer ${_accessToken.value}"
     }
 
+    fun getOriginalToken():String{
+        //Log.d("aaaa", "tag:$accessToken")
+        return _accessToken.value
+    }
+
     fun setToken(token: String) {
         _accessToken.value = token
         sharedPreferences.edit().putString("originalToken", token).apply()

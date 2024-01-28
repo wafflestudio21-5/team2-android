@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.utils
 
 import com.google.gson.Gson
 import com.squareup.moshi.Json
+import com.wafflestudio.bunnybunny.data.example.NewUserMessageResponse
 import com.wafflestudio.bunnybunny.data.example.RecentMessagesResponse
 import kotlinx.serialization.decodeFromString
 
@@ -13,6 +14,15 @@ fun fromStringToRecentMessagesResponse(jsonString: String): RecentMessagesRespon
     val response: RecentMessagesResponse = gson.fromJson(jsonString, RecentMessagesResponse::class.java)
     return response
 }
+
+fun fromStringToNewUserMessageResponse(jsonString: String): NewUserMessageResponse {
+    val gson = Gson()
+
+    // JSON 문자열을 Person 객체로 변환
+    val response: NewUserMessageResponse = gson.fromJson(jsonString, NewUserMessageResponse::class.java)
+    return response
+}
+
 
 fun mutableListToString(mutableList: MutableList<Int>): String {
         return mutableList.joinToString(",")

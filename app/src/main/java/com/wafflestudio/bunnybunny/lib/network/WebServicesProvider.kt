@@ -27,9 +27,8 @@ class WebServicesProvider @Inject constructor(
     private val sharedPreference: SharedPreferences,
     @Named("WebSocketOkHttpClient") private val okHttpClient: OkHttpClient,
     private val webSocketListener: BunnyWebSocketListener,
+    private val userWebsocketListener: BunnyUserWebSocketListener
 ) {
-    private val _isConnected = MutableStateFlow(false)
-    val isConnected = _isConnected.asStateFlow()
 
     private val _messageState = MutableStateFlow("")
     val messageState : StateFlow<String> = _messageState.asStateFlow()

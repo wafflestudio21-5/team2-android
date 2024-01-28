@@ -17,9 +17,13 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.wafflestudio.bunnybunny.data.example.ChatChannel
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 
 @Composable
-fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, navController: NavController) {
+fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, viewModel: ChatViewModel, navController: NavController) {
+
+    val unreads = viewModel.getUnreadMessagesInChannel(chatChannel.channelId)
+
     Box (
         modifier = Modifier
             .fillMaxWidth()
@@ -67,6 +71,21 @@ fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, navController: NavCont
                 )
 
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Column {
+
+                Text(
+
+                    // 보낸 메시지
+                    text = if (unreads != 0) unreads.toString() else "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+            }
+
         }
 
 

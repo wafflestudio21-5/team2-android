@@ -21,6 +21,11 @@ data class ChatListResponse(
 )
 
 @JsonClass(generateAdapter = true)
+data class CreateChatRoomRequest(
+    @Json(name = "postId") val postId: Long
+)
+
+@JsonClass(generateAdapter = true)
 data class Message(
     @Json(name = "msgNo") val msgNo: Long,
     @Json(name = "isMine") val isMine: Boolean,
@@ -43,4 +48,11 @@ data class RecentMessagesResponse(
     @Json(name = "messages") val messages: List<Message>,
     @Json(name = "cur") val cur: Long,
     @Json(name = "channel_info") val channelInfo: ChannelInfo
+)
+
+@JsonClass(generateAdapter = true)
+data class NewUserMessageResponse(
+    @Json(name = "channelId") val channelId: Long,
+    @Json(name = "message") val message: String,
+    @Json(name = "createdAt") val createdAt: Long
 )

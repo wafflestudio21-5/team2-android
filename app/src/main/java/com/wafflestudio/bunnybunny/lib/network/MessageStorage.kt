@@ -11,8 +11,15 @@ class MessageStorage @Inject constructor() {
     private val _latestMessage = MutableStateFlow<String>("")
     val latestMessage = _latestMessage.asStateFlow()
 
+    private val _userLatestMessage = MutableStateFlow<String>("")
+    val userLatestMessage = _latestMessage.asStateFlow()
+
     fun updateLatestMessage(message: String) {
         _latestMessage.value = message
+    }
+
+    fun updateUserLatestMessage(message: String) {
+        _userLatestMessage.value = message
     }
 
 }

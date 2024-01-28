@@ -39,11 +39,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,7 +71,9 @@ import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.WebSocket
 import retrofit2.HttpException
 
 val homeTab = BottomNavItem(tag = "홈", title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
@@ -83,6 +88,21 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @Composable
 fun TabPage(viewModel:MainViewModel,chatViewModel: ChatViewModel, navController: NavController){
 
+    val token = viewModel.getOriginalToken()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(token) {
+        try {
+            coroutineScope.launch {
+                chatViewModel.connectToUser()
+                chatViewModel.getRecentMessages(255)
+                delay(200)
+                chatViewModel.getRecentMessages(255)
+            }
+        } catch (e: Exception) {
+            Log.d("CHAT", e.message!!)
+        }
+    }
 
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
@@ -282,6 +302,8 @@ fun CommunityTabPageView(){
 @Composable
 fun ChatTabPageView(chatViewModel: ChatViewModel, navController: NavController){
     chatViewModel.getChannelList()
+
+
     ChatContents(modifier = Modifier, viewModel = chatViewModel, navController = navController)
 //    ChatRoomScreen(viewModel = chatViewModel)
 }

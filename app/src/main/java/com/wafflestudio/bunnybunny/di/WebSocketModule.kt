@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.wafflestudio.bunnybunny.lib.network.BunnyUserWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.BunnyWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.MessageStorage
 import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
@@ -46,7 +47,11 @@ class WebSocketModule {
     ): BunnyWebSocketListener {
         return BunnyWebSocketListener(messageStorage)    }
 
-
+    @Provides
+    fun provideUserWebSocketListener(
+        messageStorage: MessageStorage
+    ): BunnyUserWebSocketListener {
+        return BunnyUserWebSocketListener(messageStorage)    }
 
 //    @Provides
 //    fun provideWebSocketForChannel(
@@ -89,9 +94,10 @@ class WebSocketModule {
         messageStorage: MessageStorage,
         sharedPreference: SharedPreferences,
         @Named("WebSocketOkHttpClient") okHttpClient: OkHttpClient,
-        webSocketListener: BunnyWebSocketListener
+        webSocketListener: BunnyWebSocketListener,
+        userWebsocketListener: BunnyUserWebSocketListener
     ): WebServicesProvider {
-        return WebServicesProvider(messageStorage, sharedPreference, okHttpClient, webSocketListener)    }}
+        return WebServicesProvider(messageStorage, sharedPreference, okHttpClient, webSocketListener, userWebsocketListener)    }}
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
