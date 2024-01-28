@@ -20,9 +20,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Diversity3
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Forum
@@ -118,7 +120,7 @@ fun TabPage(index:Int?=null,navController: NavController){
                     HomeTabPageView( navController = navController)
                     WritePostButton(modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(16.dp)){
+                        .padding(12.dp)){
                         navController.navigate("WriteGoodsPostPage")
                     }
                 }
@@ -126,7 +128,7 @@ fun TabPage(index:Int?=null,navController: NavController){
                     CommunityTabPageView( navController)
                     WritePostButton(modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(16.dp)){
+                        .padding(12.dp)){
                         //navController.navigate(대출 동네생활 글쓰기 페이지)
                     }
                 }
@@ -244,12 +246,15 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
 }
 
 @Composable
-fun WritePostButton(modifier: Modifier= Modifier, onClick: () -> Unit) {
+fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         modifier = modifier,
         onClick = { onClick() },
-        icon = { Icon(Icons.Filled.Edit, "Edit") },
+        icon = { Icon(Icons.Filled.Add, "Edit") },
         text = { Text(text = "글쓰기") },
+        contentColor = Color.White,
+        containerColor = Color(0xFFFF6822),
+        shape = CircleShape
     )
 }
 @Composable
@@ -292,7 +297,11 @@ fun HomeTabPageView(navController: NavController){
                         contentDescription = null,
                         modifier = Modifier
                             .size(100.dp)
-                            .border(1.dp, Color.Gray.copy(alpha = 0.2f), shape = RoundedCornerShape(corner = CornerSize(8.dp)))
+                            .border(
+                                1.dp,
+                                Color.Gray.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(corner = CornerSize(8.dp))
+                            )
                             .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
                             .clipToBounds(),
                         contentScale = ContentScale.Crop,
