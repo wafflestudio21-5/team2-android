@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny.pages
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diversity3
 import androidx.compose.material.icons.filled.Edit
@@ -54,8 +58,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,6 +82,8 @@ import com.wafflestudio.bunnybunny.components.compose.SettingsButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
 import com.wafflestudio.bunnybunny.model.BottomNavItem
+import com.wafflestudio.bunnybunny.utils.convertEpochMillisToFormattedTime
+import com.wafflestudio.bunnybunny.utils.formatProductTime
 import com.wafflestudio.bunnybunny.viewModel.ComunityViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -268,36 +278,46 @@ fun HomeTabPageView(navController: NavController){
 
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 18.dp)
                 .clickable {
                     Log.d("aaaa", it.id.toString())
                     //Log.d("aaaa","GoodsPostPage/${it.id}")
                     navController.navigate("GoodsPostPage/${it.id}")
                 }
             ){
-                Row {
+                Row(Modifier.align(Alignment.CenterStart)) {
                     val painter = rememberImagePainter(data = it.repImg)
                     Image(
                         painter = painter,
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .width(100.dp)
+                            .size(100.dp)
+                            .border(1.dp, Color.Gray.copy(alpha = 0.2f), shape = RoundedCornerShape(corner = CornerSize(8.dp)))
+                            .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
+                            .clipToBounds(),
+                        contentScale = ContentScale.Crop,
                     )
+                    Spacer(modifier = Modifier.width(14.dp))
                     Column {
-                        Text(text = it.title)
-                        Text(text = it.tradingLocation+"·"+it.refreshedAt)
-                        Text(text = it.sellPrice.toString()+"원")
-                        Text(text = (if(it.wishCnt>0)"관심 "+it.wishCnt.toString() else "")+(if(it.chatCnt>0)"채팅 "+it.chatCnt.toString() else ""))
+                        Text(text = it.title, fontSize = 16.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = it.tradingLocation+"·"+ formatProductTime(it.createdAt, it.refreshedAt), color = Color.Gray, fontSize = 13.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(text = it.sellPrice.toString()+"원", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        if (it.wishCnt > 0 || it.chatCnt > 0) {
+                            Text(text = (if (it.wishCnt > 0) "관심 " + it.wishCnt.toString() else "") + (if (it.chatCnt > 0) "채팅 " + it.chatCnt.toString() else ""))
+                        }
                     }
                 }
             }
             Divider(
-                Modifier
+                color = Color.Gray.copy(alpha = 0.2f),
+                modifier = Modifier
                     .height(1.dp)
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp))
+                    .padding(horizontal = 16.dp)
+            )
         }
 
     }
