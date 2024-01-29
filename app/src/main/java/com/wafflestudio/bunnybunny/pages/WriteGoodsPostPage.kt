@@ -148,7 +148,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             Log.d("submitpost", "image success")
                             viewModel.submitPost(
                                 SubmitPostRequest(
-                                    areaId = viewModel.refAreaId.value[0],
+                                    areaId = viewModel.getRefAreaId()[0],
                                     title = title,
                                     description = description,
                                     type = if (sellPrice.toInt() == 0) "SHARE" else "TRADE",
