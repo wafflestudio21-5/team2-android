@@ -139,8 +139,9 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                composable("TabPage") {
-                    if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                composable("TabPage",
+                    ){
+                    if (viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
                         Log.d("aaaa","nav call")
                         viewModel.isgettingNewPostList=true
                         viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
