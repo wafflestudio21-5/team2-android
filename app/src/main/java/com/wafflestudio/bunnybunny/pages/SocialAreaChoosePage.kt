@@ -33,8 +33,14 @@ import retrofit2.HttpException
 @Composable
 fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: () -> Unit) {
     val refAreaIds = mutableListOf<Int>()
+    var refAreaNames by remember { mutableStateOf(mutableListOf<String>()) }
     val viewModel = hiltViewModel<MainViewModel>()
     val context = LocalContext.current;
+
+//    val updateRefAreaNames: (List<String>) -> Unit = { updatedList ->
+//        refAreaNames = updatedList.toMutableList()
+//        Log.d("AreaChoosePage", "Updated refAreaNames: $refAreaNames")
+//    }
 
     Column {
         AreaSearchBar(modifier = Modifier)

@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.components.compose
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<Int>) {
+fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<Int>, refAreaNames: MutableList<String>) {
 
     val areaId = areaDetail.id
     val context = LocalContext.current
@@ -43,19 +44,23 @@ fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList
 
     Box(
         modifier = modifier
-            .background(if (isClicked) Color.Gray else Color.White)
+            .background(if ((isClicked)&&(areaIds.contains(areaId))) Color.Gray else Color.White)
             .clickable {
                 if ((!isClicked)&&(areaIds.size == 2)) {
                     CoroutineScope(Dispatchers.Main).launch() {
                         Toast.makeText(context, "최대 2개의 지역만 선택 가능합니다.", Toast.LENGTH_SHORT).show()
                     }
-                } else if (isClicked) {
+                } else if ((isClicked)&&(areaIds.contains(areaId))) {
+
+                    refAreaNames.remove(areaDetail.fullName)
                     areaIds.remove(areaId)
                     isClicked = !isClicked
-                } else if (!isClicked) {
+                } else if (!areaIds.contains(areaId)) {
+                    refAreaNames.add(areaDetail.fullName)
                     areaIds.add(areaId)
                     isClicked = !isClicked
                 }
+                Log.d("AreaBox", "$areaIds")
             }
     ) {
         Row(
