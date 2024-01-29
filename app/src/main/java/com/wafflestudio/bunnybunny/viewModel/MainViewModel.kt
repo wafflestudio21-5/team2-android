@@ -313,7 +313,7 @@ class MainViewModel @Inject constructor(
                 //isgettingNewPostContent=false
                 Log.d("aaaa",e.toString())
                 ///////////////////////////////
-                updateGoodsPostContent(GoodsPostContentSample)
+                //updateGoodsPostContent(GoodsPostContentSample)
             }
         }
     }

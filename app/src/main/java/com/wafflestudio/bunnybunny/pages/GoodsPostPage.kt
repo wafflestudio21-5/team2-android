@@ -68,6 +68,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostContentSample
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
@@ -91,6 +92,7 @@ fun GoodsPostPage(viewModel: MainViewModel, id: Long, navController: NavControll
     val goodsPostContent by viewModel.goodsPostContent.collectAsState()
     Log.d("aaaa", id.toString() + " and " + goodsPostContent.id.toString())
     LaunchedEffect(key1 = true) {
+        viewModel.updateGoodsPostContent(DefaultGoodsPostContentSample)
         viewModel.getGoodsPostContent(id)
     }
     val listState = rememberLazyListState()
