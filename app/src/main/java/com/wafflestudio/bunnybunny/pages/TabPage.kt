@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diversity3
@@ -33,10 +34,13 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -56,8 +60,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -423,25 +432,72 @@ fun WishListPage(viewModel: MainViewModel, navController: NavController){
 @Composable
 fun ProfilePage(viewModel: MainViewModel, navController: NavController){
     val user = viewModel.userInfo.collectAsState().value
-    Column(modifier = Modifier) {
-        Row(modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
             val painter = rememberImagePainter(data = user.profileImageUrl)
             Image(
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(10.dp).background(Color.Yellow)
+                    .padding(10.dp)
                     .width(100.dp).height(100.dp)
+                    .clip(CircleShape)
             )
-            Text("${user.nickname}", modifier = Modifier.padding(10.dp))
-            Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
+            Text(
+                text = user.nickname,
+                modifier = Modifier.padding(20.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+//            Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
         }
         Button(
-            modifier = Modifier.padding(20.dp),
-            onClick = {navController.navigate("ProfileEditPage")}
+            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            onClick = {navController.navigate("ProfileEditPage")},
+            colors = ButtonDefaults.buttonColors(Color(0xFFFF6822)),
+            shape = RectangleShape
         ){
             Text("프로필 수정")
         }
+
+        // 매너 온도 텍스트
+        Text(
+            text = "${user.mannerTemp} °C",
+            modifier = Modifier
+                .padding(10.dp)
+                .align(Alignment.End),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+        // 추후 온도 통일
+//        val temp = goodsPostContent.authorMannerTemperature
+//        val color = calculateMannerTempColor(temp)
+//        val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
+//
+//        LinearProgressIndicator(
+//            progress = normalizedTemp.toFloat(), // Normalize to 0.0 to 1.0
+//            modifier = Modifier
+//                .width(48.dp)
+//                .clip(CircleShape),
+//            color = color
+//        )
+        // 가로 막대 그래프
+        LinearProgressIndicator(
+            progress = user.mannerTemp.toFloat() / 100f, // 매너 온도를 0~1 사이의 값으로 정규화
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp)
+                .padding(vertical = 8.dp, horizontal = 10.dp)
+                .background(color = Color.Gray.copy(alpha = 0.3f))
+        )
     }
 
 }
