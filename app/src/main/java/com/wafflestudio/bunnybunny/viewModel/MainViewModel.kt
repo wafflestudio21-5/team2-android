@@ -5,11 +5,14 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -420,5 +423,20 @@ class MainViewModel @Inject constructor(
         return _areaDetails.value;
     }
 
+    fun initializeApp(){
+        enableCallFirstGoodsPostList()
+    }
 
+
+    fun CanCallFirstGoodsPostList():Boolean{
+        return prefRepository.getPref("CanCallGoodsPostList").toBoolean()
+    }
+
+    fun disableCallFirstGoodsPostList() {
+        prefRepository.setPref("CanCallGoodsPostList","false")
+    }
+
+    fun enableCallFirstGoodsPostList() {
+        prefRepository.setPref("CanCallGoodsPostList","true")
+    }
 }

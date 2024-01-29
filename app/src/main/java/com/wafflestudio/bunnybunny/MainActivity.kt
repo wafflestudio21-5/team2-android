@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
                 //viewModel.wishToggleExample(1,true)
                 //viewModel.setSelectedTabIndex(0)
                 //Log.d("aaaa","Token:${viewModel.getToken()}")
+                viewModel.initializeApp()
                 if(viewModel.getToken()!=""){
                     MyApp(startDestination = "TabPage")
                 }

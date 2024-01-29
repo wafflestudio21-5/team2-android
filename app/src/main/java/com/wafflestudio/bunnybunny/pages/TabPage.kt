@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -108,6 +109,10 @@ fun TabPage(index:Int?=null,navController: NavController){
     }
     if(index!=null) selectedTabIndex.value=index
 
+    val homePagelistState = rememberLazyListState()
+
+
+
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(selectedTabIndex,tabBarItems) }, topBar = { TabPageToolBar(selectedTabIndex,navController)}) {paddingValues->
         Box(
@@ -118,7 +123,7 @@ fun TabPage(index:Int?=null,navController: NavController){
             
             when(selectedTabIndex.intValue){
                 0-> {
-                    HomeTabPageView( navController = navController)
+                    HomeTabPageView( listState = homePagelistState,navController = navController)
                     WritePostButton(modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(12.dp)){
@@ -259,19 +264,22 @@ fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     )
 }
 @Composable
-fun HomeTabPageView(navController: NavController){
+fun HomeTabPageView(listState:LazyListState,navController: NavController){
     val viewModel = hiltViewModel<MainViewModel>()
     LaunchedEffect(key1 = true){
-        Log.d("aaaa123", "hihihi")
-        viewModel.updateGoodsPostList(
-            distance = 0,
-            areaId = viewModel.getRefAreaId()[0],
-            count=0,cur=null,seed=null)
+        if(viewModel.CanCallFirstGoodsPostList()){
+            viewModel.disableCallFirstGoodsPostList()
+            Log.d("aaaa", "updateGoodsPostList called in HomeTabPageView LaunchedEffect")
+            viewModel.updateGoodsPostList(
+                distance = 0,
+                areaId = viewModel.getRefAreaId()[0],
+                count=0,cur=null,seed=null)
+        }
     }
     val itemList = viewModel.goodsPostList.collectAsLazyPagingItems()
     Log.d("aaaa123", "vcalled")
 
-    val listState = rememberLazyListState()
+
 
     LazyColumn(state = listState){
         item {
