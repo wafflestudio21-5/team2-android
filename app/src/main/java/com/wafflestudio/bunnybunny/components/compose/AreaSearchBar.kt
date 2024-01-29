@@ -58,4 +58,6 @@ fun AreaSearchBar(modifier: Modifier) {
         )
     }
 
+
+
 }
