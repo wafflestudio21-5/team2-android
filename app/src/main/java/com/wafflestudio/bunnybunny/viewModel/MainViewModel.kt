@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.viewModel
 
+import android.content.SharedPreferences
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -50,7 +51,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val api: BunnyApi
+    private val api: BunnyApi,
+    private val sharedPreferences: SharedPreferences
 ): ViewModel() {
     //홈 탭:Home,0
     //동네생활 탭:Community,1
@@ -141,8 +143,15 @@ class MainViewModel @Inject constructor(
         return "Bearer ${_accessToken.value}"
     }
 
+    fun getOriginalToken():String{
+        //Log.d("aaaa", "tag:$accessToken")
+        return _accessToken.value
+    }
+
     fun setToken(token: String) {
         _accessToken.value = token
+        sharedPreferences.edit().putString("originalToken", token).apply()
+        sharedPreferences.edit().putString("token", getToken()).apply()
     }
 
     fun getRefAreaId(): List<Int> {

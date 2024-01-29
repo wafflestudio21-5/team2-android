@@ -51,6 +51,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
+import com.wafflestudio.bunnybunny.components.compose.ChatContents
+import com.wafflestudio.bunnybunny.components.compose.ChatRoomScreen
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
@@ -74,9 +77,13 @@ import com.wafflestudio.bunnybunny.components.compose.SettingsButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.model.BottomNavItem
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.WebSocket
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
@@ -90,8 +97,23 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(viewModel:MainViewModel,navController: NavController){
+fun TabPage(viewModel:MainViewModel,chatViewModel: ChatViewModel, navController: NavController){
 
+    val token = viewModel.getOriginalToken()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(token) {
+        try {
+            coroutineScope.launch {
+                chatViewModel.connectToUser()
+                chatViewModel.getRecentMessages(255)
+                delay(200)
+                chatViewModel.getRecentMessages(255)
+            }
+        } catch (e: Exception) {
+            Log.d("CHAT", e.message!!)
+        }
+    }
 
     //viewModel.currentTab.value=tabName
     Scaffold(bottomBar = { TabNavigationBar(viewModel,tabBarItems) }, topBar = { TabPageToolBar(viewModel,navController)}) {paddingValues->
@@ -118,9 +140,8 @@ fun TabPage(viewModel:MainViewModel,navController: NavController){
                         //navController.navigate(대출 동네생활 글쓰기 페이지)
                     }
                 }
-                2-> ChatTabPageView()
+                2-> ChatTabPageView(chatViewModel, navController)
                 3-> MyTabPageView(viewModel = viewModel, navController = navController)
-
             }
         }
     }
@@ -299,8 +320,12 @@ fun CommunityTabPageView(){
 
 }
 @Composable
-fun ChatTabPageView(){
+fun ChatTabPageView(chatViewModel: ChatViewModel, navController: NavController){
+    chatViewModel.getChannelList()
 
+
+    ChatContents(modifier = Modifier, viewModel = chatViewModel, navController = navController)
+//    ChatRoomScreen(viewModel = chatViewModel)
 }
 @Composable
 fun MyTabPageView(
