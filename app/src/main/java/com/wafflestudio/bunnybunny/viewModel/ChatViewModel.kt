@@ -39,6 +39,7 @@ class ChatViewModel @Inject constructor(
     val recentMessages: StateFlow<String> = webServicesProvider.messageState
 
 
+
     private val _messagesStateFlow = MutableStateFlow(emptyList<Message>())
     val messagesStateFlow: StateFlow<List<Message>> = _messagesStateFlow
 
@@ -84,7 +85,6 @@ class ChatViewModel @Inject constructor(
                 // Handle the exception, log it, or take appropriate action
                 Log.e("ChatVieWModel", "Error getting recent messages: ${e.message}")
             }
-
     }
 
     suspend fun getUserMessage() {

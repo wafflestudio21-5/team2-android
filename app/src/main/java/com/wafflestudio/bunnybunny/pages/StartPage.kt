@@ -189,7 +189,10 @@ fun StartPage(
                                     if (oAuthToken != null) {
                                         val socialLoginResponse = viewModel.trySocialLogin(SocialLoginRequest(oAuthToken.idToken!!))
                                         Log.d("socialLoginResponse", "${socialLoginResponse}")
+                                        viewModel.setRefAreaId(socialLoginResponse.refAreaIds)
+                                        viewModel.setToken(socialLoginResponse.token)
                                         withContext(Dispatchers.Main) {
+
                                             onNavigateToSignIn()
                                         }
                                     } else {
