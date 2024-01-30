@@ -12,6 +12,7 @@ data class GoodsPostContent(
     @Json(name = "status") val status: String,
     @Json(name = "authorId") val authorId: Long,
     @Json(name = "authorName") val authorName: String,
+    @Json(name = "authorMannerTemperature") val authorMannerTemperature: Double = 36.5,
     @Json(name = "buyerId") val buyerId: Long,
     @Json(name = "sellingArea") val sellingArea: String,
     @Json(name = "sellPrice") val sellPrice: Int,

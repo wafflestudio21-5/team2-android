@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.pages
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -75,6 +76,7 @@ fun StartPage(
     //onNavigateToGoogleSignIn : () -> Unit,
     //onNavigateToMain : () -> Unit
 ) {
+
     var emailInput by rememberSaveable { mutableStateOf("example@snu.ac.kr") }
     var pwInput by rememberSaveable { mutableStateOf("exampletest1!") }
     val context = LocalContext.current
@@ -140,7 +142,7 @@ fun StartPage(
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
                                         viewModel.setToken(loginResponse.token)
-                                        Log.d("StartPage", "${viewModel.getToken()}")
+                                        Log.d("StartPage", "${viewModel.getTokenHeader()}")
                                         viewModel.setRefAreaId(loginResponse.refAreaIds)
                                         onNavigateToSignIn()
                                     }

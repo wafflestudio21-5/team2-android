@@ -68,7 +68,10 @@ android {
 }
 
 dependencies {
+    val paging_version = "3.1.1"
 
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
     //icon
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     //Coli
