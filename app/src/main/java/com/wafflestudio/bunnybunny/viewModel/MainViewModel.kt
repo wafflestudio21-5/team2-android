@@ -403,6 +403,10 @@ class MainViewModel @Inject constructor(
         return api.signupRequest(data)
     }
 
+    suspend fun tryCheckDuplicateNickname(nickName: String) {
+        return api.checkDuplicateNickname(nickName)
+    }
+
     suspend fun trySocialLogin(data: SocialLoginRequest): SocialLoginResponse {
         return api.socialLoginRequest(data, "kakao")
     }

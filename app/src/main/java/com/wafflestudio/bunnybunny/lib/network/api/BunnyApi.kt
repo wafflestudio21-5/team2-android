@@ -85,6 +85,9 @@ interface BunnyApi {
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): SignupResponse
 
+    @GET("/signup/nick/{nickname}")
+    suspend fun checkDuplicateNickname(@Path("nickname") nickName: String)
+
     @POST("/auth/login/{provider}")
     suspend fun socialLoginRequest(@Body request: SocialLoginRequest, @Path("provider") provider: String): SocialLoginResponse
 

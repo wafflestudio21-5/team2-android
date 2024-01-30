@@ -18,14 +18,15 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 @Composable
-fun BasicButton(modifier: Modifier, onClick: () -> Unit, text: String, networkBoolean: Boolean) {
+fun BasicButton(modifier: Modifier, onClick: () -> Unit, text: String, networkBoolean: Boolean = true) {
     val context = LocalContext.current
     Button(
         modifier = Modifier
             .fillMaxWidth(0.4f),
         shape = RoundedCornerShape(20),
         colors = ButtonDefaults.buttonColors(containerColor = Color(1.0f, 0.647f, 0.0f, 1.0f)),
-        onClick = onClick
+        onClick = onClick,
+        enabled = networkBoolean
     ) {
         Text(text = text)
     }

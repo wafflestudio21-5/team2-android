@@ -110,7 +110,7 @@ fun StartPage(
             LoginInputTextField(
                 value = emailInput,
                 onValueChange = { newText -> emailInput = newText },
-                placeholder = "이메일을 입력해주세요"
+                placeholder = "이메일을 입력해주세요",
             )
 
             //PW Input
