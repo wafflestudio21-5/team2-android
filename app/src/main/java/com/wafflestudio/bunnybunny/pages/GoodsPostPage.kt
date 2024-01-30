@@ -249,23 +249,16 @@ fun GoodsPostToolbar(alpha: Float, navController: NavController) {
 }
 
 @Composable
-fun GoodsPostBottomBar(
-    viewModel: MainViewModel,
-    goodsPostContent: GoodsPostContent,
-    navController: NavController
-) {
-    Divider(
-        modifier = Modifier
-            .height(1.dp)
-            .fillMaxWidth()
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .padding(top = 16.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+
+fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostContent,navController: NavController){
+    Divider(modifier = Modifier
+        .height(1.dp)
+        .fillMaxWidth())
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(80.dp)
+        .padding(top = 16.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically){
         IconButton(onClick = {
             Log.d("aaaa", "wishToggle called")
             CoroutineScope(Dispatchers.IO).launch {

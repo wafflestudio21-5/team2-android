@@ -1,6 +1,7 @@
 package com.wafflestudio.bunnybunny.viewModel
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -22,9 +23,11 @@ import androidx.paging.cachedIn
 import com.wafflestudio.bunnybunny.SampleData
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostListSample
+import com.wafflestudio.bunnybunny.SampleData.DefaultUserInfo
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.GoodsPostListSample
 import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
+import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
@@ -150,13 +153,25 @@ class MainViewModel @Inject constructor(
         distance:Int,
         areaId:Int,
         count:Int,) {
-        querySignal.emit(GoodsPostPagingSource(
-            api = api,
-            token = getToken()!!,
-            distance=distance,
-            areaId=areaId,
-        ))
+        querySignal.emit(
+            GoodsPostPagingSource(
+                api = api,
+                token = getTokenHeader()!!,
+                distance = distance,
+                areaId = areaId,
+            )
+        )
     }
+    /*
+    private val _goodsPostList = MutableStateFlow(DefaultGoodsPostListSample)
+    val goodsPostList: StateFlow<GoodsPostList> = _goodsPostList.asStateFlow()
+    */
+    private val _wishList = MutableStateFlow(DefaultGoodsPostListSample.data)
+    val wishList: StateFlow<List<GoodsPostPreview>> = _wishList.asStateFlow()
+    /*
+    fun updateGoodsPostList(newContent: GoodsPostList) {
+        _goodsPostList.value = newContent
+    }*/
 
     private val _goodsPostContent = MutableStateFlow(DefaultGoodsPostContentSample)
     val goodsPostContent: StateFlow<GoodsPostContent> = _goodsPostContent.asStateFlow()
@@ -213,12 +228,26 @@ class MainViewModel @Inject constructor(
     private val _areaDetails: MutableStateFlow<List<SimpleAreaData>> = MutableStateFlow(listOf())
     val areaDetails: StateFlow<List<SimpleAreaData>> = _areaDetails.asStateFlow()
 
+    private val _userInfo: MutableStateFlow<UserInfo> = MutableStateFlow(DefaultUserInfo)
+    val userInfo : StateFlow<UserInfo> = _userInfo.asStateFlow()
+
+    suspend fun getUserInfo(){
+        _userInfo.value = api.getUserInfo(getTokenHeader()!!)
+    }
+    suspend fun editProfile(request: EditProfileRequest){
+        _userInfo.value = api.putUserInfo(getTokenHeader()!!, request)
+    }
     companion object {}
-    fun getToken():String?{
+    fun getTokenHeader():String?{
         //Log.d("aaaa", "tag:$accessToken")
         return prefRepository.getPref("token")?.let {
             "Bearer $it"
         } ?: ""
+    }
+
+    fun getOriginalToken():String?{
+        //Log.d("aaaa", "tag:$accessToken")
+        return prefRepository.getPref("token")
     }
 
     fun setToken(token: String) {
@@ -256,7 +285,7 @@ class MainViewModel @Inject constructor(
             pagingSourceFactory = {
                 GoodsPostPagingSource(
                     api = api,
-                    token = getToken()!!,
+                    token = getTokenHeader()!!,
                     distance=item.distance,
                     areaId=item.areaId,
                 )
@@ -298,10 +327,10 @@ class MainViewModel @Inject constructor(
     }
     fun getGoodsPostContent(id:Long){
 
-        Log.d("aaaa","getGoodsPostContent called: authToken=${getToken()}, postId=$id")
+        Log.d("aaaa","getGoodsPostContent called: authToken=${getTokenHeader()!!}, postId=$id")
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                val response=api.getGoodsPostContent(authToken=getToken()!!,postId=id)
+                val response=api.getGoodsPostContent(authToken=getTokenHeader()!!,postId=id)
                 Log.d("aaaa",response.toString())
 
                 withContext(Dispatchers.Main){
@@ -331,7 +360,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 val response=api.getCommunityPostList(
-                    authToken=getToken()!!,
+                    authToken=getTokenHeader()!!,
                     cur = communityPostList.value.cur,
                     seed = communityPostList.value.seed,
                     distance = distance,
@@ -360,11 +389,11 @@ class MainViewModel @Inject constructor(
 
     suspend fun wishToggle(id:Long,enable:Boolean) {
         Log.d("wish","enable:$enable")
-        api.wishToggle(authToken=getToken()!!,id,enable)
+        api.wishToggle(authToken=getTokenHeader()!!,id,enable)
     }
 
     suspend fun submitPost(request: SubmitPostRequest){
-        api.submitPostRequest(authToken=getToken()!!,request)
+        api.submitPostRequest(authToken=getTokenHeader()!!,request)
     }
 
     suspend fun tryLogin(email: String, password: String): LoginResponse {
@@ -423,8 +452,11 @@ class MainViewModel @Inject constructor(
         return _areaDetails.value;
     }
 
-    fun initializeApp(){
+    fun initializeApp() {
         enableCallFirstGoodsPostList()
+    }
+    suspend fun getWishList(){
+        _wishList.value = api.getWishList(getTokenHeader()!!)
     }
 
 

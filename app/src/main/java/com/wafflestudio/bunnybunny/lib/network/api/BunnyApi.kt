@@ -1,6 +1,9 @@
 package com.wafflestudio.bunnybunny.lib.network.api
 
 import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
+import com.wafflestudio.bunnybunny.data.example.ChatListResponse
+import com.wafflestudio.bunnybunny.data.example.CreateChatRoomRequest
+import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
@@ -11,15 +14,18 @@ import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
 import okhttp3.MultipartBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -88,4 +94,25 @@ interface BunnyApi {
     @GET("/area/search")
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
+    @GET("/channels")
+    suspend fun chatChannelRequest(@Header("Authorization") authToken:String): ChatListResponse
+
+    @POST("/channels")
+    suspend fun makeChatRoomRequest(@Header("Authorization") authToken:String, @Body request: CreateChatRoomRequest)
+
+    @POST("/channels/{channelId}/pin")
+    suspend fun postPinRequest(@Header("Authorization") authToken:String, @Path("channelId") channelId: Long)
+
+    @DELETE("/channels/{channelId}/pin")
+    suspend fun deletePinRequest(@Header("Authorization") authToken:String, @Path("channelId") channelId: Long)
+
+    @GET("/posts/wish")
+    suspend fun getWishList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
+
+    @GET("/user")
+    suspend fun getUserInfo(@Header("Authorization") authToken: String): UserInfo
+
+    @PUT("/user")
+    suspend fun putUserInfo(@Header("Authorization") authToken: String,
+                    @Body request: EditProfileRequest): UserInfo
 }

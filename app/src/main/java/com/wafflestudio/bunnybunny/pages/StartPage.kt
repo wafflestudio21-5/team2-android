@@ -77,8 +77,8 @@ fun StartPage(
     //onNavigateToMain : () -> Unit
 ) {
 
-    var emailInput by rememberSaveable { mutableStateOf("") }
-    var pwInput by rememberSaveable { mutableStateOf("") }
+    var emailInput by rememberSaveable { mutableStateOf("example@snu.ac.kr") }
+    var pwInput by rememberSaveable { mutableStateOf("exampletest1!") }
     val context = LocalContext.current
 
     Column(
@@ -142,6 +142,7 @@ fun StartPage(
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
                                         viewModel.setToken(loginResponse.token)
+                                        Log.d("StartPage", "${viewModel.getTokenHeader()}")
                                         viewModel.setRefAreaId(loginResponse.refAreaIds)
                                         onNavigateToSignIn()
                                     }
@@ -190,7 +191,10 @@ fun StartPage(
                                     if (oAuthToken != null) {
                                         val socialLoginResponse = viewModel.trySocialLogin(SocialLoginRequest(oAuthToken.idToken!!))
                                         Log.d("socialLoginResponse", "${socialLoginResponse}")
+                                        viewModel.setRefAreaId(socialLoginResponse.refAreaIds)
+                                        viewModel.setToken(socialLoginResponse.token)
                                         withContext(Dispatchers.Main) {
+
                                             onNavigateToSignIn()
                                         }
                                     } else {
