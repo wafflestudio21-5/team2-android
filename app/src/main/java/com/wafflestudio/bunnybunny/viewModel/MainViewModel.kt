@@ -30,6 +30,7 @@ import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
@@ -72,38 +73,11 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
-@Module
-abstract class RepositoryModule {
-    @Binds
-    abstract fun bindPrefRepository(impl: BindPrefRepositoryImpl): PrefRepository
-}
 
-interface PrefRepository {
-    fun getPref(key: String): String?
-    fun setPref(key: String,data: String)
-}
 
-@Singleton
-class BindPrefRepositoryImpl @Inject constructor(
-    @ApplicationContext context: Context
-): PrefRepository {
-    private val sharedPref = context.getSharedPreferences(
-        "bunny",
-        Context.MODE_PRIVATE
-    )
 
-    override fun getPref(key: String): String? {
-        return sharedPref.getString(key, null)
-    }
-    override fun setPref(key: String,data: String) {
-        with(sharedPref.edit()){
-            putString(key,data)
-            apply()
-        }
-    }
 
-}
+
 
 
 
@@ -113,22 +87,7 @@ class MainViewModel @Inject constructor(
     private val api: BunnyApi,
     private val prefRepository: PrefRepository,
 ): ViewModel() {
-    //홈 탭:Home,0
-    //동네생활 탭:Community,1
-    //채팅 탭:Chat,2
-    //나의당근 탭:My,3
-    //var selectedTabIndex= mutableIntStateOf(0)
-    //var isgettingNewPostList= false
-    //var isgettingNewPostContent= false
 
-    //val sharedPreferences = getSharedPreferences("BunnyPreferences", Context.MODE_PRIVATE)
-
-
-    private val _accessToken = MutableStateFlow("");
-    val accessToken : StateFlow<String> = _accessToken.asStateFlow()
-
-    private val _refAreaId = MutableStateFlow(listOf<Int>());
-    val refAreaId : StateFlow<List<Int>> = _refAreaId.asStateFlow()
 
     val querySignal = MutableStateFlow(GoodsPostPagingSource(
         api = api,
@@ -136,6 +95,7 @@ class MainViewModel @Inject constructor(
         distance = 0,
         areaId = 0,
     ))
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val goodsPostList = querySignal.flatMapLatest {
         getGoodsPostList(it)
@@ -145,7 +105,6 @@ class MainViewModel @Inject constructor(
         SharingStarted.Eagerly,
         PagingData.empty()
     )
-
 
     suspend fun updateGoodsPostList(
         cur:Long?,
@@ -162,21 +121,14 @@ class MainViewModel @Inject constructor(
             )
         )
     }
-    /*
-    private val _goodsPostList = MutableStateFlow(DefaultGoodsPostListSample)
-    val goodsPostList: StateFlow<GoodsPostList> = _goodsPostList.asStateFlow()
-    */
+
     private val _wishList = MutableStateFlow(DefaultGoodsPostListSample.data)
     val wishList: StateFlow<List<GoodsPostPreview>> = _wishList.asStateFlow()
-    /*
-    fun updateGoodsPostList(newContent: GoodsPostList) {
-        _goodsPostList.value = newContent
-    }*/
+
 
     private val _goodsPostContent = MutableStateFlow(DefaultGoodsPostContentSample)
     val goodsPostContent: StateFlow<GoodsPostContent> = _goodsPostContent.asStateFlow()
 
-    // 상태를 업데이트하는 함수입니다.
     fun updateGoodsPostContent(newContent: GoodsPostContent) {
         _goodsPostContent.value = newContent
     }
@@ -184,7 +136,6 @@ class MainViewModel @Inject constructor(
     private val _galleryImages = MutableStateFlow(listOf<ToggleImageItem>())
     val galleryImages: StateFlow<List<ToggleImageItem>> = _galleryImages.asStateFlow()
 
-    // 상태를 업데이트하는 함수입니다.
     fun updateGalleryImages(newContent: List<ToggleImageItem>) {
         _galleryImages.value = newContent
         Log.d("aaaa",galleryImages.value.toString())

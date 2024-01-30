@@ -1,17 +1,15 @@
 package com.wafflestudio.bunnybunny.di
 
-import com.wafflestudio.bunnybunny.data.example.ExampleRepository
-import com.wafflestudio.bunnybunny.data.example.ExampleRepositoryImpl
+import com.wafflestudio.bunnybunny.data.example.BindPrefRepositoryImpl
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 abstract class RepositoryModule {
-
     @Binds
-    abstract fun bindsExampleRepository(impl: ExampleRepositoryImpl): ExampleRepository
-
+    abstract fun bindPrefRepository(impl: BindPrefRepositoryImpl): PrefRepository
 }
