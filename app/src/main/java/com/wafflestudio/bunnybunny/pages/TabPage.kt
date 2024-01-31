@@ -96,6 +96,7 @@ import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.ChatContents
 import com.wafflestudio.bunnybunny.components.compose.ChatRoomScreen
+import com.wafflestudio.bunnybunny.components.compose.CurrentAreaWithDropDownMenu
 import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
@@ -246,6 +247,9 @@ fun TabBarBadgeView(count: Int? = null) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavController) {
+
+    val viewModel = hiltViewModel<MainViewModel>()
+
     Column {
         TopAppBar(
             title = {
@@ -265,10 +269,12 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
             actions = {
                 when(selectedTabIndex.value){
                     0-> {
+                        CurrentAreaWithDropDownMenu(viewModel = viewModel)
                         SearchButton()
                         NotificationsButton()
                     }
                     1-> {
+                        CurrentAreaWithDropDownMenu(viewModel = viewModel)
                         PersonButton()
                         SearchButton()
                         NotificationsButton()
@@ -575,7 +581,8 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 contentDescription = null,
                 modifier = Modifier
                     .padding(10.dp)
-                    .width(100.dp).height(100.dp)
+                    .width(100.dp)
+                    .height(100.dp)
                     .clip(CircleShape)
             )
             Text(
@@ -587,7 +594,9 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
 //            Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
         }
         Button(
-            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
             onClick = {navController.navigate("ProfileEditPage")},
             colors = ButtonDefaults.buttonColors(Color(0xFFFF6822)),
             shape = RectangleShape
@@ -644,8 +653,10 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
             painter = painter,
             contentDescription = null,
             modifier = Modifier
-                .padding(10.dp).background(Color.Yellow)
-                .width(100.dp).height(100.dp)
+                .padding(10.dp)
+                .background(Color.Yellow)
+                .width(100.dp)
+                .height(100.dp)
         )
         /*LoginInputTextField(
             value = newNickname,

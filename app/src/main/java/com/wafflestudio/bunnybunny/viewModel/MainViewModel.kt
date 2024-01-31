@@ -8,6 +8,8 @@ import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -182,6 +184,9 @@ class MainViewModel @Inject constructor(
     private val _userInfo: MutableStateFlow<UserInfo> = MutableStateFlow(DefaultUserInfo)
     val userInfo : StateFlow<UserInfo> = _userInfo.asStateFlow()
 
+    private val _currentRefAreaId: MutableStateFlow<MutableList<Int>> = MutableStateFlow(getRefAreaId().toMutableList())
+    val currentRefAreaId : StateFlow<MutableList<Int>> = _currentRefAreaId.asStateFlow()
+
     suspend fun getUserInfo(){
         _userInfo.value = api.getUserInfo(getTokenHeader()!!)
     }
@@ -218,6 +223,20 @@ class MainViewModel @Inject constructor(
         }
         Log.d("aaaaa",builder.toString())
         prefRepository.setPref("refAreaId",builder.toString())
+    }
+
+    fun swapRefAreaIdValues() {
+
+        // 0번째와 1번째 값 바꾸기
+        if (_currentRefAreaId.value.size == 2) {
+            val temp = _currentRefAreaId.value[0]
+            _currentRefAreaId.value = _currentRefAreaId.value.toMutableList().apply {
+                this[0] = _currentRefAreaId.value[1]
+                this[1] = temp
+            }
+        }
+
+        setRefAreaId(_currentRefAreaId.value)
     }
     /*
     fun getSelectedTabIndex():Int{
@@ -425,5 +444,16 @@ class MainViewModel @Inject constructor(
 
     fun enableCallFirstGoodsPostList() {
         prefRepository.setPref("CanCallGoodsPostList","true")
+    }
+
+    suspend fun getAreaName(id: Int): String {
+        var name = ""
+        try {
+            viewModelScope.launch {
+                name = api.getAreaName(id).name
+            } } catch (e: HttpException) {
+            name = " "
+        }
+        return name
     }
 }

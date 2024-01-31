@@ -55,7 +55,7 @@ fun ChatRoomScreen(viewModel: ChatViewModel, channelId: Long) {
                 viewModel.connectToChatRoom(channelId)
                 Log.d("CRS", "${websocket==null}")
                 viewModel.getRecentMessages(255)
-                delay(200)
+                delay(500)
                 viewModel.getRecentMessages(255)
             }
         } catch (e: Exception) {

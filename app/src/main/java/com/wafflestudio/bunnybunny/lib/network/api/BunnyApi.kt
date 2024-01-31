@@ -8,6 +8,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
+import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
@@ -118,4 +119,7 @@ interface BunnyApi {
     @PUT("/user")
     suspend fun putUserInfo(@Header("Authorization") authToken: String,
                     @Body request: EditProfileRequest): UserInfo
+
+    @GET("/area/{id}")
+    suspend fun getAreaName(@Path("id") id: Int): SimpleAreaData
 }

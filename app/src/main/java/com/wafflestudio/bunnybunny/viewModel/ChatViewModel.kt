@@ -58,11 +58,13 @@ class ChatViewModel @Inject constructor(
 
     suspend fun connectToChatRoom(channelId: Long) {
         val webSocket = webServicesProvider.connectChannel(channelId)
+        delay(300)
         _webSocketStateFlow.value = webSocket
     }
 
     suspend fun connectToUser() {
         val webSocket = webServicesProvider.connectUser()
+        delay(300)
         _userWebSocketStateFlow.value = webSocket
     }
 
