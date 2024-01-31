@@ -1,14 +1,12 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.annotation.SuppressLint
-import android.util.JsonToken
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,11 +25,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Diversity3
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -44,14 +40,12 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -62,14 +56,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -77,8 +66,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -88,39 +75,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
-import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.ChatContents
-import com.wafflestudio.bunnybunny.components.compose.ChatRoomScreen
-import com.wafflestudio.bunnybunny.components.compose.HomeButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
-import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
 import com.wafflestudio.bunnybunny.components.compose.PersonButton
 import com.wafflestudio.bunnybunny.components.compose.SearchButton
 import com.wafflestudio.bunnybunny.components.compose.SettingsButton
-import com.wafflestudio.bunnybunny.components.compose.ShareButton
-import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
 import com.wafflestudio.bunnybunny.model.BottomNavItem
-import com.wafflestudio.bunnybunny.utils.convertEpochMillisToFormattedTime
 import com.wafflestudio.bunnybunny.utils.formatProductTime
-import com.wafflestudio.bunnybunny.viewModel.ComunityViewModel
+import com.wafflestudio.bunnybunny.viewModel.CommunityViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.WebSocket
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 val homeTab = BottomNavItem(tag = "홈", title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
 val communityTab = BottomNavItem(tag="동네생활", title="Community", selectedIcon = Icons.Filled.Diversity3, unselectedIcon = Icons.Outlined.Diversity3)
@@ -135,7 +110,7 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavController){
 
     val viewModel = hiltViewModel<MainViewModel>()
-    val selectedTabIndex= remember {
+    val selectedTabIndex= rememberSaveable {
         mutableIntStateOf(0)
     }
     if(index!=null) selectedTabIndex.intValue=index
@@ -183,7 +158,7 @@ fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavCont
                         .align(Alignment.BottomEnd)
                         .padding(12.dp)){
 
-                        //navController.navigate(대출 동네생활 글쓰기 페이지)
+                        navController.navigate("WriteCommunityPostPage")
                     }
                 }
                 2-> ChatTabPageView(chatViewModel, navController)
@@ -392,7 +367,7 @@ fun HomeTabPageView(listState:LazyListState,navController: NavController){
 }
 @Composable
 fun CommunityTabPageView(navController: NavController){
-    val viewModel = hiltViewModel<ComunityViewModel>()
+    val viewModel = hiltViewModel<CommunityViewModel>()
     val itemList = viewModel.communityPostList.collectAsLazyPagingItems()
     val listState = rememberLazyListState()
 
@@ -582,7 +557,8 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 contentDescription = null,
                 modifier = Modifier
                     .padding(10.dp)
-                    .width(100.dp).height(100.dp)
+                    .width(100.dp)
+                    .height(100.dp)
                     .clip(CircleShape)
             )
             Text(
@@ -594,7 +570,9 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
 //            Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
         }
         Button(
-            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
             onClick = {navController.navigate("ProfileEditPage")},
             colors = ButtonDefaults.buttonColors(Color(0xFFFF6822)),
             shape = RectangleShape
@@ -651,8 +629,10 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
             painter = painter,
             contentDescription = null,
             modifier = Modifier
-                .padding(10.dp).background(Color.Yellow)
-                .width(100.dp).height(100.dp)
+                .padding(10.dp)
+                .background(Color.Yellow)
+                .width(100.dp)
+                .height(100.dp)
         )
         /*LoginInputTextField(
             value = newNickname,

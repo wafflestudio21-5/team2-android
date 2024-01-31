@@ -32,6 +32,7 @@ import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
+import com.wafflestudio.bunnybunny.pages.WriteCommunityPostPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
@@ -207,6 +208,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("WriteGoodsPostPage") {
                     WriteGoodsPostPage(viewModel, navController)
+                }
+                composable("WriteCommunityPostPage") {
+                    WriteCommunityPostPage( navController)
                 }
                 composable("GalleryViewPage"){
                     viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))

@@ -7,7 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,14 +42,14 @@ import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
 import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.utils.formatProductTime
-import com.wafflestudio.bunnybunny.viewModel.ComunityViewModel
+import com.wafflestudio.bunnybunny.viewModel.CommunityViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CommunityPostPage(id: Long, navController: NavController) {
-    val viewModel = hiltViewModel<ComunityViewModel>()
+    val viewModel = hiltViewModel<CommunityViewModel>()
     val communityPostContent by viewModel.communityPostContent.collectAsState()
     //Log.d("aaaa", id.toString() + " and " + communityPostContent.id.toString())
     LaunchedEffect(key1 = true) {
@@ -130,7 +130,7 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                     painter = rememberImagePainter(data=it),
                     contentDescription =null,
                     modifier = Modifier
-                        .fillMaxWidth() ,// 이미지가 가로 방향으로 최대한 차지하도록 설정
+                        .fillMaxWidth().height(300.dp) ,// 이미지가 가로 방향으로 최대한 차지하도록 설정
                     contentScale = ContentScale.FillWidth
                 )
                 Spacer(modifier = Modifier.height(24.dp))

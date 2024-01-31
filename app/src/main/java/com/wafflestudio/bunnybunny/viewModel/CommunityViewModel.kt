@@ -1,21 +1,24 @@
 package com.wafflestudio.bunnybunny.viewModel
 
+import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.wafflestudio.bunnybunny.SampleData
 import com.wafflestudio.bunnybunny.SampleData.DefaultCommunityPostContentSample
-import com.wafflestudio.bunnybunny.SampleData.DefaultCommunityPostListSample
 import com.wafflestudio.bunnybunny.data.example.CommunityPostPagingSource
-import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
-import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostPreview
-import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,17 +33,40 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
+import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
-import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
+import com.wafflestudio.bunnybunny.lib.network.dto.SubmitCommunityPostRequest
+import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
+import com.wafflestudio.bunnybunny.model.ToggleImageItem
+import com.wafflestudio.bunnybunny.pages.WritePage
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
 
 
 @HiltViewModel
-class ComunityViewModel @Inject constructor(
+class CommunityViewModel @Inject constructor(
     private val api: BunnyApi,
     private val prefRepository: PrefRepository,
 ): ViewModel() {
 
+    var title by mutableStateOf("")
+    //var isTitleFocused by remember { mutableStateOf(false) }
+    //val titleScrollState = rememberScrollState()
+    //var sellPrice by rememberSaveable { mutableStateOf("") }
+    //var isSellPriceFocused by remember { mutableStateOf(false) }
+    //var offerYn by rememberSaveable { mutableStateOf(false) }
+    var description  by mutableStateOf("")
 
+    private val _selectedWritePage = MutableStateFlow(WritePage.Home)
+    val selectedWritePage = _selectedWritePage.asStateFlow()
+
+    // 탭 변경 함수
+    fun selectPage(page: WritePage) {
+        _selectedWritePage.value = page
+    }
     val querySignal = MutableStateFlow(
         CommunityPostPagingSource(
         api = api,
@@ -156,6 +182,45 @@ class ComunityViewModel @Inject constructor(
         }
     }
 
+    private val _galleryImages = MutableStateFlow(listOf<ToggleImageItem>())
+    val galleryImages: StateFlow<List<ToggleImageItem>> = _galleryImages.asStateFlow()
+
+    fun updateGalleryImages(newContent: List<ToggleImageItem>) {
+        _galleryImages.value = newContent
+        Log.d("aaaa",galleryImages.value.toString())
+        Log.d("aaaa",selectedImages.value.toString())
+
+    }
+
+    private val _selectedImages = MutableStateFlow(listOf<Int>())
+    val selectedImages: StateFlow<List<Int>> = _selectedImages.asStateFlow()
+    fun updateSelectedImages(newContent: List<Int>) {
+        if(newContent.size+uploadImages.value.size>10) return
+        _selectedImages.value = newContent
+        val updateList=galleryImages.value.toMutableList()
+        updateList.forEachIndexed{imageIndex,item->
+            updateList[imageIndex]=item.copy(
+                isSelected = selectedImages.value.contains(imageIndex),
+                selectedOrder =if(selectedImages.value.contains(imageIndex)) selectedImages.value.indexOf(imageIndex)+1 else null )
+        }
+        updateGalleryImages(updateList)
+        //Log.d("aaaa","update gallery called")
+    }
+    private val _uploadImages = MutableStateFlow(listOf<Uri>())
+    val uploadImages: StateFlow<List<Uri>> = _uploadImages.asStateFlow()
+    fun updateUploadImages(newContent: List<Uri>) {
+        _uploadImages.value=newContent
+        //Log.d("aaaa","update gallery called")
+    }
+
+    suspend fun uploadImages(imageUris:List<Uri>,context: Context): postImagesResponse {
+        Log.d("aaaa", imageUris.toString())
+        return api.postImages(prepareMultiPartList(imageUris, context))
+    }
+    suspend fun submitCommunityPost(request: SubmitCommunityPostRequest){
+        api.submitCommunityPostRequest(authToken=getTokenHeader()!!,request)
+    }
+
     fun CanCallFirstCommunityPostList():Boolean{
         return prefRepository.getPref("CanCallFirstCommunityPostList").toBoolean()
     }
@@ -167,7 +232,7 @@ class ComunityViewModel @Inject constructor(
     fun enableCallFirstCommunityPostList() {
         prefRepository.setPref("CanCallFirstCommunityPostList","true")
     }
-    /*
+
     fun neededStoragePermissions():Array<String>{
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES,
@@ -183,14 +248,14 @@ class ComunityViewModel @Inject constructor(
     fun prepareMultiPartList(imageUris: List<Uri>, context: Context): List<MultipartBody.Part> {
         val parts: MutableList<MultipartBody.Part> = ArrayList()
         imageUris.forEach { uri ->
-            parts.add(prepareFilePart("image", uri, context))
+            parts.add(prepareFilePart("multipartFiles", uri, context))
         }
         return parts
     }
 
     fun prepareFilePart(partName: String, fileUri: Uri, context: Context): MultipartBody.Part {
         // Uri로부터 파일을 얻음
-        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}")
+        val file = File(context.cacheDir, "tempFile_${System.currentTimeMillis()}.png")
         val inputStream = context.contentResolver.openInputStream(fileUri)
         val outputStream = FileOutputStream(file)
         inputStream?.copyTo(outputStream)
@@ -203,11 +268,5 @@ class ComunityViewModel @Inject constructor(
         // Part 이름과 파일 이름으로 MultipartBody.Part 생성
         return MultipartBody.Part.createFormData(partName, file.name, requestFile)
     }
-    suspend fun tryAreaSearch(query: String, cursor: Int): List<SimpleAreaData> {
-        _areaDetails.value = api.areaSearch(query, cursor).areas;
-        Log.d("VM", "${_areaDetails.value}")
-        return _areaDetails.value;
-    }
-    */
 
 }

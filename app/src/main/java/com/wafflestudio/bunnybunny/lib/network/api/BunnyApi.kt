@@ -17,6 +17,7 @@ import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.SubmitCommunityPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
 import okhttp3.MultipartBody
@@ -63,6 +64,12 @@ interface BunnyApi {
     suspend fun submitPostRequest(
         @Header("Authorization") authToken:String,
         @Body request:SubmitPostRequest,
+    )
+
+    @POST("/community")
+    suspend fun submitCommunityPostRequest(
+        @Header("Authorization") authToken:String,
+        @Body request: SubmitCommunityPostRequest,
     )
 
 

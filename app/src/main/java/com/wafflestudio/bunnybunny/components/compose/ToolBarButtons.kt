@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.ArrowBackIos
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MoreVert
@@ -99,6 +100,15 @@ fun NotificationsButton(enabled:Boolean){
     IconButton(onClick = {}) {
         Icon(
             imageVector = if(enabled)Icons.Filled.Notifications else Icons.Outlined.NotificationsOff,
+            contentDescription = "Settings"
+        )
+    }
+}
+@Composable
+fun CloseButton(navController: NavController){
+    IconButton(onClick = {navController.popBackStack()}) {
+        Icon(
+            imageVector =Icons.Outlined.Close ,
             contentDescription = "Settings"
         )
     }
