@@ -112,6 +112,7 @@ import com.wafflestudio.bunnybunny.viewModel.ComunityViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
+import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -131,8 +132,9 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(index:Int?=null,viewModel:MainViewModel,chatViewModel: ChatViewModel, navController: NavController){
+fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavController){
 
+    val viewModel = hiltViewModel<MainViewModel>()
     val selectedTabIndex= remember {
         mutableIntStateOf(0)
     }

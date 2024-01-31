@@ -9,6 +9,7 @@ import com.wafflestudio.bunnybunny.data.example.ChatChannel
 import com.wafflestudio.bunnybunny.data.example.ChatListResponse
 import com.wafflestudio.bunnybunny.data.example.CreateChatRoomRequest
 import com.wafflestudio.bunnybunny.data.example.Message
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RecentMessagesResponse
 import com.wafflestudio.bunnybunny.lib.network.MessageStorage
 import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
@@ -32,9 +33,9 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val messageStorage: MessageStorage,
     private val api: BunnyApi,
-    private val sharedPreference: SharedPreferences,
-    private val webServicesProvider: WebServicesProvider
-): ViewModel() {
+    private val webServicesProvider: WebServicesProvider,
+    private val prefRepository: PrefRepository,
+    ): ViewModel() {
 
     val recentMessages: StateFlow<String> = webServicesProvider.messageState
 
@@ -121,7 +122,7 @@ class ChatViewModel @Inject constructor(
 
     //HTTP
     fun getChannelList() {
-        val token = sharedPreference.getString("token", "")!!
+        val token = getTokenHeader()!!
         Log.d("CTPV", token)
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -136,9 +137,37 @@ class ChatViewModel @Inject constructor(
     }
 
     suspend fun makeChatRoom(postId: Long) {
-        val token = sharedPreference.getString("token", "")!!
-        api.makeChatRoomRequest(token, CreateChatRoomRequest(postId))
+        api.makeChatRoomRequest(getTokenHeader()!!, CreateChatRoomRequest(postId))
     }
 
+    fun getTokenHeader():String?{
+        //Log.d("aaaa", "tag:$accessToken")
+        return prefRepository.getPref("token")?.let {
+            "Bearer $it"
+        } ?: ""
+    }
 
+    fun getOriginalToken():String?{
+        //Log.d("aaaa", "tag:$accessToken")
+        return prefRepository.getPref("token")
+    }
+
+    fun setToken(token: String) {
+        prefRepository.setPref("token",token)
+    }
+
+    fun getRefAreaId(): List<Int> {
+        return prefRepository.getPref("refAreaId")?.trimEnd()?.split(" ")?.map {
+            it.toInt()
+        } ?: emptyList()
+    }
+
+    fun setRefAreaId(refAreaId: List<Int>) {
+        val builder = StringBuilder()
+        refAreaId.forEach {
+            builder.append("$it ")
+        }
+        Log.d("aaaaa",builder.toString())
+        prefRepository.setPref("refAreaId",builder.toString())
+    }
 }

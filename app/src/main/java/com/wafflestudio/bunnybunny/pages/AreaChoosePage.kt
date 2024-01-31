@@ -60,7 +60,7 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, 
                     }
                 }
             }
-        }, text = "회원가입!", networkBoolean = false)
+        }, text = "회원가입!", networkBoolean = true)
     }
 
 
