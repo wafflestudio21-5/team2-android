@@ -86,7 +86,7 @@ interface BunnyApi {
     @GET("/community/{communityId}")
     suspend fun getCommunityPostContent(
         @Header("Authorization") authToken:String,
-        @Path("post_id") postId:Long,
+        @Path("communityId") communityId:Long,
     ) : CommunityPostContent
   
     @POST("/signup")

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.wafflestudio.bunnybunny.SampleData.DefaultCommunityPostContentSample
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.MoreVertButton
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
@@ -52,7 +53,7 @@ fun CommunityPostPage(id: Long, navController: NavController) {
     val communityPostContent by viewModel.communityPostContent.collectAsState()
     //Log.d("aaaa", id.toString() + " and " + communityPostContent.id.toString())
     LaunchedEffect(key1 = true) {
-        //viewModel.updateCommunityPostContent(DefaultCommunityPostContentSample)
+        viewModel.updateCommunityPostContent(DefaultCommunityPostContentSample)
         viewModel.getCommunityPostContent(id)
     }
     //val listState = rememberLazyListState()
@@ -113,6 +114,8 @@ fun CommunityPostPage(id: Long, navController: NavController) {
 
                         }
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
+
                     Text(
                         text = communityPostContent.community.title,
                         fontSize = 24.sp,
@@ -130,12 +133,15 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                         .fillMaxWidth() ,// 이미지가 가로 방향으로 최대한 차지하도록 설정
                     contentScale = ContentScale.FillWidth
                 )
+                Spacer(modifier = Modifier.height(24.dp))
+
             }
             item{
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = communityPostContent.community.viewCnt.toString()+"명이 봤어요",
                     fontSize = 15.sp, color = Color.Gray,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }
@@ -147,26 +153,28 @@ fun CommunityPostPage(id: Long, navController: NavController) {
 fun CommunityPostToolbar(navController: NavController) {
 
 
-    TopAppBar(
-        title = { },
-        navigationIcon = {
-            Row {
-                BackButton(navController = navController)
-            }
-        },
-        actions = {
-            NotificationsButton(false)
-            ShareButton()
-            MoreVertButton()
-        },
+    Column{
+        TopAppBar(
+            title = { },
+            navigationIcon = {
+                Row {
+                    BackButton(navController = navController)
+                }
+            },
+            actions = {
+                NotificationsButton(false)
+                ShareButton()
+                MoreVertButton()
+            },
 
 
-    )
-    Divider(
-        modifier = Modifier
-            .height(1.dp)
-            .fillMaxWidth()
-    )
+            )
+        Divider(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+    }
 
 }
 

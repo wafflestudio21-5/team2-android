@@ -246,7 +246,6 @@ object SampleData {
             title="",
             description = "",
             areaId = 0L,
-            status = "",
             authorId = -1,
             images= listOf(),
             viewCnt = 0,

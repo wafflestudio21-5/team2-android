@@ -18,7 +18,6 @@ data class Community(
     @Json(name = "title") val title: String,
     @Json(name = "description") val description: String,
     @Json(name = "areaId") val areaId: Long,
-    @Json(name = "status") val status: String,
     @Json(name = "authorId") val authorId: Long,
     @Json(name = "images") val images: List<String>,
     @Json(name = "viewCnt") val viewCnt: Int,

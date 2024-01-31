@@ -139,7 +139,7 @@ class ComunityViewModel @Inject constructor(
         Log.d("aaaa","getCommunityPostContent called: authToken=${getTokenHeader()!!}, postId=$id")
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                val response=api.getCommunityPostContent(authToken=getTokenHeader()!!,postId=id)
+                val response=api.getCommunityPostContent(authToken=getTokenHeader()!!, communityId =id)
                 Log.d("aaaa",response.toString())
 
                 withContext(Dispatchers.Main){
