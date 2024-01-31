@@ -131,8 +131,9 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(index:Int?=null,viewModel:MainViewModel,chatViewModel: ChatViewModel, navController: NavController){
+fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavController){
 
+    val viewModel = hiltViewModel<MainViewModel>()
     val selectedTabIndex= remember {
         mutableIntStateOf(0)
     }
