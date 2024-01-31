@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.pages
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -77,6 +78,7 @@ fun StartPage(
 ) {
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
+
     val context = LocalContext.current
 
     Column(
@@ -108,7 +110,7 @@ fun StartPage(
             LoginInputTextField(
                 value = emailInput,
                 onValueChange = { newText -> emailInput = newText },
-                placeholder = "이메일을 입력해주세요"
+                placeholder = "이메일을 입력해주세요",
             )
 
             //PW Input
@@ -140,6 +142,7 @@ fun StartPage(
                                 withContext(Dispatchers.Main) {
                                     if (loginResponse != null) {
                                         viewModel.setToken(loginResponse.token)
+                                        Log.d("StartPage", "${viewModel.getTokenHeader()}")
                                         viewModel.setRefAreaId(loginResponse.refAreaIds)
                                         onNavigateToSignIn()
                                     }
@@ -188,7 +191,10 @@ fun StartPage(
                                     if (oAuthToken != null) {
                                         val socialLoginResponse = viewModel.trySocialLogin(SocialLoginRequest(oAuthToken.idToken!!))
                                         Log.d("socialLoginResponse", "${socialLoginResponse}")
+                                        viewModel.setRefAreaId(socialLoginResponse.refAreaIds)
+                                        viewModel.setToken(socialLoginResponse.token)
                                         withContext(Dispatchers.Main) {
+
                                             onNavigateToSignIn()
                                         }
                                     } else {

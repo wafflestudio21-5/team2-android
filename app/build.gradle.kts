@@ -68,7 +68,10 @@ android {
 }
 
 dependencies {
+    val paging_version = "3.1.1"
 
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
     //icon
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     //Coli
@@ -94,6 +97,9 @@ dependencies {
     //Kakao Login
     implementation("com.kakao.sdk:v2-user:2.19.0")
 
+    //Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -109,4 +115,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("com.google.code.gson:gson:2.8.8")
 }

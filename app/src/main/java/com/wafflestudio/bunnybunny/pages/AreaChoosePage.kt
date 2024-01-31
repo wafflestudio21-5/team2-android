@@ -35,6 +35,9 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, 
     val viewModel = hiltViewModel<MainViewModel>()
     val context = LocalContext.current;
 
+
+
+
     Column {
         AreaSearchBar(modifier = Modifier)
         AreaContents(modifier = Modifier, refAreaIds)

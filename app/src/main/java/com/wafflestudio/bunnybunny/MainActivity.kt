@@ -26,16 +26,15 @@ import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
-import com.wafflestudio.bunnybunny.pages.ProfileEditPage
-import com.wafflestudio.bunnybunny.pages.ProfilePage
+import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
-import com.wafflestudio.bunnybunny.pages.WishListPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -46,6 +45,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var api:BunnyApi
     private val viewModel: MainViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
 
 
@@ -58,7 +58,16 @@ class MainActivity : ComponentActivity() {
                 //viewModel.updateGoodsPostList(Goods)
                 //viewModel.updateGoodsPostContent(GoodsPostContentSample)
                 //viewModel.wishToggleExample(1,true)
-                MyApp()
+                //viewModel.setSelectedTabIndex(0)
+                //Log.d("aaaa","Token:${viewModel.getToken()}")
+                viewModel.initializeApp()
+                if(viewModel.getOriginalToken()!=null){
+                    MyApp(startDestination = "TabPage")
+                }
+                else{
+                    MyApp()
+                }
+
             }
         }
     }
@@ -137,21 +146,56 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("TabPage") {
-                    if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                    val index = it.arguments?.getInt("index")
+                    /*
+                    when(index){
+                        0->{
+
+                            if(viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                                Log.d("aaaa","nav call")
+                                viewModel.isgettingNewPostList=true
+                                viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
+                            }
+                        }
+                        1->{
+                            if(viewModel.communityPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
+                                Log.d("aaaa","nav call")
+                                viewModel.isgettingNewPostList=true
+                                viewModel.getCommunityPostList(0,viewModel.getRefAreaId()[0])
+                            }
+                        }
+                    }*/
+                    TabPage(index = index, chatViewModel = chatViewModel, viewModel = viewModel,navController = navController)
+                }
+                /*
+                composable("TabPage",
+                    ){
+                    if (viewModel.goodsPostList.collectAsState().value.count==null && !viewModel.isgettingNewPostList){
                         Log.d("aaaa","nav call")
                         viewModel.isgettingNewPostList=true
                         viewModel.getGoodsPostList(0,viewModel.getRefAreaId()[0])
                     }
                     val index= it.arguments?.getInt("index")
                     if(index!=null) viewModel.selectedTabIndex.intValue=index
-                    TabPage(viewModel, navController = navController)
-                }
+                    TabPage(viewModel, chatViewModel, navController = navController)
+                }*/
                 composable("GoodsPostPage/{id}") {
                     val id=it.arguments!!.getString("id")
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
                     }
+                }
+                composable("ChatRoomPage/{channelId}",
+                    arguments = listOf(
+                        navArgument("channelId") { type = NavType.LongType }))
+                { navBackStackEntry ->
+                    // NavBackStackEntry에서 변수들을 추출
+                    val channelId = navBackStackEntry.arguments?.getLong("channelId") ?: 0
+
+                    ChatRoomPage (
+                        modifier = Modifier, viewModel = chatViewModel, channelId
+                    )
                 }
                 composable("WriteGoodsPostPage") {
                     WriteGoodsPostPage(viewModel, navController)
@@ -161,6 +205,7 @@ class MainActivity : ComponentActivity() {
                     viewModel.updateSelectedImages(listOf())
                     GalleryViewPage(viewModel,navController)
                 }
+                    /*
                 composable("WishListPage") {
                     WishListPage(
                         viewModel = viewModel,
@@ -172,7 +217,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
-                }
+                }*/
             }
         }
     }

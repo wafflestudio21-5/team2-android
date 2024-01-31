@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
@@ -21,13 +22,14 @@ fun LoginInputTextField(
     placeholder: String,
     borderColor: Color = Color(1.0f, 0.647f, 0.0f, 1.0f),
     backgroundColor: Color = Color(0x00000000),
-    cornerRadius: Int = 20
+    cornerRadius: Int = 20,
+    fraction: Float = 0.9f
 ) {
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(fraction)
             .padding(5.dp)
             .border(
                 width = 1.dp,
