@@ -112,6 +112,7 @@ import com.wafflestudio.bunnybunny.viewModel.ComunityViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
+import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -584,7 +585,6 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
-//            Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
         }
         Button(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
@@ -604,26 +604,17 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
-        // 추후 온도 통일
-//        val temp = goodsPostContent.authorMannerTemperature
-//        val color = calculateMannerTempColor(temp)
-//        val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
-//
-//        LinearProgressIndicator(
-//            progress = normalizedTemp.toFloat(), // Normalize to 0.0 to 1.0
-//            modifier = Modifier
-//                .width(48.dp)
-//                .clip(CircleShape),
-//            color = color
-//        )
-        // 가로 막대 그래프
+        // 나의 온도
+        val temp = user.mannerTemp.toDouble()
+        val color = calculateMannerTempColor(temp)
+        val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
+
         LinearProgressIndicator(
-            progress = user.mannerTemp.toFloat() / 100f, // 매너 온도를 0~1 사이의 값으로 정규화
+            progress = normalizedTemp.toFloat(), // Normalize to 0.0 to 1.0
             modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .padding(vertical = 8.dp, horizontal = 10.dp)
-                .background(color = Color.Gray.copy(alpha = 0.3f))
+                .width(48.dp)
+                .clip(CircleShape),
+            color = color
         )
     }
 
