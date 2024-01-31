@@ -27,6 +27,7 @@ import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
+import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
@@ -184,6 +185,13 @@ class MainActivity : ComponentActivity() {
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
+                    }
+                }
+                composable("CommunityPostPage/{id}") {
+                    val id=it.arguments!!.getString("id")
+                    //Log.d("aaaa","nav에서$id")
+                    if (id != null) {
+                        CommunityPostPage(id= id.toLong(),navController=navController)
                     }
                 }
                 composable("ChatRoomPage/{channelId}",

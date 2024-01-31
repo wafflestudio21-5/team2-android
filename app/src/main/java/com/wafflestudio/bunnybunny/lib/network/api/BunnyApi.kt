@@ -11,6 +11,7 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
@@ -81,6 +82,12 @@ interface BunnyApi {
         @Query("areaId") areaId: Int,
         @Query("count") count:Int?,
     ) : CommunityPostList
+
+    @GET("/community/{communityId}")
+    suspend fun getCommunityPostContent(
+        @Header("Authorization") authToken:String,
+        @Path("post_id") postId:Long,
+    ) : CommunityPostContent
   
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): SignupResponse

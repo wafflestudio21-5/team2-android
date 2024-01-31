@@ -4,11 +4,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.ArrowBackIos
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
@@ -88,6 +90,15 @@ fun SettingsButton(){
     IconButton(onClick = {}) {
         Icon(
             imageVector = Icons.Outlined.Settings,
+            contentDescription = "Settings"
+        )
+    }
+}
+@Composable
+fun NotificationsButton(enabled:Boolean){
+    IconButton(onClick = {}) {
+        Icon(
+            imageVector = if(enabled)Icons.Filled.Notifications else Icons.Outlined.NotificationsOff,
             contentDescription = "Settings"
         )
     }

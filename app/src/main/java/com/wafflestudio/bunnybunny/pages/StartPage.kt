@@ -77,8 +77,8 @@ fun StartPage(
     //onNavigateToMain : () -> Unit
 ) {
 
-    var emailInput by rememberSaveable { mutableStateOf("example@snu.ac.kr") }
-    var pwInput by rememberSaveable { mutableStateOf("exampletest1!") }
+    var emailInput by rememberSaveable { mutableStateOf("massprd2@gmail.com") }
+    var pwInput by rememberSaveable { mutableStateOf("1q2w3e4r5t6y!") }
     val context = LocalContext.current
 
     Column(

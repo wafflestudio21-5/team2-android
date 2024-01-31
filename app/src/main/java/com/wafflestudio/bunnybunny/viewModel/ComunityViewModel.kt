@@ -7,6 +7,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.wafflestudio.bunnybunny.SampleData
+import com.wafflestudio.bunnybunny.SampleData.DefaultCommunityPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultCommunityPostListSample
 import com.wafflestudio.bunnybunny.data.example.CommunityPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
@@ -28,6 +30,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 
 
 @HiltViewModel
@@ -40,7 +44,7 @@ class ComunityViewModel @Inject constructor(
     val querySignal = MutableStateFlow(
         CommunityPostPagingSource(
         api = api,
-        token = getToken()!!,
+        token = getTokenHeader()!!,
         distance = 0,
         areaId = getRefAreaId()[0],
     )
@@ -56,6 +60,13 @@ class ComunityViewModel @Inject constructor(
     )
 
 
+    private val _communityPostContent = MutableStateFlow(DefaultCommunityPostContentSample)
+    val communityPostContent: StateFlow<CommunityPostContent> = _communityPostContent.asStateFlow()
+
+    fun updateCommunityPostContent(newContent: CommunityPostContent) {
+        _communityPostContent.value = newContent
+    }
+
     suspend fun updateCommunityPostList(
         cur:Long?,
         seed:Int?,
@@ -65,7 +76,7 @@ class ComunityViewModel @Inject constructor(
         querySignal.emit(
             CommunityPostPagingSource(
             api = api,
-            token = getToken()!!,
+            token = getTokenHeader()!!,
             distance=distance,
             areaId=areaId,
         )
@@ -75,11 +86,16 @@ class ComunityViewModel @Inject constructor(
 
 
     companion object {}
-    fun getToken():String?{
+    fun getTokenHeader():String?{
         //Log.d("aaaa", "tag:$accessToken")
         return prefRepository.getPref("token")?.let {
             "Bearer $it"
-        }
+        } ?: ""
+    }
+
+    fun getOriginalToken():String?{
+        //Log.d("aaaa", "tag:$accessToken")
+        return prefRepository.getPref("token")
     }
 
     fun setToken(token: String) {
@@ -110,12 +126,46 @@ class ComunityViewModel @Inject constructor(
             pagingSourceFactory = {
                 CommunityPostPagingSource(
                     api = api,
-                    token = getToken()!!,
+                    token = getTokenHeader()!!,
                     distance = item.distance,
                     areaId = item.areaId,
                 )
             }
         ).flow
+    }
+
+    fun getCommunityPostContent(id:Long){
+
+        Log.d("aaaa","getCommunityPostContent called: authToken=${getTokenHeader()!!}, postId=$id")
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                val response=api.getCommunityPostContent(authToken=getTokenHeader()!!,postId=id)
+                Log.d("aaaa",response.toString())
+
+                withContext(Dispatchers.Main){
+                    updateCommunityPostContent(response)
+                    //isgettingNewPostContent=false
+                    //isgettingNewPostList.value=false
+                }
+            }catch(e: Exception){
+                //isgettingNewPostContent=false
+                Log.d("aaaa",e.toString())
+                ///////////////////////////////
+                //updateGoodsPostContent(GoodsPostContentSample)
+            }
+        }
+    }
+
+    fun CanCallFirstCommunityPostList():Boolean{
+        return prefRepository.getPref("CanCallFirstCommunityPostList").toBoolean()
+    }
+
+    fun disableCallFirstCommunityPostList() {
+        prefRepository.setPref("CanCallFirstCommunityPostList","false")
+    }
+
+    fun enableCallFirstCommunityPostList() {
+        prefRepository.setPref("CanCallFirstCommunityPostList","true")
     }
     /*
     fun neededStoragePermissions():Array<String>{

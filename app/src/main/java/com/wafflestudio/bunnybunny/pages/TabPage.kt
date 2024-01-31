@@ -396,10 +396,15 @@ fun CommunityTabPageView(navController: NavController){
 
     LaunchedEffect(key1 = true){
         Log.d("aaaa123", "hihihi")
-        viewModel.updateCommunityPostList(
-            distance = 0,
-            areaId = viewModel.getRefAreaId()[0],
-            count=0,cur=null,seed=null)
+
+        if(viewModel.CanCallFirstCommunityPostList()){
+            viewModel.disableCallFirstCommunityPostList()
+            Log.d("aaaa", "updateCommunityPostList called in CommunityTabPageView LaunchedEffect")
+            viewModel.updateCommunityPostList(
+                distance = 0,
+                areaId = viewModel.getRefAreaId()[0],
+                count=0,cur=null,seed=null)
+        }
     }
     LazyColumn(state = listState){
         item {
@@ -414,7 +419,7 @@ fun CommunityTabPageView(navController: NavController){
                 .clickable {
                     //Log.d("aaaa", it.id.toString())
                     //Log.d("aaaa","GoodsPostPage/${it.id}")
-                    //navController.navigate("GoodsPostPage/${it.id}")
+                    navController.navigate("CommunityPostPage/${it.id}")
                 }
             ){
                 Column{
@@ -436,7 +441,7 @@ fun CommunityTabPageView(navController: NavController){
                     }
 
                     Row {
-                        Text("${it.areaId}·${it.createdAt}·조회${it.viewCnt}")
+                        Text("${it.areaName}·${it.createdAt}·조회${it.viewCnt}")
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(imageVector = Icons.Outlined.ThumbUp, contentDescription ="like" )
                         Text(it.likeCnt.toString())
