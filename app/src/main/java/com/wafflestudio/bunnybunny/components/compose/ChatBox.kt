@@ -84,7 +84,7 @@ fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, viewModel: ChatViewMod
                 ) {
                     Row(
                         modifier = Modifier
-                            .width(26.dp)
+                            .width(40.dp)
                             .height(18.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
