@@ -72,10 +72,6 @@ fun SignupPage(
     var pwInput by rememberSaveable { mutableStateOf("") }
     var nickname by rememberSaveable { mutableStateOf("") }
 
-    emailInput = "ba@naver.com"
-    pwInput = "bani123!"
-    nickname = "고려거란전쟁"
-
     var isDuplicateNick by rememberSaveable { mutableStateOf(0) }
 
     Column(
