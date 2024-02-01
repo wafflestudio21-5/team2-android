@@ -66,7 +66,7 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, 
                     }
                 }
             }
-        }, text = "다음", networkBoolean = true)
+        }, text = "다음", networkBoolean = refAreaIds.isNotEmpty())
     }
 
 
