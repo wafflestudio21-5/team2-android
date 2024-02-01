@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.pages
 
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -19,10 +20,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,15 +43,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.wafflestudio.bunnybunny.MainActivity
+import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
@@ -53,6 +72,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.time.format.TextStyle
 
 @Composable
 fun MyTabPageView(
@@ -63,10 +84,12 @@ fun MyTabPageView(
         viewModel.getUserInfo()
     }
     val user = viewModel.userInfo.collectAsState().value
+    Log.d("user",user.nickname)
     Column{
         Box(
             modifier = Modifier
                 .height(100.dp)
+                .fillMaxWidth()
                 .clickable {
                     navController.navigate("ProfilePage")
                 }
@@ -76,21 +99,49 @@ fun MyTabPageView(
                 Image(
                     painter = painter,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(100.dp)
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.weight(1f)
+                        .padding(15.dp)
+                        .width(50.dp)
+                        .clip(CircleShape)
                 )
-                Text(user.nickname, modifier = Modifier.align(CenterVertically))
+                Text(user.nickname, modifier = Modifier.align(CenterVertically).weight(2.5f),
+                    fontWeight = FontWeight.ExtraBold, fontSize = 30.sp)
+                Box(
+                    modifier = Modifier.weight(1.5f).padding(15.dp)
+                        .background(color = bunnyColor, shape = RoundedCornerShape(10.dp))
+                        .align(CenterVertically),
 
+                ) {
+                    Text("프로필 보기", fontSize = 13.sp,
+                        modifier = Modifier.padding(10.dp).align(Center))
+                }
             }
         }
-        Box(modifier = Modifier
-            .padding(5.dp).border(color = Color.Gray, shape = RectangleShape, width = 1.dp)
-            .clickable {
-                navController.navigate("WishListPage")
-            }) {
-            Text("관심목록")
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("WishListPage")
+                }
+        ){
+            Row{
+                Icon(
+                    Icons.Outlined.FavoriteBorder,
+                    contentDescription = "WishList",
+                    modifier = Modifier.
+                    padding(start = 15.dp).align(CenterVertically)
+                )
+                Box(modifier = Modifier.padding(10.dp).align(CenterVertically)
+                    ,
+                ) {
+                    Text("관심목록")
+                }
+            }
         }
+
+
     }
 }
 
@@ -169,6 +220,7 @@ fun WishListPage(viewModel: MainViewModel, navController: NavController){
 @Composable
 fun ProfilePage(viewModel: MainViewModel, navController: NavController){
     val user = viewModel.userInfo.collectAsState().value
+    Log.d("user",user.nickname)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -188,24 +240,35 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 .height(1.dp)
             )
         Column(modifier = Modifier.padding(paddingvalues)) {
-            Row(modifier = Modifier) {
+            Row(
+                modifier = Modifier.padding(10.dp)
+            ) {
                 val painter = rememberImagePainter(data = user.profileImageUrl)
                 Image(
                     painter = painter,
                     contentDescription = null,
-                    modifier = Modifier
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.weight(1f)
                         .padding(10.dp)
+                        .clip(CircleShape)
                 )
-                Text("${user.nickname}", modifier = Modifier.padding(10.dp))
-                Text("${user.mannerTemp}", modifier = Modifier.padding(10.dp))
+                Text(
+                    user.nickname, modifier = Modifier.
+                    align(CenterVertically).weight(2f).padding(start = 10.dp),
+                    fontWeight = FontWeight.ExtraBold, fontSize = 30.sp
+                )
             }
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {navController.navigate("ProfileEditPage")}
+            Box(
+                modifier = Modifier.padding(10.dp).fillMaxWidth().height(30.dp)
+                    .background(bunnyColor, shape = RoundedCornerShape(10.dp))
+                    .clickable {
+                        navController.navigate("ProfileEditPage") },
             ){
-                Text("프로필 수정")
+                Text("프로필 수정", modifier = Modifier.align(Center))
             }
+
         }
+
     }
 
 
@@ -216,6 +279,7 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
 @Composable
 fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
     val user = viewModel.userInfo.collectAsState().value
+    Log.d("user",user.nickname)
     var newPassword by rememberSaveable { mutableStateOf("") }
     var newNickname by rememberSaveable { mutableStateOf(user.nickname) }
 
@@ -267,35 +331,64 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                 .fillMaxWidth()
                 .height(1.dp)
         )
-        Column(modifier = Modifier.padding(paddingValues)){
+        Column(modifier = Modifier.padding(paddingValues).padding(15.dp)){
+            val context = LocalContext.current
             val painter = rememberImagePainter(data = user.profileImageUrl)
             Image(
                 painter = painter,
                 contentDescription = null,
-                modifier = Modifier
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.align(CenterHorizontally)
                     .padding(10.dp)
-                    .background(Color.Yellow)
-                    .width(100.dp)
-                    .height(100.dp)
+                    .clip(CircleShape)
                     .clickable {
                         setPermissionRequested(true)
-                    }
+                    },
+                alignment = Center
             )
+            Text("새 비밀번호")
             LoginInputTextField(
                 value = newPassword,
                 onValueChange = {newText -> newPassword = newText},
-                placeholder = newPassword)
+                placeholder = newPassword,)
+            Text("새 닉네임")
             LoginInputTextField(
                 value = newNickname,
                 onValueChange = {newText -> newNickname = newText},
                 placeholder = newNickname,)
             Button(
+                modifier = Modifier.align(CenterHorizontally),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = bunnyColor,
+                    contentColor = Color.White,
+                ),
                 onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.editProfile(EditProfileRequest(newPassword,newNickname,"https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800"))
+                    try {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (newPassword.length == 0) {
+                                viewModel.editProfile(
+                                    EditProfileRequest(
+                                        null,
+                                        newNickname,
+                                        "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800"
+                                    )
+                                )
+                            } else {
+                                viewModel.editProfile(
+                                    EditProfileRequest(
+                                        newPassword,
+                                        newNickname,
+                                        "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800"
+                                    )
+                                )
+                            }
+                        }
+                        Log.d("aaaa", "request success")
+                        navController.popBackStack()
                     }
-                    Log.d("aaaa",viewModel.userInfo.value.toString())
-                    navController.popBackStack()
+                    catch (e: HttpException){
+                        Toast.makeText(context, e.response()?.errorBody()?.string(), Toast.LENGTH_LONG).show()
+                    }
                 }
             ){
                 Text("완료")
