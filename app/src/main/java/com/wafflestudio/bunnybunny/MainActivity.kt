@@ -28,10 +28,13 @@ import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
+import com.wafflestudio.bunnybunny.pages.ProfileEditPage
+import com.wafflestudio.bunnybunny.pages.ProfilePage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
+import com.wafflestudio.bunnybunny.pages.WishListPage
 import com.wafflestudio.bunnybunny.pages.WriteCommunityPostPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
@@ -217,7 +220,7 @@ class MainActivity : ComponentActivity() {
                     viewModel.updateSelectedImages(listOf())
                     GalleryViewPage(viewModel,navController)
                 }
-                    /*
+
                 composable("WishListPage") {
                     WishListPage(
                         viewModel = viewModel,
@@ -229,7 +232,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
-                }*/
+                }
             }
         }
     }
