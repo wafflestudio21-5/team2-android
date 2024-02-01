@@ -17,6 +17,15 @@ data class SubmitPostRequest(
 )
 
 @JsonClass(generateAdapter = true)
+data class SubmitCommunityPostRequest(
+    @Json(name = "areaId") val areaId: Int,
+    @Json(name = "title") val title: String,
+    @Json(name = "description") val description: String,
+    @Json(name = "repImg") val repImg: String,
+    @Json(name = "images") val images: List<String>,
+)
+
+@JsonClass(generateAdapter = true)
 data class postImagesResponse(
     @Json(name = "images") val images: List<String>,
 )

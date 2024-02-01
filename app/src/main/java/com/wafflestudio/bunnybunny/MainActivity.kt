@@ -27,10 +27,12 @@ import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
+import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
+import com.wafflestudio.bunnybunny.pages.WriteCommunityPostPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
@@ -186,6 +188,13 @@ class MainActivity : ComponentActivity() {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
                     }
                 }
+                composable("CommunityPostPage/{id}") {
+                    val id=it.arguments!!.getString("id")
+                    //Log.d("aaaa","nav에서$id")
+                    if (id != null) {
+                        CommunityPostPage(id= id.toLong(),navController=navController)
+                    }
+                }
                 composable("ChatRoomPage/{channelId}",
                     arguments = listOf(
                         navArgument("channelId") { type = NavType.LongType }))
@@ -199,6 +208,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("WriteGoodsPostPage") {
                     WriteGoodsPostPage(viewModel, navController)
+                }
+                composable("WriteCommunityPostPage") {
+                    WriteCommunityPostPage( navController)
                 }
                 composable("GalleryViewPage"){
                     viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))

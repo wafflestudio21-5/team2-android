@@ -3,6 +3,8 @@ package com.wafflestudio.bunnybunny
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostPreview
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.Community
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
@@ -216,7 +218,7 @@ object SampleData {
             likeCnt=20,
             chatCnt=15,
             description = "dlglgl",
-            areaId = 0,
+            areaName = "",
         )),
         cur = null,seed = null,isLast = true,count = null)
     val DefaultCommunityPostListSample=CommunityPostList(
@@ -237,5 +239,25 @@ object SampleData {
         mannerTemp = 0.0,
         createdAt = 0L,
         refAreaIds = listOf()
+    )
+    val DefaultCommunityPostContentSample = CommunityPostContent(
+        community = Community(
+            id = -1,
+            title="",
+            description = "",
+            areaId = 0L,
+            authorId = -1,
+            images= listOf(),
+            viewCnt = 0,
+            likeCnt = 0,
+            chatCnt = 0,
+            createdAt = 0L
+        ),
+        areaName = "",
+
+        authorName = "",
+        profileImg = "",
+
+        isLike = false,
     )
 }
