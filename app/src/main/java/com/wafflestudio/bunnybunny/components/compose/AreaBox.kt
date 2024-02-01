@@ -29,35 +29,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
+import com.wafflestudio.bunnybunny.pages.RefArea
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<Int>, refAreaNames: MutableList<String>) {
-
+fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<RefArea>) {
     val areaId = areaDetail.id
     val context = LocalContext.current
     var isClicked by remember { mutableStateOf(false) }
 
-
     Box(
         modifier = modifier
-            .background(if ((isClicked)&&(areaIds.contains(areaId))) Color.Gray else Color.White)
+            .background(if ((isClicked)&&(areaIds.map { it.id }.contains(areaId))) Color.LightGray else Color.White)
             .clickable {
                 if ((!isClicked)&&(areaIds.size == 2)) {
                     CoroutineScope(Dispatchers.Main).launch() {
                         Toast.makeText(context, "최대 2개의 지역만 선택 가능합니다.", Toast.LENGTH_SHORT).show()
                     }
-                } else if ((isClicked)&&(areaIds.contains(areaId))) {
-
-                    refAreaNames.remove(areaDetail.fullName)
-                    areaIds.remove(areaId)
+                } else if ((isClicked)&&(areaIds.map { it.id }.contains(areaId))) {
+                    areaIds.removeIf { it.id == areaId }
                     isClicked = !isClicked
-                } else if (!areaIds.contains(areaId)) {
-                    refAreaNames.add(areaDetail.fullName)
-                    areaIds.add(areaId)
+                } else if (!areaIds.map { it.id }.contains(areaId)) {
+                    areaIds.add(RefArea(areaId, areaDetail.name))
                     isClicked = !isClicked
                 }
                 Log.d("AreaBox", "$areaIds")
@@ -68,14 +64,14 @@ fun AreaBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList
                 .fillMaxWidth()
                 .drawWithContent {
                     drawContent()
-                    drawBorderBottom(size, 1.dp, Color.Gray)
+                    drawBorderBottom(size, 1.dp, Color.LightGray)
                 }
                 .padding(16.dp)
         ) {
             Text(
                 text = areaDetail.fullName,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.primary
+                fontSize = 16.sp,
+                color = Color.Black
             )
         }
     }

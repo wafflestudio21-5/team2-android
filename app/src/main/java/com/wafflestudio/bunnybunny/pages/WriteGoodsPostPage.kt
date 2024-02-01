@@ -218,7 +218,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             }
                         }
                         LazyRow{
-                            itemsIndexed(uploadImages){index,uri->
+                            items(uploadImages){  uri->
                                 Spacer(modifier = Modifier.fillMaxHeight().width(16.dp))
                                 Box(modifier = Modifier
                                     .size(80.dp)

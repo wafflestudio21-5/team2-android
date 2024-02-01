@@ -13,7 +13,7 @@ data class CommunityPostPreview(
     @Json(name = "likeCnt") val likeCnt: Int,
     @Json(name = "chatCnt") val chatCnt: Int,
     @Json(name = "description") val description: String,
-    @Json(name = "areaId") val areaId: Int,
+    @Json(name = "areaName") val areaName: String,
     )
 @JsonClass(generateAdapter = true)
 data class CommunityPostList(

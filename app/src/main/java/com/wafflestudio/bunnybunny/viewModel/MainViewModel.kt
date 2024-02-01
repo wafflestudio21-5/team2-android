@@ -242,39 +242,7 @@ class MainViewModel @Inject constructor(
                 )
             }
         ).flow
-        /*
-        Log.d("aaaa","getGoodsPostList called:")
-        if(goodsPostList.value.count!=0&&goodsPostList.value.isLast){
-            Log.d("aaaa","getGoodsPostList canceled:$isgettingNewPostList,${goodsPostList.value.isLast}")
-            return
-        }
-        Log.d("aaaa","getGoodsPostList called")
-        /*
-        updateGoodsPostList(GoodsPostListSample)
-        isgettingNewPostList.value=false*/
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
-                val response=api.getGoodsPostList(
-                    authToken=getToken()!!,
-                    cur = goodsPostList.value.cur,
-                    seed = goodsPostList.value.seed,
-                    distance = distance,
-                    areaId = areaId,
-                    count=goodsPostList.value.count)
-                Log.d("aaaa",response.toString())
-
-                withContext(Dispatchers.Main){
-                    updateGoodsPostList(response.copy(data = goodsPostList.value.data+response.data))
-                    isgettingNewPostList=false
-                }
-            }catch(e: Exception){
-                isgettingNewPostList=false
-                Log.d("aaaa", "getGoodsPostList failed: $e")
-                /////////////////////////////////////////
-                //updateGoodsPostList(GoodsPostListSample)
-            }
-        }*/
     }
     fun getGoodsPostContent(id:Long){
 
@@ -298,40 +266,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getCommunityPostList(distance:Int,areaId: Int){
-        Log.d("aaaa","getCommunityPostList called:")
-        if(communityPostList.value.count!=0&&communityPostList.value.isLast){
-            //Log.d("aaaa","getCommunityPostList canceled:$isgettingNewPostList,${communityPostList.value.isLast}")
-            return
-        }
-        /*
-        updateGoodsPostList(GoodsPostListSample)
-        isgettingNewPostList.value=false*/
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
-                val response=api.getCommunityPostList(
-                    authToken=getTokenHeader()!!,
-                    cur = communityPostList.value.cur,
-                    seed = communityPostList.value.seed,
-                    distance = distance,
-                    areaId = areaId,
-                    count=communityPostList.value.count)
-                Log.d("aaaa",response.toString())
-
-                withContext(Dispatchers.Main){
-                    updateCommunityPostList(response.copy(data = communityPostList.value.data+response.data))
-                    //isgettingNewPostList=false
-                }
-            }catch(e: Exception){
-                //isgettingNewPostList=false
-                Log.d("aaaa", "getCommunityPostList failed: $e")
-                /////////////////////////////////////////
-                //updateGoodsPostList(GoodsPostListSample)
-            }
-        }
-
-    }
     suspend fun uploadImages(imageUris:List<Uri>,context:Context):postImagesResponse{
         Log.d("aaaa", imageUris.toString())
         return api.postImages(prepareMultiPartList(imageUris, context))

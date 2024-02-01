@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +30,7 @@ import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
+import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
 import com.wafflestudio.bunnybunny.pages.ProfilePage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
@@ -34,6 +38,7 @@ import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
 import com.wafflestudio.bunnybunny.pages.TabPage
 import com.wafflestudio.bunnybunny.pages.WishListPage
+import com.wafflestudio.bunnybunny.pages.WriteCommunityPostPage
 import com.wafflestudio.bunnybunny.pages.WriteGoodsPostPage
 import com.wafflestudio.bunnybunny.pages.fetchGalleryImages
 import com.wafflestudio.bunnybunny.ui.theme.BunnybunnyTheme
@@ -56,21 +61,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BunnybunnyTheme {
-                // A surface container using the 'background' color from the theme
-                //StartPage()
-                //viewModel.updateGoodsPostList(Goods)
-                //viewModel.updateGoodsPostContent(GoodsPostContentSample)
-                //viewModel.wishToggleExample(1,true)
-                //viewModel.setSelectedTabIndex(0)
-                //Log.d("aaaa","Token:${viewModel.getToken()}")
-                viewModel.initializeApp()
-                if(viewModel.getOriginalToken()!=null){
-                    MyApp(startDestination = "TabPage")
+                CompositionLocalProvider(LocalTextSelectionColors provides TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.Black.copy(alpha = 0.3f))) {
+                    // A surface container using the 'background' color from the theme
+                    //StartPage()
+                    //viewModel.updateGoodsPostList(Goods)
+                    //viewModel.updateGoodsPostContent(GoodsPostContentSample)
+                    //viewModel.wishToggleExample(1,true)
+                    //viewModel.setSelectedTabIndex(0)
+                    //Log.d("aaaa","Token:${viewModel.getToken()}")
+                    viewModel.initializeApp()
+                    if (viewModel.getOriginalToken() != null) {
+                        MyApp(startDestination = "TabPage")
+                    } else {
+                        MyApp()
+                    }
                 }
-                else{
-                    MyApp()
-                }
-
             }
         }
     }
@@ -189,6 +194,13 @@ class MainActivity : ComponentActivity() {
                         GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
                     }
                 }
+                composable("CommunityPostPage/{id}") {
+                    val id=it.arguments!!.getString("id")
+                    //Log.d("aaaa","nav에서$id")
+                    if (id != null) {
+                        CommunityPostPage(id= id.toLong(),navController=navController)
+                    }
+                }
                 composable("ChatRoomPage/{channelId}",
                     arguments = listOf(
                         navArgument("channelId") { type = NavType.LongType }))
@@ -202,6 +214,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("WriteGoodsPostPage") {
                     WriteGoodsPostPage(viewModel, navController)
+                }
+                composable("WriteCommunityPostPage") {
+                    WriteCommunityPostPage( navController)
                 }
                 composable("GalleryViewPage"){
                     viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))

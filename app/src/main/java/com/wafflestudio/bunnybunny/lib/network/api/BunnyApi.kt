@@ -11,11 +11,13 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
+import com.wafflestudio.bunnybunny.lib.network.dto.SubmitCommunityPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
 import okhttp3.MultipartBody
@@ -64,6 +66,12 @@ interface BunnyApi {
         @Body request:SubmitPostRequest,
     )
 
+    @POST("/community")
+    suspend fun submitCommunityPostRequest(
+        @Header("Authorization") authToken:String,
+        @Body request: SubmitCommunityPostRequest,
+    )
+
 
     @POST("/posts/wish/{post_id}")
     suspend fun wishToggle(
@@ -81,6 +89,12 @@ interface BunnyApi {
         @Query("areaId") areaId: Int,
         @Query("count") count:Int?,
     ) : CommunityPostList
+
+    @GET("/community/{communityId}")
+    suspend fun getCommunityPostContent(
+        @Header("Authorization") authToken:String,
+        @Path("communityId") communityId:Long,
+    ) : CommunityPostContent
   
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): SignupResponse
