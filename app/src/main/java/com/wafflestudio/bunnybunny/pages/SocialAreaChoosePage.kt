@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,9 +33,9 @@ import retrofit2.HttpException
 
 @Composable
 fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: () -> Unit) {
-    val refAreaIds = mutableListOf<Int>()
-    var refAreaNames by remember { mutableStateOf(mutableListOf<String>()) }
+    val refAreaIds = mutableListOf<RefArea>()
     val viewModel = hiltViewModel<MainViewModel>()
+    val areaDetails by viewModel.areaDetails.collectAsState()
     val context = LocalContext.current;
 
 //    val updateRefAreaNames: (List<String>) -> Unit = { updatedList ->
@@ -43,13 +44,13 @@ fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: 
 //    }
 
     Column {
-        AreaSearchBar(modifier = Modifier)
-        AreaContents(modifier = Modifier, refAreaIds)
+        AreaSearchBar(modifier = Modifier, areaDetails)
+        AreaContents(modifier = Modifier, refAreaIds, areaDetails)
         BasicButton(modifier = Modifier, onClick = {
             Log.d("ACP", refAreaIds.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = viewModel.trySocialSignUp(SocialSignupRequest(nickname, "profile.com", refAreaIds.toIntArray().toList(), idToken))
+                    val response = viewModel.trySocialSignUp(SocialSignupRequest(nickname, "profile.com", refAreaIds.map { it.id }, idToken))
                     Log.d("ACP", "success: ${response}")
                     withContext(Dispatchers.Main) {
 

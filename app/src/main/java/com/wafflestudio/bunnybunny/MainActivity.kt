@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,21 +61,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BunnybunnyTheme {
-                // A surface container using the 'background' color from the theme
-                //StartPage()
-                //viewModel.updateGoodsPostList(Goods)
-                //viewModel.updateGoodsPostContent(GoodsPostContentSample)
-                //viewModel.wishToggleExample(1,true)
-                //viewModel.setSelectedTabIndex(0)
-                //Log.d("aaaa","Token:${viewModel.getToken()}")
-                viewModel.initializeApp()
-                if(viewModel.getOriginalToken()!=null){
-                    MyApp(startDestination = "TabPage")
+                CompositionLocalProvider(LocalTextSelectionColors provides TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.Black.copy(alpha = 0.3f))) {
+                    // A surface container using the 'background' color from the theme
+                    //StartPage()
+                    //viewModel.updateGoodsPostList(Goods)
+                    //viewModel.updateGoodsPostContent(GoodsPostContentSample)
+                    //viewModel.wishToggleExample(1,true)
+                    //viewModel.setSelectedTabIndex(0)
+                    //Log.d("aaaa","Token:${viewModel.getToken()}")
+                    viewModel.initializeApp()
+                    if (viewModel.getOriginalToken() != null) {
+                        MyApp(startDestination = "TabPage")
+                    } else {
+                        MyApp()
+                    }
                 }
-                else{
-                    MyApp()
-                }
-
             }
         }
     }

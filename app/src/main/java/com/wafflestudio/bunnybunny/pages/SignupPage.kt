@@ -47,6 +47,7 @@ import com.squareup.moshi.addAdapter
 import com.wafflestudio.bunnybunny.R
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BasicButton
+import com.wafflestudio.bunnybunny.components.compose.BunnyButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.components.compose.LoginPasswordTextField
 import com.wafflestudio.bunnybunny.data.example.ErrorResponse
@@ -70,6 +71,10 @@ fun SignupPage(
     var emailInput by rememberSaveable { mutableStateOf("") }
     var pwInput by rememberSaveable { mutableStateOf("") }
     var nickname by rememberSaveable { mutableStateOf("") }
+
+    emailInput = "ba@naver.com"
+    pwInput = "bani123!"
+    nickname = "고려거란전쟁"
 
     var isDuplicateNick by rememberSaveable { mutableStateOf(0) }
 
@@ -110,11 +115,14 @@ fun SignupPage(
         ) {
             LoginInputTextField(
                 value = nickname,
-                onValueChange = { newText -> nickname = newText },
+                onValueChange = {
+                    newText -> nickname = newText
+                    isDuplicateNick = 0
+                },
                 placeholder = "닉네임을 입력해주세요",
                 fraction = 0.7f
             )
-            Button(
+            BunnyButton(
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
                         isDuplicateNick = try {
@@ -125,10 +133,9 @@ fun SignupPage(
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(bunnyColor),
-            ) {
-                Text("중복 체크", fontSize = 12.sp)
-            }
+                text = "중복 체크",
+                fontSize = 12.sp,
+            )
         }
         if (!isRegularNickname(nickname))
             Text(text = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.", color = Color.Red, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth(0.85f))
@@ -138,15 +145,12 @@ fun SignupPage(
             Text(text = "사용할 수 있는 닉네임입니다.", color = Color.Black, fontSize = 10.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth(0.85f))
         }
         Spacer(Modifier.height(24.dp))
-        Button(
+        BunnyButton(
             modifier = Modifier.fillMaxWidth(0.9f),
             onClick = { onNavigateToAreaSearch(emailInput, pwInput, nickname) },
-            shape = RoundedCornerShape(20),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(1.0f, 0.647f, 0.0f, 1.0f)),
-            enabled = isRegularPw(pwInput) && isRegularEmail(emailInput) && isRegularNickname(nickname) && isDuplicateNick == 1
-        ) {
-            Text("지역 선택하기")
-        }
+            text = "다음",
+            networkBoolean = isRegularPw(pwInput) && isRegularEmail(emailInput) && isRegularNickname(nickname) && isDuplicateNick == 1
+        )
     }
 }
 
