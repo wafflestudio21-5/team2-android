@@ -95,6 +95,18 @@ interface BunnyApi {
         @Header("Authorization") authToken:String,
         @Path("communityId") communityId:Long,
     ) : CommunityPostContent
+
+    @GET("/posts/search")
+    suspend fun searchPostList(
+        @Header("Authorization") authToken:String,
+        @Query("keyword") keyword:String,
+        @Query("cur") cur: Long?,
+        @Query("distance") distance:Int,
+        @Query("areaId") areaId: Int,
+        @Query("count") count:Int?,
+    ) : GoodsPostList
+
+
   
     @POST("/signup")
     suspend fun signupRequest(@Body request: SignupRequest): SignupResponse
