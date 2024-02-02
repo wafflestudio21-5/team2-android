@@ -18,6 +18,10 @@ class MessageStorage @Inject constructor() {
         _latestMessage.value = message
     }
 
+    fun deleteLatestMessage() {
+        _latestMessage.value = ""
+    }
+
     fun updateUserLatestMessage(message: String) {
         _userLatestMessage.value = message
     }

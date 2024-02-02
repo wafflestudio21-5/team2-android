@@ -200,7 +200,7 @@ class MainActivity : ComponentActivity() {
                     val id=it.arguments!!.getString("id")
                     //Log.d("aaaa","nav에서$id")
                     if (id != null) {
-                        GoodsPostPage(viewModel, id= id.toLong(),navController=navController)
+                        GoodsPostPage(viewModel, chatViewModel, id= id.toLong(),navController=navController)
                     }
                 }
                 composable("CommunityPostPage/{id}") {

@@ -65,7 +65,8 @@ class ChatViewModel @Inject constructor(
                 webSocketManagerImpl.sendRecentMessageRequest(255)
                 val text = messageStorage.latestMessage.value
                 Log.d("ChatVieWModel", text)
-                val response = fromStringToNewUserMessageResponse(text)
+                val response = fromStringToRecentMessagesResponse(text)
+                _messagesStateFlow.value = response.messages
                 Log.d("ChatVieWModel", "${_messagesStateFlow.value}")
             } catch (e: Exception) {
                 // Handle the exception, log it, or take appropriate action
@@ -118,8 +119,8 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    suspend fun makeChatRoom(postId: Long) {
-        api.makeChatRoomRequest(getTokenHeader()!!, CreateChatRoomRequest(postId))
+    suspend fun makeChatRoom(postId: Long): Long {
+        return api.makeChatRoomRequest(getTokenHeader()!!, CreateChatRoomRequest(postId)).channelId
     }
 
     fun getTokenHeader():String?{
