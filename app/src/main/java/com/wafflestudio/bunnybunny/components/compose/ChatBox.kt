@@ -118,7 +118,7 @@ fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, viewModel: ChatViewMod
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = chatChannel.lastMsg,
+                        text = if (chatChannel.lastMsg != null) chatChannel.lastMsg else "대화를 시작해보세요!" ,
                         style = androidx.compose.ui.text.TextStyle(
                             fontSize = 14.sp,
                             lineHeight = 18.sp,

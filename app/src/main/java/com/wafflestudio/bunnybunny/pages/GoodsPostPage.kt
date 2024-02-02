@@ -78,6 +78,7 @@ import com.wafflestudio.bunnybunny.components.compose.ShareButton
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.utils.formatProductTime
+import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +89,7 @@ import java.util.WeakHashMap
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun GoodsPostPage(viewModel: MainViewModel, id: Long, navController: NavController) {
+fun GoodsPostPage(viewModel: MainViewModel, chatViewModel: ChatViewModel, id: Long, navController: NavController) {
     val goodsPostContent by viewModel.goodsPostContent.collectAsState()
     Log.d("aaaa", id.toString() + " and " + goodsPostContent.id.toString())
     LaunchedEffect(key1 = true) {
@@ -120,7 +121,7 @@ fun GoodsPostPage(viewModel: MainViewModel, id: Long, navController: NavControll
         }
     }*/
     Scaffold(
-        bottomBar = { GoodsPostBottomBar(viewModel, goodsPostContent, navController) },
+        bottomBar = { GoodsPostBottomBar(viewModel, chatViewModel, goodsPostContent, navController) },
         topBar = {
             GoodsPostToolbar(
                 alpha = alpha.value,
@@ -250,7 +251,7 @@ fun GoodsPostToolbar(alpha: Float, navController: NavController) {
 
 @Composable
 
-fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostContent,navController: NavController){
+fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, goodsPostContent:GoodsPostContent, navController: NavController){
     Divider(modifier = Modifier
         .height(1.dp)
         .fillMaxWidth())
@@ -305,7 +306,14 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostConte
             .clip(shape = RoundedCornerShape(4.dp))
             .background(color = bunnyColor)
             .clickable {
-                //채팅 화면으로 이동
+                CoroutineScope(Dispatchers.IO).launch {
+                    val channelId = chatViewModel.makeChatRoom(goodsPostContent.id)
+                    Log.d("GoodsPostPage", "$channelId 의 channel 생성 완료")
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("ChatRoomPage/${channelId}")
+                    }
+                }
+
             }, contentAlignment = Alignment.Center
         ) {
             Text("채팅하기", color = Color.White)

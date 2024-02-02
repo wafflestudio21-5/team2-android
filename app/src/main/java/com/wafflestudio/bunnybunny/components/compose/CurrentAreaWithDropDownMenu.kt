@@ -44,7 +44,7 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel, navController: NavCont
     Column (modifier = Modifier.clickable {
         isDropDownMenuExpanded = true
     }) {
-        if (viewModel.getRefAreaId().size == 2) {
+        if (currentRefAreaId.size == 2) {
 
             Text(modifier = Modifier,
                 text = firstAreaName.value)
@@ -75,7 +75,7 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel, navController: NavCont
                     text = { DropDownText(modifier = Modifier, text = "지역 설정") }
                 )
             }
-        } else if (viewModel.getRefAreaId().size == 1) {
+        } else if (currentRefAreaId.size == 1) {
             Text(modifier = Modifier
                 .clickable{ navController.navigate("AreaSettingPage") },
                 text = firstAreaName.value)

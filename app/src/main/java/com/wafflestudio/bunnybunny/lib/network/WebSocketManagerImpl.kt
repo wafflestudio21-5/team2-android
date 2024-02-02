@@ -2,10 +2,14 @@ package com.wafflestudio.bunnybunny.lib.network
 
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
+import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 import javax.inject.Inject
+import javax.inject.Named
 
 interface WebSocketManager {
     fun createChannelWebSocket(channelId: Long)
@@ -20,8 +24,8 @@ interface WebSocketManager {
 }
 
 class WebSocketManagerImpl @Inject constructor(
-    private val sharedPreference: SharedPreferences,
-    private val okHttpClient: OkHttpClient,
+    private val prefRepository: PrefRepository,
+    @Named("WebSocketOkHttpClient") val okHttpClient: OkHttpClient,
     private val webSocketListener: BunnyWebSocketListener,
 ): WebSocketManager {
     var webSocket: WebSocket? = null
@@ -29,7 +33,7 @@ class WebSocketManagerImpl @Inject constructor(
 
     override fun createChannelWebSocket(channelId: Long) {
         val address = "banibani.shop"
-        val token = sharedPreference.getString("originalToken", "") // token 값 가져옴
+        val token = prefRepository.getPref("token")
         val webSocketUrl =
             "ws://$address/ws/channels/$channelId?token=$token"
         Log.d("WSP", "$webSocketUrl")
@@ -41,7 +45,7 @@ class WebSocketManagerImpl @Inject constructor(
 
     override fun createUserWebSocket(){
         val address = "banibani.shop"
-        val token = sharedPreference.getString("originalToken", "")
+        val token = prefRepository.getPref("token")
         val webSocketUrl = "ws://$address/ws/users?token=$token"
 
         val request = Request.Builder()

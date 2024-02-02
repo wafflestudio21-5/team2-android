@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny.lib.network.api
 import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
 import com.wafflestudio.bunnybunny.data.example.ChatListResponse
 import com.wafflestudio.bunnybunny.data.example.CreateChatRoomRequest
+import com.wafflestudio.bunnybunny.data.example.CreateChatRoomResponse
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
@@ -132,7 +133,7 @@ interface BunnyApi {
     suspend fun chatChannelRequest(@Header("Authorization") authToken:String): ChatListResponse
 
     @POST("/channels")
-    suspend fun makeChatRoomRequest(@Header("Authorization") authToken:String, @Body request: CreateChatRoomRequest)
+    suspend fun makeChatRoomRequest(@Header("Authorization") authToken:String, @Body request: CreateChatRoomRequest): CreateChatRoomResponse
 
     @POST("/channels/{channelId}/pin")
     suspend fun postPinRequest(@Header("Authorization") authToken:String, @Path("channelId") channelId: Long)

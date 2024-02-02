@@ -40,12 +40,11 @@ fun ChatRoomScreen(viewModel: ChatViewModel, channelId: Long) {
     var cur by remember { mutableStateOf(255) }
     val coroutineScope = rememberCoroutineScope()
     val messages by viewModel.messagesStateFlow.collectAsState()
-    var websocket by remember { mutableStateOf<WebSocket?>(null) }
 
     DisposableEffect(Unit) {
         // Cleanup WebSocket on dispose
         onDispose {
-            websocket?.close(1000, "ChatInputBox disposed")
+            viewModel.disconnectFromChatRoom()
         }
     }
 
@@ -53,9 +52,6 @@ fun ChatRoomScreen(viewModel: ChatViewModel, channelId: Long) {
         try {
             coroutineScope.launch {
                 viewModel.connectToChatRoom(channelId)
-                Log.d("CRS", "${websocket==null}")
-                viewModel.getRecentMessages(255)
-                delay(200)
                 viewModel.getRecentMessages(255)
             }
         } catch (e: Exception) {
