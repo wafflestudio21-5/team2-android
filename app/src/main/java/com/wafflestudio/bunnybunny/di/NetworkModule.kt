@@ -28,10 +28,6 @@ class NetworkModule {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-        val token = prefRepository.getPref("token")?.let {
-            "Bearer $it"
-        } ?: ""
-
         return OkHttpClient.Builder().addNetworkInterceptor(interceptor)
             .addInterceptor{ chain ->
                 val newRequest = chain.request().
@@ -41,6 +37,9 @@ class NetworkModule {
             }
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor { chain ->
+                val token = prefRepository.getPref("token")?.let {
+                    "Bearer $it"
+                } ?: ""
                 chain.proceed(chain.request().newBuilder().addHeader(
                     "Authorization",
                     token

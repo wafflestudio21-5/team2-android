@@ -178,7 +178,7 @@ interface BunnyApi {
     suspend fun putComment(
         @Path("communityId") communityId: Long,
         @Path("comment_id") commentId: Long,
-        @Body parmas: PutCommentParams
+        @Body params: PutCommentParams
     )
 
     @DELETE("/community/{communityId}/{comment_id}")
@@ -188,11 +188,11 @@ interface BunnyApi {
     )
 
     @GET("posts/my")
-    suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
+    suspend fun getMyPostList(): List<GoodsPostPreview>
 
     @GET("posts/auction/{postId}")
-    suspend fun getAuctionList(@Header("Authorization") authToken: String, @Path("postId") postId: Long): List<AuctionInfo>
+    suspend fun getAuctionList(@Path("postId") postId: Long): List<AuctionInfo>
 
     @POST("posts/auction/{postId}")
-    suspend fun postAuction(@Header("Authorization") authToken: String, @Path("postId") postId: Long, @Body request: AuctionRequest)
+    suspend fun postAuction(@Path("postId") postId: Long, @Body request: AuctionRequest)
 }

@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -257,6 +258,8 @@ class MainViewModel @Inject constructor(
 
     fun clearToken(){
         prefRepository.clearPref("token")
+        prefRepository.clearPref("refAreaId")
+        prefRepository.clearPref("distance")
     }
     fun getRefAreaId(): List<Int> {
         return prefRepository.getPref("refAreaId")?.trimEnd()?.split(" ")?.map {
@@ -400,14 +403,14 @@ class MainViewModel @Inject constructor(
     }
     fun logOutApp() {
         clearToken()
-        setRefAreaId(listOf())
+        // setRefAreaId(listOf())
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList()
     }
 
     suspend fun getMyPostList(){
-        _myItemList.value = api.getMyPostList(getTokenHeader()!!)
+        _myItemList.value = api.getMyPostList()
     }
 
 
