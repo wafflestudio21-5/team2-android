@@ -92,6 +92,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.ChatContents
+import com.wafflestudio.bunnybunny.components.compose.CurrentAreaWithDropDownMenu
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.components.compose.NotificationsButton
 import com.wafflestudio.bunnybunny.components.compose.PersonButton
@@ -151,7 +152,7 @@ fun TabPage( viewModel: MainViewModel, itemList: LazyPagingItems<GoodsPostPrevie
     }
 
     //viewModel.currentTab.value=tabName
-    Scaffold(bottomBar = { TabNavigationBar(selectedTabIndex,tabBarItems) }, topBar = { TabPageToolBar(selectedTabIndex,navController)}) {paddingValues->
+    Scaffold(bottomBar = { TabNavigationBar(selectedTabIndex,tabBarItems) }, topBar = { TabPageToolBar(selectedTabIndex,navController, viewModel)}) {paddingValues->
         Box(
             Modifier
                 .fillMaxSize()
@@ -238,22 +239,21 @@ fun TabBarBadgeView(count: Int? = null) {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavController) {
+fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavController, viewModel: MainViewModel) {
     Column {
         val invColor = when(isSystemInDarkTheme()){
             true -> Color.White
             else -> Color.Black
         }
         TopAppBar(
-            title = {
-                    Text(text=when(selectedTabIndex.value){
-                        0->""
-                        1->""
-                        2->"채팅"
-                        3->"나의당근"
-                        else->""
-                    })
-            },
+            title = { when(selectedTabIndex.value) {
+                        0 -> CurrentAreaWithDropDownMenu(viewModel = viewModel, navController = navController)
+                        1 -> CurrentAreaWithDropDownMenu(viewModel = viewModel, navController = navController)
+                        2 -> Text(text="채팅")
+                        3 -> Text(text="나의 당근")
+                        else -> Text(text="")
+                        }
+                    },
             navigationIcon = {
                 Row{
 
