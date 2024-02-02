@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Diversity3
@@ -38,6 +39,9 @@ import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -60,6 +64,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -76,6 +81,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -143,7 +149,7 @@ fun TabPage(index:Int?=null,mainViewModel: MainViewModel, chatViewModel: ChatVie
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues = paddingValues),
+                .padding(paddingValues = paddingValues)
         ) {
             
             when(selectedTabIndex.intValue){
@@ -294,9 +300,22 @@ fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         shape = CircleShape
     )
 }
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeTabPageView(listState:LazyListState,navController: NavController){
     val viewModel = hiltViewModel<MainViewModel>()
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = {
+        isRefreshing = true
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.updateGoodsPostList(
+                distance = 0,
+                areaId = viewModel.getRefAreaId()[0],
+                count = 0, cur = null, seed = null
+            )
+            isRefreshing = false
+        }
+    })
     LaunchedEffect(key1 = true){
         if(viewModel.CanCallFirstGoodsPostList()){
             viewModel.disableCallFirstGoodsPostList()
@@ -310,66 +329,75 @@ fun HomeTabPageView(listState:LazyListState,navController: NavController){
     val itemList = viewModel.goodsPostList.collectAsLazyPagingItems()
     Log.d("aaaa123", "vcalled")
 
-
-
-    LazyColumn(state = listState){
-        item {
-            //물품 필터
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .pullRefresh(pullRefreshState), contentAlignment = Alignment.TopCenter) {
+        Box(modifier = Modifier.zIndex(5f)) {
+            PullRefreshIndicator(refreshing = isRefreshing, state = pullRefreshState)
         }
+        LazyColumn(state = listState) {
+            item {
+                //물품 필터
+            }
 
-        items(itemList){
-            //Log.d("aaaa123", it.toString())
-            it ?: return@items
+            items(itemList) {
+                //Log.d("aaaa123", it.toString())
+                it ?: return@items
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 18.dp)
-                .clickable {
-                    Log.d("aaaa", it.id.toString())
-                    //Log.d("aaaa","GoodsPostPage/${it.id}")
-                    navController.navigate("GoodsPostPage/${it.id}")
-                }
-            ){
-                Row(Modifier.align(Alignment.CenterStart)) {
-                    val painter = rememberImagePainter(data = it.repImg)
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 18.dp)
+                    .clickable {
+                        Log.d("aaaa", it.id.toString())
+                        //Log.d("aaaa","GoodsPostPage/${it.id}")
+                        navController.navigate("GoodsPostPage/${it.id}")
+                    }
+                ) {
+                    Row(Modifier.align(Alignment.CenterStart)) {
+                        val painter = rememberImagePainter(data = it.repImg)
 
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .border(
-                                1.dp,
-                                Color.Gray.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(corner = CornerSize(8.dp))
+                        Image(
+                            painter = painter,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(
+                                    1.dp,
+                                    Color.Gray.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(corner = CornerSize(8.dp))
+                                )
+                                .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
+                                .clipToBounds(),
+                            contentScale = ContentScale.Crop,
+                        )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column {
+                            Text(text = it.title, fontSize = 16.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = it.tradingLocation + "·" + formatProductTime(
+                                    it.createdAt,
+                                    it.refreshedAt
+                                ), color = Color.Gray, fontSize = 13.sp
                             )
-                            .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
-                            .clipToBounds(),
-                        contentScale = ContentScale.Crop,
-                    )
-                    Spacer(modifier = Modifier.width(14.dp))
-                    Column {
-                        Text(text = it.title, fontSize = 16.sp)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = it.tradingLocation+"·"+ formatProductTime(it.createdAt, it.refreshedAt), color = Color.Gray, fontSize = 13.sp)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = it.sellPrice.toString()+"원", fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        if (it.wishCnt > 0 || it.chatCnt > 0) {
-                            Text(text = (if (it.wishCnt > 0) "관심 " + it.wishCnt.toString() else "") + (if (it.chatCnt > 0) "채팅 " + it.chatCnt.toString() else ""))
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(text = it.sellPrice.toString() + "원", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            if (it.wishCnt > 0 || it.chatCnt > 0) {
+                                Text(text = (if (it.wishCnt > 0) "관심 " + it.wishCnt.toString() else "") + (if (it.chatCnt > 0) "채팅 " + it.chatCnt.toString() else ""))
+                            }
                         }
                     }
                 }
+                Divider(
+                    color = Color.Gray.copy(alpha = 0.2f),
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
             }
-            Divider(
-                color = Color.Gray.copy(alpha = 0.2f),
-                modifier = Modifier
-                    .height(1.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
         }
-
     }
 
 }
