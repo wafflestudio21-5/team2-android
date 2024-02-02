@@ -11,11 +11,14 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.Comment
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
+import com.wafflestudio.bunnybunny.lib.network.dto.PostCommentParams
+import com.wafflestudio.bunnybunny.lib.network.dto.PutCommentParams
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitCommunityPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
@@ -39,7 +42,6 @@ interface BunnyApi {
 
     @GET("/posts")
     suspend fun getGoodsPostList(
-        @Header("Authorization") authToken:String,
         @Query("cur") cur: Long?,
         @Query("seed") seed: Int?,
         @Query("distance") distance:Int,
@@ -49,7 +51,6 @@ interface BunnyApi {
 
     @GET("/posts/{post_id}")
     suspend fun getGoodsPostContent(
-        @Header("Authorization") authToken:String,
         @Path("post_id") postId:Long,
     ) : GoodsPostContent
 
@@ -62,27 +63,23 @@ interface BunnyApi {
 
     @POST("/posts")
     suspend fun submitPostRequest(
-        @Header("Authorization") authToken:String,
         @Body request:SubmitPostRequest,
     )
 
     @POST("/community")
     suspend fun submitCommunityPostRequest(
-        @Header("Authorization") authToken:String,
         @Body request: SubmitCommunityPostRequest,
     )
 
 
     @POST("/posts/wish/{post_id}")
     suspend fun wishToggle(
-        @Header("Authorization") authToken:String,
         @Path("post_id") postId: Long,
         @Query("enable") enable:Boolean,
     )
 
     @GET("/community")
     suspend fun getCommunityPostList(
-        @Header("Authorization") authToken:String,
         @Query("cur") cur: Long?,
         @Query("seed") seed: Int?,
         @Query("distance") distance:Int,
@@ -92,13 +89,11 @@ interface BunnyApi {
 
     @GET("/community/{communityId}")
     suspend fun getCommunityPostContent(
-        @Header("Authorization") authToken:String,
         @Path("communityId") communityId:Long,
     ) : CommunityPostContent
 
     @GET("/posts/search")
     suspend fun searchPostList(
-        @Header("Authorization") authToken:String,
         @Query("keyword") keyword:String,
         @Query("cur") cur: Long?,
         @Query("distance") distance:Int,
@@ -124,24 +119,53 @@ interface BunnyApi {
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
     @GET("/channels")
-    suspend fun chatChannelRequest(@Header("Authorization") authToken:String): ChatListResponse
+    suspend fun chatChannelRequest(): ChatListResponse
 
     @POST("/channels")
-    suspend fun makeChatRoomRequest(@Header("Authorization") authToken:String, @Body request: CreateChatRoomRequest)
+    suspend fun makeChatRoomRequest(@Body request: CreateChatRoomRequest)
 
     @POST("/channels/{channelId}/pin")
-    suspend fun postPinRequest(@Header("Authorization") authToken:String, @Path("channelId") channelId: Long)
+    suspend fun postPinRequest(@Path("channelId") channelId: Long)
 
     @DELETE("/channels/{channelId}/pin")
-    suspend fun deletePinRequest(@Header("Authorization") authToken:String, @Path("channelId") channelId: Long)
+    suspend fun deletePinRequest(@Path("channelId") channelId: Long)
 
     @GET("/posts/wish")
-    suspend fun getWishList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
+    suspend fun getWishList(): List<GoodsPostPreview>
 
     @GET("/user")
-    suspend fun getUserInfo(@Header("Authorization") authToken: String): UserInfo
+    suspend fun getUserInfo(): UserInfo
 
     @PUT("/user")
-    suspend fun putUserInfo(@Header("Authorization") authToken: String,
-                    @Body request: EditProfileRequest): UserInfo
+    suspend fun putUserInfo(@Body request: EditProfileRequest): UserInfo
+
+    @GET("/community/{communityId}/comment")
+    suspend fun getCommentList(
+        @Path("communityId") communityId: Long
+    ): List<Comment>
+
+    @POST("/community/{communityId}/comment")
+    suspend fun postComment(
+        @Path("communityId") communityId: Long,
+        @Body params: PostCommentParams,
+    )
+
+    @POST("/community/{communityId}/{comment_id}")
+    suspend fun postCommentLike(
+        @Path("communityId") communityId: Long,
+        @Path("comment_id") commentId: Long,
+    )
+
+    @PUT("/community/{communityId}/{comment_id}")
+    suspend fun putComment(
+        @Path("communityId") communityId: Long,
+        @Path("comment_id") commentId: Long,
+        @Body parmas: PutCommentParams
+    )
+
+    @DELETE("/community/{communityId}/{comment_id}")
+    suspend fun deleteComment(
+        @Path("communityId") communityId: Long,
+        @Path("comment_id") commentId: Long,
+    )
 }

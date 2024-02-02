@@ -34,7 +34,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
+import com.wafflestudio.bunnybunny.lib.network.dto.Comment
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
+import com.wafflestudio.bunnybunny.lib.network.dto.PostCommentParams
+import com.wafflestudio.bunnybunny.lib.network.dto.PutCommentParams
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitCommunityPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
 import com.wafflestudio.bunnybunny.model.ToggleImageItem
@@ -62,6 +65,31 @@ class CommunityViewModel @Inject constructor(
 
     private val _selectedWritePage = MutableStateFlow(WritePage.Home)
     val selectedWritePage = _selectedWritePage.asStateFlow()
+
+    private val _comments = MutableStateFlow(emptyList<Comment>())
+    val comments = _comments.asStateFlow()
+
+    suspend fun fetchComments(communityId: Long) {
+        _comments.emit(api.getCommentList(communityId))
+    }
+
+    suspend fun postComment(communityId: Long, comment: String, parentId: Long?, imageUrl: String) {
+        api.postComment(communityId, PostCommentParams(
+            comment = comment, parentId = parentId, imgUrl= imageUrl
+        ))
+    }
+
+    suspend fun likeComment(communityId: Long, commentId: Long) {
+        api.postCommentLike(communityId, commentId)
+    }
+
+    suspend fun editComment(communityId: Long, commentId: Long, editedComment: String, imageUrl: String) {
+        api.putComment(communityId, commentId, PutCommentParams(editedComment, imageUrl))
+    }
+
+    suspend fun deleteComment(communityId: Long, commentId: Long) {
+        api.deleteComment(communityId, commentId)
+    }
 
     // 탭 변경 함수
     fun selectPage(page: WritePage) {
@@ -165,7 +193,7 @@ class CommunityViewModel @Inject constructor(
         Log.d("aaaa","getCommunityPostContent called: authToken=${getTokenHeader()!!}, postId=$id")
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                val response=api.getCommunityPostContent(authToken=getTokenHeader()!!, communityId =id)
+                val response=api.getCommunityPostContent(communityId =id)
                 Log.d("aaaa",response.toString())
 
                 withContext(Dispatchers.Main){
@@ -218,7 +246,7 @@ class CommunityViewModel @Inject constructor(
         return api.postImages(prepareMultiPartList(imageUris, context))
     }
     suspend fun submitCommunityPost(request: SubmitCommunityPostRequest){
-        api.submitCommunityPostRequest(authToken=getTokenHeader()!!,request)
+        api.submitCommunityPostRequest(request)
     }
 
     fun CanCallFirstCommunityPostList():Boolean{

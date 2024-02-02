@@ -43,7 +43,6 @@ class CommunityPostPagingSource(
             // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine
             // CallAdapter dispatches on a worker thread.
             val response = api.getCommunityPostList(
-                authToken = token,
                 cur = params.key?.cur,
                 seed= params.key?.seed,
                 distance = distance,
