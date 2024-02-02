@@ -11,6 +11,8 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.AuctionInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.AuctionRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
@@ -148,4 +150,9 @@ interface BunnyApi {
     @GET("posts/my")
     suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
 
+    @GET("posts/auction/{postId}")
+    suspend fun getAuctionList(@Header("Authorization") authToken: String, @Path("postId") postId: Long): List<AuctionInfo>
+
+    @POST("posts/auction/{postId}")
+    suspend fun postAuction(@Header("Authorization") authToken: String, @Path("postId") postId: Long, @Body request: AuctionRequest)
 }
