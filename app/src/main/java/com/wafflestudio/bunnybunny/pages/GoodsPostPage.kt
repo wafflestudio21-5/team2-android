@@ -148,7 +148,7 @@ fun GoodsPostPage(viewModel: MainViewModel, id: Long, navController: NavControll
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val painter =
-                        rememberImagePainter(data = if (goodsPostContent.profileImg != "") goodsPostContent.profileImg else "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
+                            rememberImagePainter(data = if (goodsPostContent.profileImg != "") goodsPostContent.profileImg else "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
                     Image(
                         painter = painter,
                         contentDescription = null,

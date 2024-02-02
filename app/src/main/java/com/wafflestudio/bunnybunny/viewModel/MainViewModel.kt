@@ -32,6 +32,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
+import com.wafflestudio.bunnybunny.data.example. SearchPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
@@ -103,7 +104,7 @@ class MainViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        PagingData.empty()
+        PagingData.empty<GoodsPostPreview>().also { Log.d("cccc", "이게 여러번 불리면 안돼!!") }
     )
 
     suspend fun updateGoodsPostList(
@@ -189,6 +190,60 @@ class MainViewModel @Inject constructor(
     }
 
 
+    val searchQuerySignal = MutableStateFlow(
+        SearchPostPagingSource(
+            api = api,
+            token = "",
+            distance = 0,
+            areaId = 0,
+            keyword = ""
+        )
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val SearchPostList = searchQuerySignal.flatMapLatest {
+        searchPostList(it)
+            .cachedIn(viewModelScope)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        PagingData.empty()
+    )
+
+    suspend fun updateSearchPostList(
+        distance:Int,
+        areaId:Int,
+        keyword:String) {
+        searchQuerySignal.emit(
+            SearchPostPagingSource(
+                api = api,
+                token = getTokenHeader()!!,
+                distance = distance,
+                areaId = areaId,
+                keyword=keyword
+            )
+        )
+    }
+
+    fun searchPostList(item:SearchPostPagingSource): Flow<PagingData<GoodsPostPreview>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 15,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = {
+                SearchPostPagingSource(
+                    api = api,
+                    token = getTokenHeader()!!,
+                    distance=item.distance,
+                    areaId=item.areaId,
+                    keyword = item.keyword
+                )
+            }
+        ).flow
+
+    }
+
     // 상태를 업데이트하는 함수입니다.
 
 
@@ -222,6 +277,9 @@ class MainViewModel @Inject constructor(
         prefRepository.setPref("token",token)
     }
 
+    fun clearToken(){
+        prefRepository.clearPref("token")
+    }
     fun getRefAreaId(): List<Int> {
         return prefRepository.getPref("refAreaId")?.trimEnd()?.split(" ")?.map {
             it.toInt()
@@ -361,6 +419,10 @@ class MainViewModel @Inject constructor(
 
     fun initializeApp() {
         enableCallFirstGoodsPostList()
+    }
+    fun logOutApp() {
+        clearToken()
+        setRefAreaId(listOf())
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList(getTokenHeader()!!)

@@ -144,7 +144,8 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                 if (title.isNotEmpty() && sellPrice.isNotEmpty() && description.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val images=viewModel.uploadImages(uploadImages,context).images
+                            val images=if(viewModel.uploadImages.value.isNotEmpty())viewModel.uploadImages(uploadImages,context).images else null
+                            //
                             Log.d("submitpost", "image success")
                             viewModel.submitPost(
                                 SubmitPostRequest(
@@ -152,7 +153,7 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                                     title = title,
                                     description = description,
                                     type = if (sellPrice.toInt() == 0) "SHARE" else "TRADE",
-                                    repImg=images[0],
+                                    repImg=if(images!=null)images[0] else images,
                                     images = images,
                                     deadline = 0L,
                                     offerYn = offerYn,

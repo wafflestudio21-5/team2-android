@@ -157,14 +157,14 @@ fun WriteCommunityPostPageView(navController: NavController){
                                 Modifier.clickable {
                                     CoroutineScope(Dispatchers.IO).launch {
                                         try {
-                                            val images=viewModel.uploadImages(uploadImages,context).images
+                                            val images=if(viewModel.uploadImages.value.isNotEmpty())viewModel.uploadImages(uploadImages,context).images else null
                                             Log.d("submitpost", "image success")
                                             viewModel.submitCommunityPost(
                                                 SubmitCommunityPostRequest(
                                                     areaId = viewModel.getRefAreaId()[0],
                                                     title = viewModel.title,
                                                     description = viewModel.description,
-                                                    repImg=images[0],
+                                                    repImg=if(images!=null)images[0] else null,
                                                     images = images,
                                                 )
                                             )

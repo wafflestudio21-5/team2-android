@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +26,7 @@ import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.pages.GoodsPostPage
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
@@ -34,6 +36,7 @@ import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.GalleryViewProfilePage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
 import com.wafflestudio.bunnybunny.pages.ProfilePage
+import com.wafflestudio.bunnybunny.pages.SearchPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
@@ -87,6 +90,9 @@ class MainActivity : ComponentActivity() {
         navController: NavHostController = rememberNavController(),
         startDestination: String = "StartPage"
     ) {
+        val homePagelistState = rememberLazyListState()
+        val itemList = viewModel.goodsPostList.collectAsLazyPagingItems()
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.White
@@ -174,7 +180,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }*/
-                    TabPage(index = index,mainViewModel = viewModel, chatViewModel = chatViewModel, navController = navController)
+                    TabPage(viewModel= viewModel, itemList = itemList, homePagelistState = homePagelistState, index = index,mainViewModel = viewModel, chatViewModel = chatViewModel, navController = navController)
                 }
                 /*
                 composable("TabPage",
@@ -240,7 +246,9 @@ class MainActivity : ComponentActivity() {
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
                 }
-
+                composable("SearchPage"){
+                    SearchPage(navController)
+                }
             }
         }
     }
