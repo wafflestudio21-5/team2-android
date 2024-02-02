@@ -105,7 +105,7 @@ fun MyTabPageView(
                 }
         ) {
             Row {
-                val painter = rememberImagePainter(data = user.profileImageUrl)
+                val painter = rememberImagePainter(data = user.profileImageUrl?:"https://files.slack.com/files-pri/T06UKPBS8-F06FHL84UTH/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
                 Image(
                     painter = painter,
                     contentDescription = null,
