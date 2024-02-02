@@ -22,3 +22,8 @@ data class SimpleAreaData(
     @Json(name = "name") val name: String,
     @Json(name = "fullName") val fullName: String
 )
+
+@JsonClass(generateAdapter = true)
+data class RefAreaRequest(
+    @Json(name = "refAreaId") val refAreaId: Int
+)

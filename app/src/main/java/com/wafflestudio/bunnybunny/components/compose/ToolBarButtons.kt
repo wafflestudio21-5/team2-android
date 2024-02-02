@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.components.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -19,14 +20,29 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
+import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @Composable
-fun BackButton(navController: NavController){
-    IconButton(onClick = { navController.popBackStack()}) {
+fun BackButton(navController: NavController, route: String? = navController.currentDestination?.route){
+    val route0 = remember {
+        route
+    }
+
+    IconButton(onClick = { }) {
         Icon(
             imageVector = Icons.Outlined.ArrowBackIos,
-            contentDescription = "Back"
+            contentDescription = "Back",
+            modifier = Modifier.clickable {
+                if (navController.currentDestination?.route == route0 ) {
+                    navController.popBackStack()
+                }
+
+            }
         )
     }
 }
@@ -60,8 +76,10 @@ fun MoreVertButton(){
     }
 }
 @Composable
-fun SearchButton(){
-    IconButton(onClick = {}) {
+fun SearchButton(navController: NavController){
+    IconButton(onClick = {
+        navController.navigate("SearchPage")
+    }) {
         Icon(
             imageVector = Icons.Outlined.Search,
             contentDescription = "Search"
@@ -87,8 +105,14 @@ fun PersonButton(){
     }
 }
 @Composable
-fun SettingsButton(){
-    IconButton(onClick = {}) {
+fun SettingsButton(navController: NavController){
+    val viewModel = hiltViewModel<MainViewModel>()
+    IconButton(onClick =  {
+        viewModel.logOutApp()
+        navController.navigate("StartPage"){
+            popUpTo("StartPage") { inclusive = false }
+        }
+    }) {
         Icon(
             imageVector = Icons.Outlined.Settings,
             contentDescription = "Settings"

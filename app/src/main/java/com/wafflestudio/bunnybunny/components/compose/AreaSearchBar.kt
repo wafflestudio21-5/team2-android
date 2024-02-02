@@ -61,13 +61,12 @@ fun AreaSearchBar(modifier: Modifier, areaDetails: List<SimpleAreaData>) {
                 imeAction = ImeAction.Done // 엔터 키를 Done으로 설정합니다.
             ),
             keyboardActions = KeyboardActions(onDone = {
-                try {
-                    coroutineScope.launch(Dispatchers.IO) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    try {
                         viewModel.tryAreaSearch(text, 0);
                         searchTarget = text
+                    } catch (_: Exception) {
                     }
-                } catch (e: HttpException) {
-
                 }
             }),
             decorationBox = { innerTextField ->

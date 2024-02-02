@@ -9,7 +9,7 @@ data class ChatChannel(
     @Json(name = "profileImg") val profileImg: String?,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "activeArea") val activeArea: String,
-    @Json(name = "lastMsg") val lastMsg: String,
+    @Json(name = "lastMsg") val lastMsg: String?,
     @Json(name = "msgUpdatedAt") val msgUpdatedAt: Double,
     @Json(name = "pinnedAt") val pinnedAt: Long?
 )
@@ -23,6 +23,11 @@ data class ChatListResponse(
 @JsonClass(generateAdapter = true)
 data class CreateChatRoomRequest(
     @Json(name = "postId") val postId: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class CreateChatRoomResponse(
+    @Json(name = "channelId") val channelId: Long
 )
 
 @JsonClass(generateAdapter = true)

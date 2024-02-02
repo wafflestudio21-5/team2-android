@@ -12,7 +12,7 @@ import com.wafflestudio.bunnybunny.data.example.Message
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RecentMessagesResponse
 import com.wafflestudio.bunnybunny.lib.network.MessageStorage
-import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
+import com.wafflestudio.bunnybunny.lib.network.WebSocketManagerImpl
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.utils.fromStringToNewUserMessageResponse
 import com.wafflestudio.bunnybunny.utils.fromStringToRecentMessagesResponse
@@ -33,13 +33,9 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val messageStorage: MessageStorage,
     private val api: BunnyApi,
-    private val webServicesProvider: WebServicesProvider,
+    private val webSocketManagerImpl: WebSocketManagerImpl,
     private val prefRepository: PrefRepository,
     ): ViewModel() {
-
-    val recentMessages: StateFlow<String> = webServicesProvider.messageState
-
-
 
     private val _messagesStateFlow = MutableStateFlow(emptyList<Message>())
     val messagesStateFlow: StateFlow<List<Message>> = _messagesStateFlow
@@ -50,37 +46,27 @@ class ChatViewModel @Inject constructor(
     private val _unreadMessagesStateFlow = MutableStateFlow(HashMap<Long, MutableList<Long>>())
     val unreadMessagesStateFlow : StateFlow<HashMap<Long, MutableList<Long>>> = _unreadMessagesStateFlow.asStateFlow()
 
-    private val _webSocketStateFlow = MutableStateFlow<WebSocket?>(null)
-    val webSocketStateFlow: StateFlow<WebSocket?> = _webSocketStateFlow.asStateFlow()
-
-    private val _userWebSocketStateFlow = MutableStateFlow<WebSocket?>(null)
-    val userWebSocketStateFlow: StateFlow<WebSocket?> = _webSocketStateFlow.asStateFlow()
-
     suspend fun connectToChatRoom(channelId: Long) {
-        val webSocket = webServicesProvider.connectChannel(channelId)
-        _webSocketStateFlow.value = webSocket
+        webSocketManagerImpl.createChannelWebSocket(channelId)
     }
 
     suspend fun connectToUser() {
-        val webSocket = webServicesProvider.connectUser()
-        _userWebSocketStateFlow.value = webSocket
+        webSocketManagerImpl.createUserWebSocket()
     }
 
 
     fun disconnectFromChatRoom() {
         // 웹소켓 연결 종료
-        _webSocketStateFlow.value?.let { webServicesProvider.disconnectChannel(it) }
-        _webSocketStateFlow.value = null
+        webSocketManagerImpl.disposeWebSocket()
     }
 
     suspend fun getRecentMessages(cur: Int) {
             try {
-                val websocket = _webSocketStateFlow.value!!
-                webServicesProvider.sendRecentMessageRequest(websocket, 255)
-                delay(200)
+                webSocketManagerImpl.sendRecentMessageRequest(255)
                 val text = messageStorage.latestMessage.value
                 Log.d("ChatVieWModel", text)
-                val response = fromStringToNewUserMessageResponse(text)
+                val response = fromStringToRecentMessagesResponse(text)
+                _messagesStateFlow.value = response.messages
                 Log.d("ChatVieWModel", "${_messagesStateFlow.value}")
             } catch (e: Exception) {
                 // Handle the exception, log it, or take appropriate action
@@ -90,7 +76,7 @@ class ChatViewModel @Inject constructor(
 
     suspend fun getUserMessage() {
         try {
-            val websocket = _userWebSocketStateFlow.value!!
+            webSocketManagerImpl
             delay(200)
             val text = messageStorage.userLatestMessage.value
             Log.d("ChatVieWModel", text)
@@ -113,11 +99,8 @@ class ChatViewModel @Inject constructor(
     }
 
     suspend fun sendMessage(text: String) {
-        _webSocketStateFlow.value?.let { websocket ->
-            webServicesProvider.sendTextMessage(websocket, text)
-            delay(200)
+            webSocketManagerImpl.sendTextMessage(text)
             getRecentMessages(255)
-        }
     }
 
     //HTTP
@@ -126,7 +109,7 @@ class ChatViewModel @Inject constructor(
         Log.d("CTPV", token)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = api.chatChannelRequest(token)
+                val response = api.chatChannelRequest()
                 _chatListResponse.value = response
                 Log.d("CTPV", "try" + response.toString())
             } catch (e: HttpException) {
@@ -137,7 +120,7 @@ class ChatViewModel @Inject constructor(
     }
 
     suspend fun makeChatRoom(postId: Long) {
-        api.makeChatRoomRequest(getTokenHeader()!!, CreateChatRoomRequest(postId))
+        api.makeChatRoomRequest(CreateChatRoomRequest(postId))
     }
 
     fun getTokenHeader():String?{

@@ -32,6 +32,7 @@ fun LoginPasswordTextField (
                 color = Color(1.0f, 0.647f, 0.0f, 1.0f),
                 shape = RoundedCornerShape(percent = 20)
             ),
+        singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),

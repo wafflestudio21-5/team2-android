@@ -118,12 +118,6 @@ fun StartPage(
                 pwInput = pwInput,
                 onPwChange = { newText -> pwInput = newText },
                 onLoginClick = {
-                    // Perform login
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val loginRequest = viewModel.tryLogin(emailInput, pwInput)
-                        withContext(Dispatchers.Main) {
-                        }
-                    }
                 }
             )
 

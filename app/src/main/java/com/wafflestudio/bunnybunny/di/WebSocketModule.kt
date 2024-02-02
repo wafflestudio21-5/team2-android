@@ -2,10 +2,11 @@ package com.wafflestudio.bunnybunny.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.lib.network.BunnyUserWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.BunnyWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.MessageStorage
-import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
+import com.wafflestudio.bunnybunny.lib.network.WebSocketManagerImpl
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
@@ -31,9 +32,9 @@ class WebSocketModule {
     @Named("WebSocketOkHttpClient")
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .pingInterval(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(39, TimeUnit.SECONDS)
+            .pingInterval(20, TimeUnit.SECONDS)
             .build()    }
 
     @Provides
@@ -90,14 +91,14 @@ class WebSocketModule {
 
     @Provides
     @Singleton
-    fun provideWebServicesProvider(
+    fun provideWebSocketManagerImpl(
         messageStorage: MessageStorage,
-        sharedPreference: SharedPreferences,
+        prefRepository: PrefRepository,
         @Named("WebSocketOkHttpClient") okHttpClient: OkHttpClient,
         webSocketListener: BunnyWebSocketListener,
         userWebsocketListener: BunnyUserWebSocketListener
-    ): WebServicesProvider {
-        return WebServicesProvider(messageStorage, sharedPreference, okHttpClient, webSocketListener, userWebsocketListener)    }}
+    ): WebSocketManagerImpl {
+        return WebSocketManagerImpl(prefRepository, okHttpClient, webSocketListener)    }}
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

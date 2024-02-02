@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.data.example
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
@@ -41,7 +42,6 @@ class GoodsPostPagingSource(
             // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine
             // CallAdapter dispatches on a worker thread.
             val response = api.getGoodsPostList(
-                authToken = token,
                 cur = params.key?.cur,
                 seed= params.key?.seed,
                 distance = distance,

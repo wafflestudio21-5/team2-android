@@ -28,6 +28,7 @@ fun LoginInputTextField(
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
+        singleLine = true,
         modifier = modifier
             .fillMaxWidth(fraction)
             .padding(5.dp)

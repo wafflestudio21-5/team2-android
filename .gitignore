@@ -34,3 +34,4 @@ google-services.json
 
 # API Key files
 apikeys.properties
+app/src/main/res/values/secret.xml
