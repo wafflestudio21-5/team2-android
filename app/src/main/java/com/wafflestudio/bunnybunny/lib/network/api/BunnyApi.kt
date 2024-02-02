@@ -144,4 +144,8 @@ interface BunnyApi {
     @PUT("/user")
     suspend fun putUserInfo(@Header("Authorization") authToken: String,
                     @Body request: EditProfileRequest): UserInfo
+
+    @GET("posts/my")
+    suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
+
 }
