@@ -51,7 +51,7 @@ fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: 
             Log.d("ACP", refAreaIds.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = viewModel.trySocialSignUp(SocialSignupRequest(nickname, "profile.com", refAreaIds.map { it.id }, idToken))
+                    val response = viewModel.trySocialSignUp(SocialSignupRequest(nickname, "https://files.slack.com/files-pri/T06UKPBS8-F06FHL84UTH/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png", refAreaIds.map { it.id }, idToken))
                     Log.d("ACP", "success: ${response}")
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
