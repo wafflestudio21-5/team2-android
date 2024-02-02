@@ -204,7 +204,7 @@ fun StartPage(
                                                 .show()
                                         }
                                     }
-                                } catch (e: HttpException) {
+                                } catch (e: Exception) {
                                     withContext(Dispatchers.Main) {
                                         val idToken = oAuthToken!!.idToken
                                         Toast

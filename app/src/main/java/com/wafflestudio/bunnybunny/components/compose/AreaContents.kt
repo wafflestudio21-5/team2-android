@@ -19,10 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @Composable
-fun AreaContents(modifier: Modifier, refAreaIds: MutableList<Int>) {
+fun AreaContents(modifier: Modifier, refAreaIds: MutableList<Int>, isAreaChanging: Boolean, navController: NavController) {
     val viewModel: MainViewModel = hiltViewModel()
     val areaDetails by viewModel.areaDetails.collectAsState()
 
@@ -34,23 +35,39 @@ fun AreaContents(modifier: Modifier, refAreaIds: MutableList<Int>) {
 //        Log.d("AreaChoosePage", "Updated refAreaNames: $refAreaNames")
 //    }
 
+    if (!isAreaChanging) {
+        LaunchedEffect(refAreaNames) {
+            Log.d("AreaContents", "$refAreaNames")
+        }
 
-    LaunchedEffect(refAreaNames) {
-        Log.d("AreaContents", "$refAreaNames")
-    }
-
-    Column(modifier = Modifier.fillMaxHeight(0.12f)){
-        Text(modifier = Modifier.fillMaxHeight(), text = refAreaNames.joinToString("\n"))
-    }
+        Column(modifier = Modifier.fillMaxHeight(0.12f)){
+            Text(modifier = Modifier.fillMaxHeight(), text = refAreaNames.joinToString("\n"))
+        }
 
 
-    LazyColumn (modifier = Modifier.fillMaxWidth()) {
-        items(areaDetails.size) { position ->
-            AreaBox(modifier = Modifier,
-                areaDetail = areaDetails[position],
-                areaIds = refAreaIds,
-                refAreaNames = refAreaNames)
+        LazyColumn (modifier = Modifier.fillMaxWidth()) {
+            items(areaDetails.size) { position ->
+                AreaBox(modifier = Modifier,
+                    areaDetail = areaDetails[position],
+                    areaIds = refAreaIds,
+                    refAreaNames = refAreaNames)
+            }
+        }
+    } else {
+        Column(modifier = Modifier.fillMaxHeight(0.12f)) {
+            Text(modifier = Modifier.fillMaxHeight(), text = refAreaNames.joinToString("\n"))
+        }
+
+
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(areaDetails.size) { position ->
+                AreaFixedBox(
+                    modifier = Modifier,
+                    areaDetail = areaDetails[position],
+                    areaIds = refAreaIds,
+                    navController = navController
+                )
+            }
         }
     }
-
 }

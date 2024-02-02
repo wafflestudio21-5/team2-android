@@ -34,6 +34,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
+import com.wafflestudio.bunnybunny.data.example.RefAreaRequest
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
@@ -446,14 +447,37 @@ class MainViewModel @Inject constructor(
         prefRepository.setPref("CanCallGoodsPostList","true")
     }
 
-    suspend fun getAreaName(id: Int): String {
-        var name = ""
-        try {
-            viewModelScope.launch {
-                name = api.getAreaName(id).name
-            } } catch (e: HttpException) {
-            name = " "
+    val firstName = MutableStateFlow("")
+    val secondName = MutableStateFlow("추가하기")
+
+    suspend fun fetchAreaName(id: Int) {
+        if (id == _currentRefAreaId.value[0]) {
+            firstName.value = api.getAreaName(id).name
+        } else if (id == currentRefAreaId.value[1]) {
+            secondName.value = api.getAreaName(id).name
         }
-        return name
+    }
+
+    suspend fun addRefAreaId(id: Int) {
+        val tokenHeader = getTokenHeader()
+        val request = RefAreaRequest(id)
+        val response = api.postRefArea(tokenHeader!!, request)
+        setToken(response.token)
+        _currentRefAreaId.value = response.refAreaIds.toMutableList()
+    }
+
+    suspend fun deleteRefAreaId(id: Int) {
+        val tokenHeader = getTokenHeader()
+        val request = RefAreaRequest(id)
+        val response = api.postRefArea(tokenHeader!!, request)
+        setToken(response.token)
+        _currentRefAreaId.value = response.refAreaIds.toMutableList()
+    }
+
+    fun getDistance(): Int {
+        return prefRepository.getPref("distance")!!.toInt()
+    }
+    fun setDistance(step: Int) {
+        prefRepository.setPref("distance","$step")
     }
 }

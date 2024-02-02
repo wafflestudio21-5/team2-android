@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
 
     val recentMessages: StateFlow<String> = webServicesProvider.messageState
 
-
+    val latestMessage: StateFlow<String> = messageStorage.latestMessage
 
     private val _messagesStateFlow = MutableStateFlow(emptyList<Message>())
     val messagesStateFlow: StateFlow<List<Message>> = _messagesStateFlow
@@ -79,10 +79,10 @@ class ChatViewModel @Inject constructor(
             try {
                 val websocket = _webSocketStateFlow.value!!
                 webServicesProvider.sendRecentMessageRequest(websocket, 255)
-                delay(200)
+                delay(400)
                 val text = messageStorage.latestMessage.value
                 Log.d("ChatVieWModel", text)
-                val response = fromStringToNewUserMessageResponse(text)
+                val response = fromStringToRecentMessagesResponse(text)
                 Log.d("ChatVieWModel", "${_messagesStateFlow.value}")
             } catch (e: Exception) {
                 // Handle the exception, log it, or take appropriate action

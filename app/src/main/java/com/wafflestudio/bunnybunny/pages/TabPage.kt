@@ -269,12 +269,12 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
             actions = {
                 when(selectedTabIndex.value){
                     0-> {
-                        CurrentAreaWithDropDownMenu(viewModel = viewModel)
+                        CurrentAreaWithDropDownMenu(viewModel = viewModel, navController)
                         SearchButton()
                         NotificationsButton()
                     }
                     1-> {
-                        CurrentAreaWithDropDownMenu(viewModel = viewModel)
+                        CurrentAreaWithDropDownMenu(viewModel = viewModel, navController)
                         PersonButton()
                         SearchButton()
                         NotificationsButton()

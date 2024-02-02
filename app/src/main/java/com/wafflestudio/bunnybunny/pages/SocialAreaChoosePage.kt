@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.components.compose.AreaContents
@@ -31,7 +32,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @Composable
-fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: () -> Unit) {
+fun SocialAreaChoosePage(nickname: String, idToken: String, navController: NavController, onNavigateToSignIn: () -> Unit) {
     val refAreaIds = mutableListOf<Int>()
     var refAreaNames by remember { mutableStateOf(mutableListOf<String>()) }
     val viewModel = hiltViewModel<MainViewModel>()
@@ -44,7 +45,7 @@ fun SocialAreaChoosePage(nickname: String, idToken: String, onNavigateToSignIn: 
 
     Column {
         AreaSearchBar(modifier = Modifier)
-        AreaContents(modifier = Modifier, refAreaIds)
+        AreaContents(modifier = Modifier, refAreaIds, false, navController)
         BasicButton(modifier = Modifier, onClick = {
             Log.d("ACP", refAreaIds.toString())
             CoroutineScope(Dispatchers.IO).launch {

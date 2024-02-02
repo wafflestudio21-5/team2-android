@@ -25,7 +25,9 @@ import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
+import com.wafflestudio.bunnybunny.pages.AreaChangePage
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
+import com.wafflestudio.bunnybunny.pages.AreaSettingPage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
@@ -126,7 +128,7 @@ class MainActivity : ComponentActivity() {
                         val nickname = navBackStackEntry.arguments?.getString("nickname") ?: ""
                         Log.d("MA_CHECK", "$emailInput")
                         AreaChoosePage (
-                            emailInput, pwInput, nickname, onNavigateToStart = {navController.navigate("StartPage")}
+                            emailInput, pwInput, nickname, navController, onNavigateToStart = {navController.navigate("StartPage")}
                         )
                 }
 
@@ -141,7 +143,7 @@ class MainActivity : ComponentActivity() {
                     val idToken = navBackStackEntry.arguments?.getString("idToken") ?: ""
 
                     SocialAreaChoosePage (
-                        nickname, idToken, onNavigateToSignIn = {navController.navigate("StartPage")}
+                        nickname, idToken, navController, onNavigateToSignIn = {navController.navigate("StartPage")}
                     )
                 }
 
@@ -218,6 +220,14 @@ class MainActivity : ComponentActivity() {
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
                 }*/
+
+                composable("AreaSettingPage"){
+                    AreaSettingPage(viewModel, navController)
+                }
+
+                composable("AreaChangePage") {
+                    AreaChangePage(viewModel, navController)
+                }
             }
         }
     }

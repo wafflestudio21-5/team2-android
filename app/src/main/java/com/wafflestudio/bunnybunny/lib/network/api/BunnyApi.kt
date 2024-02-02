@@ -6,6 +6,7 @@ import com.wafflestudio.bunnybunny.data.example.CreateChatRoomRequest
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.data.example.RefAreaRequest
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
@@ -122,4 +123,14 @@ interface BunnyApi {
 
     @GET("/area/{id}")
     suspend fun getAreaName(@Path("id") id: Int): SimpleAreaData
+
+    @POST("/user/refArea")
+    suspend fun postRefArea(@Header("Authorization") authToken: String,
+                            @Body request: RefAreaRequest): LoginResponse
+
+    @DELETE("/user/refArea")
+    suspend fun deleteRefArea(@Header("Authorization") authToken: String,
+                            @Body request: RefAreaRequest): LoginResponse
+
+
 }

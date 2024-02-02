@@ -17,23 +17,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 
 @Composable
-fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel) {
+fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel, navController: NavController) {
 
     var isDropDownMenuExpanded by remember { mutableStateOf (false)}
     val currentRefAreaId by viewModel.currentRefAreaId.collectAsState()
 
-    var firstAreaName by remember { mutableStateOf("") }
-    var secondAreaName by remember { mutableStateOf("") }
+    var firstAreaName = viewModel.firstName.collectAsState()
+    var secondAreaName = viewModel.secondName.collectAsState()
 
     LaunchedEffect(currentRefAreaId) {
         // 비동기로 지역명 가져오는 함수 (예시로 delay 사용)
-        firstAreaName = viewModel.getAreaName(currentRefAreaId[0])
+        viewModel.fetchAreaName(currentRefAreaId[0])
         if (currentRefAreaId.size == 2) {
-            secondAreaName = viewModel.getAreaName(currentRefAreaId[1])
+            viewModel.fetchAreaName(currentRefAreaId[1])
         }
     }
 
@@ -42,7 +44,7 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel) {
     }) {
         Text(modifier = Modifier
             ,
-            text = firstAreaName)
+            text = firstAreaName.value)
 
         if (viewModel.getRefAreaId().size == 2) {
 
@@ -55,7 +57,7 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel) {
                     onClick = {
                         Log.d("CAWDD", "clicked")
                     },
-                    text = { DropDownText(modifier = Modifier, text = firstAreaName)
+                    text = { DropDownText(modifier = Modifier, text = firstAreaName.value)
                         }
                 )
                 DropdownMenuItem(
@@ -63,15 +65,19 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel) {
                         // 오직 2번 항목이 있을
                         viewModel.swapRefAreaIdValues()
                     },
-                    text = { DropDownText(modifier = Modifier, text = secondAreaName)}
+                    text = { DropDownText(modifier = Modifier, text = secondAreaName.value)}
                 )
                 DropdownMenuItem(
                     onClick = {
-                        // 지역 설정 페이지 관련으로 이동
+                        navController.navigate("AreaSettingPage")
                     },
                     text = { DropDownText(modifier = Modifier, text = "지역 설정") }
                 )
             }
+        } else if (viewModel.getRefAreaId().size == 1) {
+            Text(modifier = Modifier
+                .clickable{ navController.navigate("AreaSettingPage") },
+                text = firstAreaName.value)
         }
     }
 
