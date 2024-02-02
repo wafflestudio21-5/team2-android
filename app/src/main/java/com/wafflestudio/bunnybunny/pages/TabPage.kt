@@ -510,7 +510,7 @@ fun CommunityTabPageView(navController: NavController){
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("${it.areaName}·${it.createdAt}·조회${it.viewCnt}", fontSize = 14.sp)
+                            Text("${it.areaName}·${formatProductTime(it.createdAt,it.createdAt)}·조회${it.viewCnt}", fontSize = 14.sp)
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
