@@ -85,6 +85,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
@@ -101,6 +102,7 @@ import com.wafflestudio.bunnybunny.utils.formatProductTime
 import com.wafflestudio.bunnybunny.viewModel.CommunityViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
+import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -118,15 +120,18 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(index:Int?=null,mainViewModel: MainViewModel, chatViewModel: ChatViewModel, navController: NavController){
+fun TabPage( viewModel: MainViewModel, itemList: LazyPagingItems<GoodsPostPreview>, homePagelistState: LazyListState ,index:Int?=null,mainViewModel: MainViewModel, chatViewModel: ChatViewModel, navController: NavController){
 
-    val viewModel = hiltViewModel<MainViewModel>()
+//    val viewModel = hiltViewModel<MainViewModel>()
     val selectedTabIndex= rememberSaveable {
         mutableIntStateOf(0)
     }
     if(index!=null) selectedTabIndex.intValue=index
 
-    val homePagelistState = rememberLazyListState()
+
+
+
+//    Log.d("cccc", itemList.itemCount.toString())
 
 
     val token = mainViewModel.getOriginalToken()
@@ -155,7 +160,7 @@ fun TabPage(index:Int?=null,mainViewModel: MainViewModel, chatViewModel: ChatVie
             
             when(selectedTabIndex.intValue){
                 0-> {
-                    HomeTabPageView( listState = homePagelistState,navController = navController)
+                    HomeTabPageView(viewModel = viewModel, listState = homePagelistState,itemList,navController = navController)
                     WritePostButton(modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(12.dp)){
@@ -303,8 +308,8 @@ fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeTabPageView(listState:LazyListState,navController: NavController){
-    val viewModel = hiltViewModel<MainViewModel>()
+fun HomeTabPageView(viewModel: MainViewModel, listState:LazyListState, itemList: LazyPagingItems<GoodsPostPreview>, navController: NavController){
+//    val viewModel = hiltViewModel<MainViewModel>()
     var isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = {
         isRefreshing = true
@@ -327,8 +332,6 @@ fun HomeTabPageView(listState:LazyListState,navController: NavController){
                 count=0,cur=null,seed=null)
         }
     }
-    val itemList = viewModel.goodsPostList.collectAsLazyPagingItems()
-    Log.d("aaaa123", "vcalled")
 
     Box(modifier = Modifier
         .fillMaxWidth()

@@ -1,5 +1,6 @@
 package com.wafflestudio.bunnybunny.data.example
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi

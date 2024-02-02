@@ -104,7 +104,7 @@ class MainViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        PagingData.empty()
+        PagingData.empty<GoodsPostPreview>().also { Log.d("cccc", "이게 여러번 불리면 안돼!!") }
     )
 
     suspend fun updateGoodsPostList(
