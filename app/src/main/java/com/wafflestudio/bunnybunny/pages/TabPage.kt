@@ -240,10 +240,6 @@ fun TabBarBadgeView(count: Int? = null) {
 @Composable
 fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavController) {
     Column {
-        val invColor = when(isSystemInDarkTheme()){
-            true -> Color.White
-            else -> Color.Black
-        }
         TopAppBar(
             title = {
                     Text(text=when(selectedTabIndex.value){
@@ -280,9 +276,9 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
 
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                navigationIconContentColor = invColor,
-                titleContentColor = invColor, // Color for the title
-                actionIconContentColor = invColor // Color for action icons
+                navigationIconContentColor = Color.Black,
+                titleContentColor = Color.Black, // Color for the title
+                actionIconContentColor = Color.Black // Color for action icons
             ),
         )
         Divider(
