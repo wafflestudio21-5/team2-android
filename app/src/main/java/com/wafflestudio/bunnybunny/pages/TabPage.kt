@@ -243,12 +243,12 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
             actions = {
                 when(selectedTabIndex.value){
                     0-> {
-                        SearchButton()
+                        SearchButton(navController)
                         NotificationsButton()
                     }
                     1-> {
                         PersonButton()
-                        SearchButton()
+                        SearchButton(navController)
                         NotificationsButton()
                     }
                     2-> {

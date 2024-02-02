@@ -60,8 +60,10 @@ fun MoreVertButton(){
     }
 }
 @Composable
-fun SearchButton(){
-    IconButton(onClick = {}) {
+fun SearchButton(navController: NavController){
+    IconButton(onClick = {
+        navController.navigate("SearchPage")
+    }) {
         Icon(
             imageVector = Icons.Outlined.Search,
             contentDescription = "Search"
