@@ -25,3 +25,44 @@ data class Community(
     @Json(name = "chatCnt") val chatCnt: Int,
     @Json(name = "createdAt") val createdAt: Long,
 )
+@JsonClass(generateAdapter = true)
+data class ChildComment(
+    @Json(name = "id") val id: Long,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "comment") val comment: String,
+    @Json(name = "imgUrl") val imgUrl: String,
+    @Json(name = "createdAt") val createdAt: Long,
+    @Json(name = "likeCnt") val likeCnt: Int,
+    @Json(name = "isLiked") val isLiked: Boolean,
+    @Json(name = "images") val images: List<String>,
+    )
+
+@JsonClass(generateAdapter = true)
+data class Comment(
+    @Json(name = "id") val id: Long,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "comment") val comment: String,
+    @Json(name = "imgUrl") val imgUrl: String,
+    @Json(name = "createdAt") val createdAt: Long,
+    @Json(name = "likeCnt") val likeCnt: Int,
+    @Json(name = "isLiked") val isLiked: Boolean,
+    @Json(name = "childComments") val childComments: List<ChildComment>,
+    @Json(name = "images") val images: List<String>,
+)
+
+@JsonClass(generateAdapter = true)
+data class PostCommentParams(
+    @Json(name = "comment") val comment: String,
+    @Json(name = "imgUrl") val imgUrl: String = "",
+    @Json(name = "parentId") val parentId: Long?,
+    @Json(name = "images") val images: List<String> = emptyList(),
+)
+
+@JsonClass(generateAdapter = true)
+data class PutCommentParams(
+    @Json(name = "comment") val comment: String,
+    @Json(name = "imgUrl") val imgUrl: String = "",
+    @Json(name = "images") val images: List<String> = emptyList(),
+)
+
+

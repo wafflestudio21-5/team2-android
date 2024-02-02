@@ -109,7 +109,7 @@ class ChatViewModel @Inject constructor(
         Log.d("CTPV", token)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = api.chatChannelRequest(token)
+                val response = api.chatChannelRequest()
                 _chatListResponse.value = response
                 Log.d("CTPV", "try" + response.toString())
             } catch (e: HttpException) {
@@ -119,8 +119,8 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    suspend fun makeChatRoom(postId: Long): Long {
-        return api.makeChatRoomRequest(getTokenHeader()!!, CreateChatRoomRequest(postId)).channelId
+    suspend fun makeChatRoom(postId: Long) {
+        api.makeChatRoomRequest(CreateChatRoomRequest(postId))
     }
 
     fun getTokenHeader():String?{

@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny.di
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import dagger.Module
 import dagger.Provides
@@ -21,9 +22,15 @@ class NetworkModule {
 
     @Provides
     @Named("NetworkOkHttpClient")
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        prefRepository: PrefRepository,
+    ): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val token = prefRepository.getPref("token")?.let {
+            "Bearer $it"
+        } ?: ""
 
         return OkHttpClient.Builder().addNetworkInterceptor(interceptor)
             .addInterceptor{ chain ->
@@ -33,7 +40,12 @@ class NetworkModule {
                 chain.proceed(newRequest)
             }
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-
+            .addInterceptor { chain ->
+                chain.proceed(chain.request().newBuilder().addHeader(
+                    "Authorization",
+                    token
+                ).build())
+            }
             .build()
     }
 

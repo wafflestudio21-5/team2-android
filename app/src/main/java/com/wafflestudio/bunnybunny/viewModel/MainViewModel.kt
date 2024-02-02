@@ -260,10 +260,10 @@ class MainViewModel @Inject constructor(
     val userInfo : StateFlow<UserInfo> = _userInfo.asStateFlow()
 
     suspend fun getUserInfo(){
-        _userInfo.value = api.getUserInfo(getTokenHeader()!!)
+        _userInfo.value = api.getUserInfo()
     }
     suspend fun editProfile(request: EditProfileRequest){
-        _userInfo.value = api.putUserInfo(getTokenHeader()!!, request)
+        _userInfo.value = api.putUserInfo(request)
     }
     companion object {}
     fun getTokenHeader():String?{
@@ -329,7 +329,7 @@ class MainViewModel @Inject constructor(
         Log.d("aaaa","getGoodsPostContent called: authToken=${getTokenHeader()!!}, postId=$id")
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                val response=api.getGoodsPostContent(authToken=getTokenHeader()!!,postId=id)
+                val response=api.getGoodsPostContent(postId=id)
                 Log.d("aaaa",response.toString())
 
                 withContext(Dispatchers.Main){
@@ -355,11 +355,11 @@ class MainViewModel @Inject constructor(
 
     suspend fun wishToggle(id:Long,enable:Boolean) {
         Log.d("wish","enable:$enable")
-        api.wishToggle(authToken=getTokenHeader()!!,id,enable)
+        api.wishToggle(id,enable)
     }
 
     suspend fun submitPost(request: SubmitPostRequest){
-        api.submitPostRequest(authToken=getTokenHeader()!!,request)
+        api.submitPostRequest(request)
     }
 
     suspend fun tryLogin(email: String, password: String): LoginResponse {
@@ -430,7 +430,7 @@ class MainViewModel @Inject constructor(
         setRefAreaId(listOf())
     }
     suspend fun getWishList(){
-        _wishList.value = api.getWishList(getTokenHeader()!!)
+        _wishList.value = api.getWishList()
     }
 
 
