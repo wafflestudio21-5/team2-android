@@ -274,7 +274,7 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
             }
             Box(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 30.dp)
                     .fillMaxWidth()
                     .height(30.dp)
                     .background(bunnyColor, shape = RoundedCornerShape(10.dp))
@@ -389,7 +389,10 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
         )
         Column(modifier = Modifier
             .padding(paddingValues)
-            .padding(15.dp)){
+            .padding(15.dp)
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
             val context = LocalContext.current
             val painter = rememberImagePainter(data = user.profileImageUrl)
             Image(
@@ -405,18 +408,18 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                     },
                 alignment = Center
             )
-            Text("새 비밀번호")
-            LoginInputTextField(
-                value = newPassword,
-                onValueChange = {newText -> newPassword = newText},
-                placeholder = newPassword,)
-            Text("새 닉네임")
+            Text("새 닉네임", modifier = Modifier.align(Alignment.Start).padding(horizontal = 17.dp, vertical = 5.dp))
             LoginInputTextField(
                 value = newNickname,
                 onValueChange = {newText -> newNickname = newText},
                 placeholder = newNickname,)
+            Text("새 비밀번호", modifier = Modifier.align(Alignment.Start).padding(horizontal = 17.dp, vertical = 5.dp))
+            LoginInputTextField(
+                value = newPassword,
+                onValueChange = {newText -> newPassword = newText},
+                placeholder = newPassword,)
             Button(
-                modifier = Modifier.align(CenterHorizontally),
+                modifier = Modifier.align(CenterHorizontally).padding(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = bunnyColor,
                     contentColor = Color.White,
