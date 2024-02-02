@@ -276,20 +276,24 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
                     .fillMaxWidth()
-                    .height(30.dp)
+                    .height(40.dp)
                     .background(bunnyColor, shape = RoundedCornerShape(10.dp))
                     .clickable {
                         navController.navigate("ProfileEditPage")
                     },
             ){
-                Text("프로필 수정", modifier = Modifier.align(Center))
+                Text("프로필 수정",
+                    modifier = Modifier.align(Center),
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             val temp = user.mannerTemp.toDouble()
             val color = calculateMannerTempColor(temp)
             val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp, vertical = 10.dp)
 //                .border(
 //                    width = 1.dp,
 //                    color = bunnyColor,
@@ -311,7 +315,7 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                         modifier = Modifier
                             .weight((normalizedTemp + 0.05).toFloat())
                             .padding(5.dp),
-                        textAlign = TextAlign.End
+                        textAlign = TextAlign.End,
                         )
                     Spacer(Modifier.weight(1-normalizedTemp.toFloat()))
                 }
