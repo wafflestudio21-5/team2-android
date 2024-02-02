@@ -82,7 +82,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun BunnybunnyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     // Dynamic color not applied
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
