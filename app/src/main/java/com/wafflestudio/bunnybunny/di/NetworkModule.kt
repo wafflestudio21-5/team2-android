@@ -3,7 +3,6 @@ package com.wafflestudio.bunnybunny.di
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import dagger.Module
 import dagger.Provides

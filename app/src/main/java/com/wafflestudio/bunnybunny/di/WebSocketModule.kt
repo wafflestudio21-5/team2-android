@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.wafflestudio.bunnybunny.lib.network.BunnyUserWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.BunnyWebSocketListener
 import com.wafflestudio.bunnybunny.lib.network.MessageStorage
-import com.wafflestudio.bunnybunny.lib.network.WebServicesProvider
+import com.wafflestudio.bunnybunny.lib.network.WebSocketManagerImpl
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
@@ -90,14 +90,14 @@ class WebSocketModule {
 
     @Provides
     @Singleton
-    fun provideWebServicesProvider(
+    fun provideWebSocketManagerImpl(
         messageStorage: MessageStorage,
         sharedPreference: SharedPreferences,
         @Named("WebSocketOkHttpClient") okHttpClient: OkHttpClient,
         webSocketListener: BunnyWebSocketListener,
         userWebsocketListener: BunnyUserWebSocketListener
-    ): WebServicesProvider {
-        return WebServicesProvider(messageStorage, sharedPreference, okHttpClient, webSocketListener, userWebsocketListener)    }}
+    ): WebSocketManagerImpl {
+        return WebSocketManagerImpl(sharedPreference, okHttpClient, webSocketListener)    }}
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

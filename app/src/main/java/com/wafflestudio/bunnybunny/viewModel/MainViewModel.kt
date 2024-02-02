@@ -230,7 +230,7 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun searchPostList(item:SearchPostPagingSource): Flow<PagingData<GoodsPostPreview>> {
+    fun searchPostList(item: SearchPostPagingSource): Flow<PagingData<GoodsPostPreview>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 15,
