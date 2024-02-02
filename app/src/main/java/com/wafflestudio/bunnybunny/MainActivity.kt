@@ -33,6 +33,7 @@ import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
+import com.wafflestudio.bunnybunny.pages.GalleryViewProfilePage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
 import com.wafflestudio.bunnybunny.pages.ProfilePage
 import com.wafflestudio.bunnybunny.pages.SearchPage
@@ -228,6 +229,10 @@ class MainActivity : ComponentActivity() {
                     viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
                     viewModel.updateSelectedImages(listOf())
                     GalleryViewPage(viewModel,navController)
+                }
+                composable("GalleryViewProfilePage"){
+                    viewModel.updateGalleryImages(fetchGalleryImages(this@MainActivity))
+                    GalleryViewProfilePage(viewModel,navController)
                 }
                 composable("WishListPage") {
                     WishListPage(

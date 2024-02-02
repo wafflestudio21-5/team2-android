@@ -165,6 +165,23 @@ class MainViewModel @Inject constructor(
         //Log.d("aaaa","update gallery called")
     }
 
+    private val _profileImage = MutableStateFlow("d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
+    val profileImage : StateFlow<String> = _profileImage.asStateFlow()
+
+    private val _selectedIndex = MutableStateFlow(0)
+    val selectedIndex = _selectedIndex.asStateFlow()
+
+    fun updateIndex(index: Int){
+        _selectedIndex.value = index
+        updateGalleryImages(
+            galleryImages.value.toMutableList().mapIndexed { idx, it ->
+                it.copy(isSelected =( idx == index) && it.isSelected.not())
+            }
+        )
+    }
+    fun updateProfileImage(url: String){
+        _profileImage.value = url
+    }
 
     private val _communityPostList = MutableStateFlow(SampleData.DefaultCommunityPostListSample)
     val communityPostList: StateFlow<CommunityPostList> = _communityPostList.asStateFlow()

@@ -93,7 +93,8 @@ fun MyTabPageView(
         viewModel.getUserInfo()
     }
     val user by viewModel.userInfo.collectAsState()
-    Log.d("user",user.nickname)
+    viewModel.updateProfileImage(user.profileImageUrl)
+    Log.d("abcd",viewModel.profileImage.collectAsState().value)
     Column{
         Box(
             modifier = Modifier
@@ -294,12 +295,14 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 modifier = Modifier.padding(20.dp)
             ) {
                 val painter = rememberImagePainter(data = user.profileImageUrl)
+                Log.d("abcd",user.profileImageUrl)
                 Image(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .padding(10.dp)
+                        .size(100.dp, 100.dp)
                         .clip(CircleShape)
                 )
                 Text(
@@ -399,7 +402,9 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
         // 권한 요청 결과 처리. permissions는 Map<String, Boolean> 형태입니다.
         if(permissions.entries.all { it.value }){
             Log.d("aaaa","all_granted")
-            navController.navigate("GalleryViewPage")
+            navController.navigate("GalleryViewProfilePage") {
+                launchSingleTop = true
+            }
         }
     }
     LaunchedEffect(permissionRequested) {
@@ -407,7 +412,9 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
             if (allPermissionsGranted) {
                 // 모든 권한이 이미 부여되었을 경우의 처리
                 Log.d("aaaa","already_granted")
-                navController.navigate("GalleryViewPage")
+                navController.navigate("GalleryViewProfilePage") {
+                    this.launchSingleTop = true
+                }
             } else {
                 // 하나 이상의 권한이 부여되지 않았을 경우 권한 요청 로직
                 multiplePermissionsLauncher.launch(viewModel.neededStoragePermissions())
@@ -442,7 +449,8 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
             val context = LocalContext.current
-            val painter = rememberImagePainter(data = user.profileImageUrl)
+            val painter = rememberImagePainter(data = viewModel.profileImage.collectAsState().value)
+            Log.d("abc",viewModel.profileImage.collectAsState().value)
             Image(
                 painter = painter,
                 contentDescription = null,
@@ -450,6 +458,7 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                 modifier = Modifier
                     .align(CenterHorizontally)
                     .padding(10.dp)
+                    .size(100.dp, 100.dp)
                     .clip(CircleShape)
                     .clickable {
                         setPermissionRequested(true)
@@ -486,7 +495,7 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                                     EditProfileRequest(
                                         null,
                                         newNickname,
-                                        "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800"
+                                        viewModel.profileImage.value
                                     )
                                 )
                             } else {
@@ -494,7 +503,7 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                                     EditProfileRequest(
                                         newPassword,
                                         newNickname,
-                                        "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800"
+                                        viewModel.profileImage.value
                                     )
                                 )
                             }

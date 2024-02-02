@@ -51,7 +51,7 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, 
             Log.d("ACP", refAreaIds.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = viewModel.trySignup(SignupRequest(emailInput, passwordInput, nickname, "profile.com", refAreaIds.map { it.id }))
+                    val response = viewModel.trySignup(SignupRequest(emailInput, passwordInput, nickname, viewModel.profileImage.value, refAreaIds.map { it.id }))
                     Log.d("ACP", "success: ${response}")
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
