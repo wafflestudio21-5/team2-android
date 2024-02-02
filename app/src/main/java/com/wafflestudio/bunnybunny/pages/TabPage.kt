@@ -190,7 +190,7 @@ fun TabPage( viewModel: MainViewModel, itemList: LazyPagingItems<GoodsPostPrevie
 @Composable
 fun TabNavigationBar(selectedTabIndex:MutableState<Int>,tabBarItems: List<BottomNavItem>) {
     NavigationBar(
-        containerColor = if (isSystemInDarkTheme()) Color(0xFF222222) else Color.White) {
+        containerColor = Color.White) {
         // looping over each tab to generate the views and navigation for each item
         tabBarItems.forEachIndexed { index, tabBarItem ->
             NavigationBarItem(
