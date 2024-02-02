@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -70,6 +71,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -79,6 +81,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.ChatContents
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
@@ -404,39 +407,104 @@ fun CommunityTabPageView(navController: NavController){
                     navController.navigate("CommunityPostPage/${it.id}")
                 }
             ){
-                Column{
-                    Row {
-                        Column{
-                            Text(it.title)
-                            Text(it.description, overflow = TextOverflow.Clip, maxLines = 1)
-
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(color = Color(0xFFFFFFFF))
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.height(80.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(if (it.repImg.isNotEmpty()) 0.8f else 1f)
+                            ) {
+                                Text(
+                                    text = it.title,
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        lineHeight = 20.sp,
+                                        fontWeight = FontWeight(400),
+                                        color = Color(0xFF000000),
+                                    )
+                                )
+                                Text(
+                                    text = it.description,
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight(400),
+                                        color = Color(0xFF000000),
+                                    ),
+                                    overflow = TextOverflow.Clip,
+                                    maxLines = 1
+                                )
+                            }
+                            if (it.repImg.isNotEmpty()) {
+                                // 이미지가 있는 경우
+                                val painter = rememberImagePainter(data = it.repImg)
+                                Image(
+                                    painter = painter,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(60.dp)
+                                )
+                            }
                         }
-                        val painter = rememberImagePainter(data = it.repImg)
-                        Image(
-                            painter = painter,
-                            contentDescription = null,
+                        Row(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .width(100.dp)
-                        )
-
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("${it.areaName}·${it.createdAt}·조회${it.viewCnt}", fontSize = 14.sp)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(imageVector = Icons.Outlined.ThumbUp, contentDescription = "like")
+                                Text(it.likeCnt.toString())
+                                Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription = "chat")
+                                Text(it.chatCnt.toString())
+                            }
+                        }
                     }
+                    Divider(
+                        color = Color.Gray.copy(alpha = 0.2f),
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+//                    Row {
+//                        Column{
+//                            Text(it.title)
+//                            Text(it.description, overflow = TextOverflow.Clip, maxLines = 1)
+//
+//                        }
+//                        val painter = rememberImagePainter(data = it.repImg)
+//                        if (it.repImg != "") {
+//                            Image(
+//                                painter = painter,
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .fillMaxHeight()
+//                                    .width(100.dp)
+//                            )
+//                        }
+//
+//                    }
 
-                    Row {
-                        Text("${it.areaName}·${it.createdAt}·조회${it.viewCnt}")
-                        Spacer(modifier = Modifier.weight(1f))
-                        Icon(imageVector = Icons.Outlined.ThumbUp, contentDescription ="like" )
-                        Text(it.likeCnt.toString())
-                        Icon(imageVector = Icons.Outlined.ChatBubbleOutline, contentDescription ="chat" )
-                        Text(it.chatCnt.toString())
-                    }
+
                 }
             }
-            Divider(
-                Modifier
-                    .height(1.dp)
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp))
         }
 
     }
