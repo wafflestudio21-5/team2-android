@@ -36,6 +36,7 @@ import com.wafflestudio.bunnybunny.pages.AreaSettingPage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.GalleryViewProfilePage
+import com.wafflestudio.bunnybunny.pages.MyItemListPage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
 import com.wafflestudio.bunnybunny.pages.ProfilePage
 import com.wafflestudio.bunnybunny.pages.SearchPage
@@ -256,6 +257,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("AreaChangePage"){
                     AreaChangePage(viewModel, navController)
+                }
+                composable("MyItemListPage"){
+                    MyItemListPage(viewModel, navController)
                 }
             }
         }

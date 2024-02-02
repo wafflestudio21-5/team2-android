@@ -1,20 +1,10 @@
 package com.wafflestudio.bunnybunny.viewModel
 
-import android.app.Activity
-import android.content.SharedPreferences
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.wafflestudio.bunnybunny.data.example.AreaSearchResponse
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -24,15 +14,11 @@ import com.wafflestudio.bunnybunny.SampleData
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostContentSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultGoodsPostListSample
 import com.wafflestudio.bunnybunny.SampleData.DefaultUserInfo
-import com.wafflestudio.bunnybunny.SampleData.GoodsPostContentSample
-import com.wafflestudio.bunnybunny.SampleData.GoodsPostListSample
 import com.wafflestudio.bunnybunny.data.example.GoodsPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
-import com.wafflestudio.bunnybunny.data.example.RefAreaId
-import com.wafflestudio.bunnybunny.data.example.RefAreaRequest
 import com.wafflestudio.bunnybunny.data.example. SearchPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
@@ -44,18 +30,12 @@ import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
-import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
 import com.wafflestudio.bunnybunny.lib.network.dto.SocialLoginResponse
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.postImagesResponse
 import com.wafflestudio.bunnybunny.model.ToggleImageItem
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -70,19 +50,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.HttpException
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
-import javax.inject.Singleton
-
-
-
-
-
-
-
-
 
 
 @HiltViewModel
@@ -127,6 +97,9 @@ class MainViewModel @Inject constructor(
 
     private val _wishList = MutableStateFlow(DefaultGoodsPostListSample.data)
     val wishList: StateFlow<List<GoodsPostPreview>> = _wishList.asStateFlow()
+
+    private val _myItemList = MutableStateFlow(DefaultGoodsPostListSample.data)
+    val myPostList: StateFlow<List<GoodsPostPreview>> = _myItemList.asStateFlow()
 
 
     private val _goodsPostContent = MutableStateFlow(DefaultGoodsPostContentSample)
@@ -431,6 +404,10 @@ class MainViewModel @Inject constructor(
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList()
+    }
+
+    suspend fun getMyPostList(){
+        _myItemList.value = api.getMyPostList(getTokenHeader()!!)
     }
 
 

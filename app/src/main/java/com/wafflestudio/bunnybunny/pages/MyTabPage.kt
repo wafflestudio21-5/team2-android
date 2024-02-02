@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,10 +26,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,18 +47,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,21 +62,17 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.wafflestudio.bunnybunny.MainActivity
 import com.wafflestudio.bunnybunny.components.UI.bunnyColor
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
-import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
 import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.utils.formatProductTime
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import java.time.format.TextStyle
 
 @Composable
 fun MyTabPageView(
@@ -127,7 +117,7 @@ fun MyTabPageView(
                         .align(CenterVertically),
 
                 ) {
-                    Text("프로필 보기", fontSize = 13.sp,
+                    Text("프로필 보기", fontSize = 13.sp, color = Color.White,
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Center))
@@ -159,24 +149,48 @@ fun MyTabPageView(
                 }
             }
         }
-
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("MyItemListPage")
+                }
+        ){
+            Row{
+                Icon(
+                    Icons.Outlined.List,
+                    contentDescription = "MyItemList",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .align(CenterVertically)
+                )
+                Box(modifier = Modifier
+                    .padding(10.dp)
+                    .align(CenterVertically)
+                    ,
+                ) {
+                    Text("판매내역")
+                }
+            }
+        }
 
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WishListPage(viewModel: MainViewModel, navController: NavController){
+fun MyItemListPage(viewModel: MainViewModel, navController: NavController){
     val listState = rememberLazyListState()
 
-    LaunchedEffect(viewModel.wishList){
-        viewModel.getWishList()
+    LaunchedEffect(viewModel.myPostList){
+        viewModel.getMyPostList()
     }
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier,
-                title = {Text("관심목록")},
+                title = {Text("판매내역")},
                 navigationIcon = {
                     Row{
                         BackButton(navController = navController)
@@ -195,7 +209,7 @@ fun WishListPage(viewModel: MainViewModel, navController: NavController){
         item {
             //물품 필터
         }
-        items(viewModel.wishList.value) {
+        items(viewModel.myPostList.value) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 18.dp)
@@ -264,6 +278,110 @@ fun WishListPage(viewModel: MainViewModel, navController: NavController){
             )
         }
     }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WishListPage(viewModel: MainViewModel, navController: NavController){
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(viewModel.wishList){
+        viewModel.getWishList()
+    }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                modifier = Modifier,
+                title = {Text("관심목록")},
+                navigationIcon = {
+                    Row{
+                        BackButton(navController = navController)
+                    }
+                },
+            )
+        }
+    ) { paddingvalues ->
+        Divider(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+        )
+
+        LazyColumn(state = listState, modifier = Modifier.padding(paddingvalues)) {
+            item {
+                //물품 필터
+            }
+            items(viewModel.wishList.value) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 18.dp)
+                    .clickable {
+                        Log.d("aaaa", it.id.toString())
+                        //Log.d("aaaa","GoodsPostPage/${it.id}")
+                        navController.navigate("GoodsPostPage/${it.id}")
+                    }
+                ) {
+                    Row(Modifier.align(Alignment.CenterStart)) {
+                        val painter = rememberImagePainter(data = it.repImg)
+
+                        Image(
+                            painter = painter,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(
+                                    1.dp,
+                                    Color.Gray.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(corner = CornerSize(8.dp))
+                                )
+                                .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
+                                .clipToBounds(),
+                            contentScale = ContentScale.Crop,
+                        )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column {
+                            Text(text = it.title, fontSize = 16.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = it.tradingLocation + "·" + formatProductTime(
+                                    it.createdAt,
+                                    it.refreshedAt
+                                ), color = Color.Gray, fontSize = 13.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(text = it.sellPrice.toString() + "원", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            ) {
+                                Spacer(Modifier.weight(1f))
+                                if (it.wishCnt > 0) {
+                                    Image(
+                                        imageVector = Icons.Outlined.FavoriteBorder,
+                                        contentDescription = null
+                                    )
+                                    Text(text = it.wishCnt.toString())
+                                }
+                                if (it.chatCnt > 0) {
+                                    Text("채팅")
+                                    Text(text = it.chatCnt.toString())
+                                }
+                            }
+                        }
+                    }
+                }
+                Divider(
+                    color = Color.Gray.copy(alpha = 0.2f),
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }
+        }
     }
 }
 
