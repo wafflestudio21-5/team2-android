@@ -71,7 +71,7 @@ fun SearchPage(navController: NavController){
     //var offerYn by rememberSaveable { mutableStateOf(false) }
     //var description by rememberSaveable { mutableStateOf("") }
     //var isDescriptionFocused by remember { mutableStateOf(false) }
-    val localFocusManager = LocalFocusManager.current
+    //val localFocusManager = LocalFocusManager.current
 
     val keyboardManager=LocalSoftwareKeyboardController.current
     val (postSearched, setPostSearched) = remember { mutableStateOf(false) }
