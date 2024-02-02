@@ -155,12 +155,12 @@ interface BunnyApi {
 
     @POST("/user/refArea")
     suspend fun postRefArea(@Header("Authorization") authToken: String,
-                            @Body request: RefAreaRequest
+                            @Query(value = "refAreaId") refAreaId: Int
     ): LoginResponse
 
     @DELETE("/user/refArea")
     suspend fun deleteRefArea(@Header("Authorization") authToken: String,
-                              @Body request: RefAreaRequest): LoginResponse
+                              @Query(value = "refAreaId") refAreaId: Int): LoginResponse
 
     @GET("posts/my")
     suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>

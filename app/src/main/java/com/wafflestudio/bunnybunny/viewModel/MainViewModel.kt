@@ -459,8 +459,7 @@ class MainViewModel @Inject constructor(
 
     suspend fun addRefAreaId(id: Int) {
         val tokenHeader = getTokenHeader()
-        val request = RefAreaRequest(id)
-        val response = api.postRefArea(tokenHeader!!, request)
+        val response = api.postRefArea(tokenHeader!!, id)
         setToken(response.token)
         _currentRefAreaId.value = response.refAreaIds.toMutableList()
         setRefAreaId(_currentRefAreaId.value)
@@ -472,8 +471,7 @@ class MainViewModel @Inject constructor(
 
     suspend fun deleteRefAreaId(id: Int) {
         val tokenHeader = getTokenHeader()
-        val request = RefAreaRequest(id)
-        val response = api.deleteRefArea(tokenHeader!!, request)
+        val response = api.deleteRefArea(tokenHeader!!, id)
         setToken(response.token)
         _currentRefAreaId.value = response.refAreaIds.toMutableList()
         setRefAreaId(_currentRefAreaId.value)
