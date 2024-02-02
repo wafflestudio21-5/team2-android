@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }*/
-                    TabPage(index = index, chatViewModel = chatViewModel, navController = navController)
+                    TabPage(index = index,mainViewModel = viewModel, chatViewModel = chatViewModel, navController = navController)
                 }
                 /*
                 composable("TabPage",

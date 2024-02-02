@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -56,6 +58,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -67,6 +70,7 @@ import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.components.compose.LoginInputTextField
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.SubmitPostRequest
+import com.wafflestudio.bunnybunny.utils.calculateMannerTempColor
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +87,7 @@ fun MyTabPageView(
     LaunchedEffect(Dispatchers.IO){
         viewModel.getUserInfo()
     }
-    val user = viewModel.userInfo.collectAsState().value
+    val user by viewModel.userInfo.collectAsState()
     Log.d("user",user.nickname)
     Column{
         Box(
@@ -100,21 +104,27 @@ fun MyTabPageView(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.weight(1f)
-                        .padding(15.dp)
-                        .width(50.dp)
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .width(60.dp)
                         .clip(CircleShape)
                 )
-                Text(user.nickname, modifier = Modifier.align(CenterVertically).weight(2.5f),
-                    fontWeight = FontWeight.ExtraBold, fontSize = 30.sp)
+                Text(user.nickname, modifier = Modifier
+                    .align(CenterVertically)
+                    .weight(1.5f),
+                    fontWeight = FontWeight.ExtraBold, fontSize = 25.sp)
                 Box(
-                    modifier = Modifier.weight(1.5f).padding(15.dp)
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .weight(1f)
                         .background(color = bunnyColor, shape = RoundedCornerShape(10.dp))
                         .align(CenterVertically),
 
                 ) {
                     Text("프로필 보기", fontSize = 13.sp,
-                        modifier = Modifier.padding(10.dp).align(Center))
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .align(Center))
                 }
             }
         }
@@ -130,10 +140,13 @@ fun MyTabPageView(
                 Icon(
                     Icons.Outlined.FavoriteBorder,
                     contentDescription = "WishList",
-                    modifier = Modifier.
-                    padding(start = 15.dp).align(CenterVertically)
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .align(CenterVertically)
                 )
-                Box(modifier = Modifier.padding(10.dp).align(CenterVertically)
+                Box(modifier = Modifier
+                    .padding(10.dp)
+                    .align(CenterVertically)
                     ,
                 ) {
                     Text("관심목록")
@@ -219,7 +232,7 @@ fun WishListPage(viewModel: MainViewModel, navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(viewModel: MainViewModel, navController: NavController){
-    val user = viewModel.userInfo.collectAsState().value
+    val user by viewModel.userInfo.collectAsState()
     Log.d("user",user.nickname)
     Scaffold(
         topBar = {
@@ -241,31 +254,74 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
             )
         Column(modifier = Modifier.padding(paddingvalues)) {
             Row(
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(20.dp)
             ) {
                 val painter = rememberImagePainter(data = user.profileImageUrl)
                 Image(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
                         .padding(10.dp)
                         .clip(CircleShape)
                 )
                 Text(
-                    user.nickname, modifier = Modifier.
-                    align(CenterVertically).weight(2f).padding(start = 10.dp),
+                    user.nickname, modifier = Modifier
+                        .align(CenterVertically)
+                        .padding(start = 20.dp),
                     fontWeight = FontWeight.ExtraBold, fontSize = 30.sp
                 )
             }
             Box(
-                modifier = Modifier.padding(10.dp).fillMaxWidth().height(30.dp)
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .height(30.dp)
                     .background(bunnyColor, shape = RoundedCornerShape(10.dp))
                     .clickable {
-                        navController.navigate("ProfileEditPage") },
+                        navController.navigate("ProfileEditPage")
+                    },
             ){
                 Text("프로필 수정", modifier = Modifier.align(Center))
             }
+            val temp = user.mannerTemp.toDouble()
+            val color = calculateMannerTempColor(temp)
+            val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(30.dp)
+                .border(
+                    width = 1.dp,
+                    color = bunnyColor,
+                    shape = RoundedCornerShape(percent = 20)
+                ),){
+                Text("매너 온도", modifier = Modifier.padding(20.dp),
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(temp.toString(),
+                        modifier = Modifier
+                            .weight((normalizedTemp+0.05).toFloat())
+                            .padding(5.dp),
+                        textAlign = TextAlign.End,
+                        color = color,
+                        fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.weight(1-normalizedTemp.toFloat()))
+                }
+                LinearProgressIndicator(
+                    progress = normalizedTemp.toFloat(), // Normalize to 0.0 to 1.0
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+                        .clip(CircleShape),
+                    color = color
+                )
+            }
+
+
+
 
         }
 
@@ -278,7 +334,7 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
-    val user = viewModel.userInfo.collectAsState().value
+    val user by viewModel.userInfo.collectAsState()
     Log.d("user",user.nickname)
     var newPassword by rememberSaveable { mutableStateOf("") }
     var newNickname by rememberSaveable { mutableStateOf(user.nickname) }
@@ -331,14 +387,17 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                 .fillMaxWidth()
                 .height(1.dp)
         )
-        Column(modifier = Modifier.padding(paddingValues).padding(15.dp)){
+        Column(modifier = Modifier
+            .padding(paddingValues)
+            .padding(15.dp)){
             val context = LocalContext.current
             val painter = rememberImagePainter(data = user.profileImageUrl)
             Image(
                 painter = painter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.align(CenterHorizontally)
+                modifier = Modifier
+                    .align(CenterHorizontally)
                     .padding(10.dp)
                     .clip(CircleShape)
                     .clickable {

@@ -234,7 +234,7 @@ object SampleData {
         role = "",
         profileImageUrl = "https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjcz/MDAxNjEyNDA5MDEyMjg0.lIRX6wm7X3nPYaviwnUFyLm5dC88Mggadj_nglswSHsg.r9so4CS-g8VZGAoaRWrwmPCIuDOsgsU64fQu0kKQRTwg.JPEG.sunny_side_up12/1612312679152%EF%BC%8D11.jpg?type=w800",
         nickname = "HI",
-        mannerTemp = 0.0,
+        mannerTemp = 36.5,
         createdAt = 0L,
         refAreaIds = listOf()
     )
