@@ -93,7 +93,7 @@ fun MyTabPageView(
         viewModel.getUserInfo()
     }
     val user by viewModel.userInfo.collectAsState()
-    viewModel.updateProfileImage(user.profileImageUrl)
+    viewModel.updateProfileImage(user.profileImageUrl?:"https://files.slack.com/files-pri/T06UKPBS8-F06FHL84UTH/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
     Log.d("abcd",viewModel.profileImage.collectAsState().value)
     Column{
         Box(
@@ -295,7 +295,7 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
                 modifier = Modifier.padding(20.dp)
             ) {
                 val painter = rememberImagePainter(data = user.profileImageUrl)
-                Log.d("abcd",user.profileImageUrl)
+                Log.d("abcd",user.profileImageUrl?:"https://files.slack.com/files-pri/T06UKPBS8-F06FHL84UTH/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png")
                 Image(
                     painter = painter,
                     contentDescription = null,

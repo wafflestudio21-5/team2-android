@@ -49,11 +49,11 @@ data class SocialSignupResponse(
 @JsonClass(generateAdapter = true)
 data class UserInfo(
     @Json(name = "id") val id: Int,
-    @Json(name = "email") val email: String,
+    @Json(name = "email") val email: String?,
     @Json(name = "provider") val provider: String,
     @Json(name = "sub") val sub: String?,
     @Json(name = "role") val role: String,
-    @Json(name = "profileImageUrl") val profileImageUrl: String,
+    @Json(name = "profileImageUrl") val profileImageUrl: String?,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "mannerTemp") val mannerTemp: Double,
     @Json(name = "createdAt") val createdAt: Long,
