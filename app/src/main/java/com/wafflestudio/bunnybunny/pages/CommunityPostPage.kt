@@ -293,14 +293,14 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                             }
                         }, onComment = { childComment ->
                             scope.launch {
-                                viewModel.postComment(id, childComment, it.id, myInfo.value.profileImageUrl)
+                                viewModel.postComment(id, childComment, it.id, myInfo.value.profileImageUrl ?: "")
                                 viewModel.fetchComments(id)
                                 keyboardManager?.hide()
                             }
                         }, onEditComment = { commentId, comment ->
                             scope.launch {
                                 viewModel.editComment(
-                                    id, commentId, comment, myInfo.value.profileImageUrl)
+                                    id, commentId, comment, myInfo.value.profileImageUrl ?: "")
                                 viewModel.fetchComments(id)
                                 editingCommentId = null
                                 keyboardManager?.hide()
@@ -336,7 +336,7 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                             scope.launch {
                                 keyboardManager?.hide()
                                 focusManager.freeFocus()
-                                viewModel.postComment(id, writingComment, null, myInfo.value.profileImageUrl)
+                                viewModel.postComment(id, writingComment, null, myInfo.value.profileImageUrl ?: "")
                                 writingComment = ""
                                 viewModel.fetchComments(id)
                             }

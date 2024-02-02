@@ -124,6 +124,18 @@ interface BunnyApi {
     @GET("/area/search")
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
 
+    @GET("/area/{id}")
+    suspend fun getAreaName(@Path("id") id: Int): SimpleAreaData
+
+    @POST("/user/refArea")
+    suspend fun postRefArea(@Header("Authorization") authToken: String,
+                            @Query(value = "refAreaId") refAreaId: Int
+    ): LoginResponse
+
+    @DELETE("/user/refArea")
+    suspend fun deleteRefArea(@Header("Authorization") authToken: String,
+                              @Query(value = "refAreaId") refAreaId: Int): LoginResponse
+
     @GET("/channels")
     suspend fun chatChannelRequest(): ChatListResponse
 
@@ -174,4 +186,13 @@ interface BunnyApi {
         @Path("communityId") communityId: Long,
         @Path("comment_id") commentId: Long,
     )
+
+    @GET("posts/my")
+    suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
+
+    @GET("posts/auction/{postId}")
+    suspend fun getAuctionList(@Header("Authorization") authToken: String, @Path("postId") postId: Long): List<AuctionInfo>
+
+    @POST("posts/auction/{postId}")
+    suspend fun postAuction(@Header("Authorization") authToken: String, @Path("postId") postId: Long, @Body request: AuctionRequest)
 }
