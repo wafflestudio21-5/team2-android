@@ -33,7 +33,9 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel, navController: NavCont
 
     LaunchedEffect(currentRefAreaId) {
         // 비동기로 지역명 가져오는 함수 (예시로 delay 사용)
-        viewModel.fetchAreaName(currentRefAreaId[0])
+        if (currentRefAreaId.size > 0) {
+            viewModel.fetchAreaName(currentRefAreaId[0])
+        }
         if (currentRefAreaId.size == 2) {
             viewModel.fetchAreaName(currentRefAreaId[1])
         }
@@ -42,11 +44,10 @@ fun CurrentAreaWithDropDownMenu(viewModel: MainViewModel, navController: NavCont
     Column (modifier = Modifier.clickable {
         isDropDownMenuExpanded = true
     }) {
-        Text(modifier = Modifier
-            ,
-            text = firstAreaName.value)
-
         if (viewModel.getRefAreaId().size == 2) {
+
+            Text(modifier = Modifier,
+                text = firstAreaName.value)
 
             DropdownMenu (
                 modifier = Modifier.wrapContentSize(),
