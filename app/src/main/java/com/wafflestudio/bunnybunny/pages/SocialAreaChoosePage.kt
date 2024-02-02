@@ -48,7 +48,7 @@ fun SocialAreaChoosePage(nickname: String, idToken: String, navController: NavCo
     Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         AreaSearchBar(modifier = Modifier, areaDetails)
         AreaContents(modifier = Modifier, refAreaIds, areaDetails, navController, false)
-        BasicButton(modifier = Modifier, onClick = {
+        BunnyButton(modifier = Modifier, onClick = {
             Log.d("ACP", refAreaIds.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 try {
