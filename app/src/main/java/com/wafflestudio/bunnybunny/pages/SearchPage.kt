@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -106,22 +109,32 @@ fun SearchPage(navController: NavController){
                                 keyboardManager?.hide()
                             }
                         ),
-                        decorationBox = {
-                                innerTextField ->
+                        decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min=40.dp)
-                                    .clip(RoundedCornerShape(5.dp))
-                                    .background(color = Color(0xFF444444))
-                                    .padding(horizontal = 4.dp)
-                                    .horizontalScroll(scrollState),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                if(keyword.isEmpty()){
-                                    Text("(지역명) 근처에서 검색", color = Color.Gray)
-                                }
+                                    .background(
+                                        color = Color(0xFFF6F7F9),
+                                        shape = RoundedCornerShape(percent = 20)
+                                    )
+                                    .padding(12.dp),
+                            ) {
                                 innerTextField()
+                                if (keyword.isEmpty()) {
+                                    Text("물품명으로 검색하기", color = Color(0xFFDDDFE2), fontSize = 15.sp)
+                                } else {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Image(
+                                            modifier = Modifier.clickable { keyword = "" },
+                                            imageVector = Icons.Default.Cancel,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
                             }
                         }
                     )
