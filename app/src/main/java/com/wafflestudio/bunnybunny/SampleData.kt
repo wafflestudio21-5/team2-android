@@ -3,6 +3,7 @@ package com.wafflestudio.bunnybunny
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostPreview
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.BidUser
 import com.wafflestudio.bunnybunny.lib.network.dto.Community
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
@@ -183,6 +184,11 @@ object SampleData {
         wishCnt = 2,
         chatCnt = 1,
         isWish = false,
+        maxBidPrice = BidUser(
+            userId = 0,
+            bidPrice = 0,
+            nickname = ""
+        )
     )
 
     val DefaultGoodsPostContentSample=GoodsPostContent(
@@ -207,6 +213,11 @@ object SampleData {
         wishCnt = 0,
         chatCnt = 0,
         isWish=false,
+        maxBidPrice = BidUser(
+            userId = 0,
+            bidPrice = 0,
+            nickname = ""
+        )
     )
     val CommunityPostListSample=CommunityPostList(
         data = listOf(CommunityPostPreview(

@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,6 +65,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -83,8 +87,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,8 +103,12 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
     var title by rememberSaveable { mutableStateOf("") }
     var isTitleFocused by remember { mutableStateOf(false) }
     val titleScrollState = rememberScrollState()
+    var type by rememberSaveable { mutableStateOf("TRADE") }
+    var isAuction by rememberSaveable { mutableStateOf(false) }
+    var deadline by rememberSaveable { mutableStateOf("0") }
     var sellPrice by rememberSaveable { mutableStateOf("") }
     var isSellPriceFocused by remember { mutableStateOf(false) }
+    var isAuctionFocused by remember { mutableStateOf(false) }
     var offerYn by rememberSaveable { mutableStateOf(false) }
     var description by rememberSaveable { mutableStateOf("") }
     var isDescriptionFocused by remember { mutableStateOf(false) }
@@ -141,20 +152,22 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
             .clip(RoundedCornerShape(5.dp))
             .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(7.dp))
             .clickable {
-                if (title.isNotEmpty() && sellPrice.isNotEmpty() && description.isNotEmpty()) {
+                if (title.isNotEmpty() && sellPrice.isNotEmpty() && description.isNotEmpty() && deadline.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val images=viewModel.uploadImages(uploadImages,context).images
+                            val images = viewModel.uploadImages(uploadImages, context).images
                             Log.d("submitpost", "image success")
                             viewModel.submitPost(
                                 SubmitPostRequest(
                                     areaId = viewModel.getRefAreaId()[0],
                                     title = title,
                                     description = description,
-                                    type = if (sellPrice.toInt() == 0) "SHARE" else "TRADE",
-                                    repImg=images[0],
+                                    type = if (sellPrice.toInt() == 0) "SHARE" else {
+                                        if (isAuction) "AUCTION" else "TRADE"
+                                    },
+                                    repImg = images[0],
                                     images = images,
-                                    deadline = 0L,
+                                    deadline = System.currentTimeMillis() + deadline.toLong()*36*10e5.toLong(),
                                     offerYn = offerYn,
                                     sellPrice = sellPrice.toInt()
                                 )
@@ -219,16 +232,19 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                         }
                         LazyRow{
                             items(uploadImages){  uri->
-                                Spacer(modifier = Modifier.fillMaxHeight().width(16.dp))
+                                Spacer(modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(16.dp))
                                 Box(modifier = Modifier
                                     .size(80.dp)
                                     .clip(RoundedCornerShape(5.dp))
                                     .border(
                                         width = 2.dp,
                                         color = Color.Gray,
-                                        shape = RoundedCornerShape(7.dp))
+                                        shape = RoundedCornerShape(7.dp)
+                                    )
                                     .clickable {
-                                        val updateList=uploadImages.toMutableList()
+                                        val updateList = uploadImages.toMutableList()
                                         updateList.remove(uri)
                                         viewModel.updateUploadImages(updateList)
                                     }){
@@ -342,6 +358,61 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                             }
                         }
                     )
+                    if(isAuction){
+                        Log.d("aaaa",isAuction.toString())
+                        BasicTextField(
+                            value = deadline,
+                            onValueChange = {
+                                deadline = it
+                            },
+                            modifier = Modifier.onFocusChanged { focusState ->
+                                isAuctionFocused = focusState.isFocused
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Number,
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { localFocusManager.moveFocus(FocusDirection.Down) }
+                            ),
+                            decorationBox = {
+                                    innerTextField ->
+                                val intDeadline = try{
+                                    deadline.toInt()
+                                } catch(e: Exception){
+                                    -1
+                                }
+                                if(intDeadline>90) {
+                                    Text("90일 이하로 입력해주세요.", color = Color.Red)
+                                } else if(intDeadline<0){
+                                    Toast.makeText(LocalContext.current, "숫자만 입력할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(5.dp))
+                                            .border(
+                                                width = 2.dp,
+                                                color = if (isAuctionFocused) Color.Black else Color.Gray,
+                                                shape = RoundedCornerShape(7.dp)
+                                            )
+                                            .padding(12.dp),
+                                    ){
+                                        Row {
+                                            Box{
+                                                if(deadline.isEmpty()){
+                                                    Text("경매 기간을 입력해주세요.", color = Color.Gray)
+                                                }
+                                                Text("일", textAlign = TextAlign.End)
+                                                innerTextField()
+                                            }
+                                        }
+
+                                    }
+
+                            }
+                        )
+                    }
                     Spacer(modifier = Modifier
                         .fillMaxWidth()
                         .height(20.dp))
@@ -352,6 +423,15 @@ fun WriteGoodsPostPage(viewModel: MainViewModel,navController: NavController){
                         )
                         Box(contentAlignment = Alignment.Center){Text("가격 제안 받기")}
                     }
+                    Row(verticalAlignment = Alignment.CenterVertically){
+                        Checkbox(
+                            checked = isAuction,
+                            onCheckedChange = {
+                                isAuction = it }
+                        )
+                        Box(contentAlignment = Alignment.Center){Text("경매")}
+                    }
+
 
                     Spacer(modifier = Modifier
                         .fillMaxWidth()

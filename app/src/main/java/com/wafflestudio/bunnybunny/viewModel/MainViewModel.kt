@@ -361,4 +361,14 @@ class MainViewModel @Inject constructor(
     fun enableCallFirstGoodsPostList() {
         prefRepository.setPref("CanCallGoodsPostList","true")
     }
+
+    suspend fun postBidPrice(id: Long, maxPrice: Int){
+        api.postBidPrice(getTokenHeader()!!, id, maxPrice)
+    }
+    suspend fun getBidList(id: Long){
+        api.getBidList(getTokenHeader()!!, id)
+    }
+    suspend fun getMyBidList(){
+        api.getMyBidList(getTokenHeader()!!)
+    }
 }

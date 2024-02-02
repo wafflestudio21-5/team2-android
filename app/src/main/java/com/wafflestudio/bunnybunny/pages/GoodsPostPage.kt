@@ -251,6 +251,7 @@ fun GoodsPostToolbar(alpha: Float, navController: NavController) {
 @Composable
 
 fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostContent,navController: NavController){
+    Log.d("good",goodsPostContent.toString())
     Divider(modifier = Modifier
         .height(1.dp)
         .fillMaxWidth())
@@ -297,9 +298,23 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, goodsPostContent:GoodsPostConte
             Text("${goodsPostContent.sellPrice}원", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(if (goodsPostContent.offerYn) "가격 제안 가능" else "가격 제안 불가", fontSize = 15.sp, color = Color.Gray)
         }
-        Spacer(modifier = Modifier.weight(1f))
+
+        if(goodsPostContent.type == "AUCTION"){
+            Box(modifier = Modifier
+                .padding(end = 12.dp)
+                .height(50.dp)
+                .width(100.dp)
+                .clip(shape = RoundedCornerShape(4.dp))
+                .background(color = bunnyColor)
+                .clickable {
+                    navController.navigate("AuctionPage?id=${goodsPostContent.id}&maxPrice=${goodsPostContent.maxBidPrice.bidPrice}")
+                }, contentAlignment = Alignment.Center
+            ) {
+                Text("경매 제안하기", color = Color.White)
+            }
+        }
         Box(modifier = Modifier
-            .padding(end = 16.dp)
+            .padding(end = 12.dp)
             .height(50.dp)
             .width(100.dp)
             .clip(shape = RoundedCornerShape(4.dp))

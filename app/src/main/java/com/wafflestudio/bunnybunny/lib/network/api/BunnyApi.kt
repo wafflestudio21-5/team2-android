@@ -11,6 +11,7 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.UserInfo
+import com.wafflestudio.bunnybunny.lib.network.dto.BidUser
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
@@ -132,4 +133,16 @@ interface BunnyApi {
     @PUT("/user")
     suspend fun putUserInfo(@Header("Authorization") authToken: String,
                     @Body request: EditProfileRequest): UserInfo
+
+    @POST("/posts/auction/{post_id}")
+    suspend fun postBidPrice(@Header("Authorization") authToken: String,
+                             @Path("post_id") postId:Long,
+                                 @Body request: Int)
+
+    @GET("/posts/auction/{post_id}")
+    suspend fun getBidList(@Header("Authorization") authToken: String,
+                           @Path("post_id") postId:Long,): List<BidUser>
+
+    @GET("/posts/auction")
+    suspend fun getMyBidList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
 }

@@ -1,11 +1,13 @@
 package com.wafflestudio.bunnybunny
 
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -29,6 +31,7 @@ import com.wafflestudio.bunnybunny.pages.GalleryViewPage
 import com.wafflestudio.bunnybunny.pages.SignupPage
 import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
+import com.wafflestudio.bunnybunny.pages.AuctionPage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
@@ -57,6 +60,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -80,6 +84,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     private fun MyApp(
         modifier: Modifier = Modifier,
@@ -234,6 +239,11 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
+                }
+                composable("AuctionPage/{id}"){
+                    val id = it.arguments!!.getString("id")
+                    val maxPrice = it.arguments!!.getString("maxPrice")
+                    AuctionPage(viewModel, navController, id = id!!.toLong(), maxPrice!!.toInt())
                 }
             }
         }
