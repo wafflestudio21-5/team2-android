@@ -289,25 +289,30 @@ fun ProfilePage(viewModel: MainViewModel, navController: NavController){
             val normalizedTemp = (temp - 30).coerceIn(0.0, 15.0) / 15f
             Column(modifier = Modifier
                 .fillMaxWidth()
-                .padding(30.dp)
-                .border(
-                    width = 1.dp,
-                    color = bunnyColor,
-                    shape = RoundedCornerShape(percent = 20)
-                ),){
+                .padding(20.dp)
+//                .border(
+//                    width = 1.dp,
+//                    color = bunnyColor,
+//                    shape = RoundedCornerShape(percent = 20)
+//                ),
+                ){
                 Text("매너 온도", modifier = Modifier.padding(20.dp),
                     fontWeight = FontWeight.ExtraBold
+                )
+                Text(text = "${temp} °C \uD83D\uDE04",
+                    modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.End),
+                    color = color,
+                    fontWeight = FontWeight.Bold
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ){
                     Text(temp.toString(),
                         modifier = Modifier
-                            .weight((normalizedTemp+0.05).toFloat())
+                            .weight((normalizedTemp + 0.05).toFloat())
                             .padding(5.dp),
-                        textAlign = TextAlign.End,
-                        color = color,
-                        fontWeight = FontWeight.Bold)
+                        textAlign = TextAlign.End
+                        )
                     Spacer(Modifier.weight(1-normalizedTemp.toFloat()))
                 }
                 LinearProgressIndicator(
@@ -408,18 +413,24 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                     },
                 alignment = Center
             )
-            Text("새 닉네임", modifier = Modifier.align(Alignment.Start).padding(horizontal = 17.dp, vertical = 5.dp))
+            Text("새 닉네임", modifier = Modifier
+                .align(Alignment.Start)
+                .padding(horizontal = 17.dp, vertical = 5.dp))
             LoginInputTextField(
                 value = newNickname,
                 onValueChange = {newText -> newNickname = newText},
                 placeholder = newNickname,)
-            Text("새 비밀번호", modifier = Modifier.align(Alignment.Start).padding(horizontal = 17.dp, vertical = 5.dp))
+            Text("새 비밀번호", modifier = Modifier
+                .align(Alignment.Start)
+                .padding(horizontal = 17.dp, vertical = 5.dp))
             LoginInputTextField(
                 value = newPassword,
                 onValueChange = {newText -> newPassword = newText},
                 placeholder = newPassword,)
             Button(
-                modifier = Modifier.align(CenterHorizontally).padding(5.dp),
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = bunnyColor,
                     contentColor = Color.White,
