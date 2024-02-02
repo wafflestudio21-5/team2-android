@@ -34,20 +34,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.pages.RefArea
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @Composable
-fun AreaContents(modifier: Modifier, refAreaIds: MutableList<RefArea>, areaDetails: List<SimpleAreaData>) {
+fun AreaContents(modifier: Modifier, refAreaIds: MutableList<RefArea>, areaDetails: List<SimpleAreaData>, navController: NavController, isForChange: Boolean) {
     if (areaDetails.isNotEmpty()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(areaDetails.size) { position ->
-                AreaBox(
-                    modifier = Modifier,
-                    areaDetail = areaDetails[position],
-                    areaIds = refAreaIds,
-                )
+                if (!isForChange) {
+                    AreaBox(
+                        modifier = Modifier,
+                        areaDetail = areaDetails[position],
+                        areaIds = refAreaIds,
+                    )
+                } else {
+
+                }
+
             }
         }
     }

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.wafflestudio.bunnybunny.components.compose.AreaContents
@@ -37,7 +38,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @Composable
-fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, onNavigateToStart: () -> Unit) {
+fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, navController: NavController, onNavigateToStart: () -> Unit) {
     val refAreaIds = remember { mutableStateListOf<RefArea>() }
     val viewModel = hiltViewModel<MainViewModel>()
     val areaDetails by viewModel.areaDetails.collectAsState()
@@ -45,7 +46,7 @@ fun AreaChoosePage(emailInput: String, passwordInput: String, nickname: String, 
 
     Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         AreaSearchBar(modifier = Modifier, areaDetails)
-        AreaContents(modifier = Modifier, refAreaIds, areaDetails)
+        AreaContents(modifier = Modifier, refAreaIds, areaDetails, navController, false)
 
         BunnyButton(modifier = Modifier, onClick = {
             Log.d("ACP", refAreaIds.toString())

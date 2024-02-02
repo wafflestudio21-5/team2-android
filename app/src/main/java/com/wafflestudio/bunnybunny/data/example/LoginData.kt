@@ -40,6 +40,12 @@ data class SocialSignupRequest(
 data class SignupResponse(
     @Json(name = "user") val user: UserInfo
 )
+
+@JsonClass(generateAdapter = true)
+data class SocialSignupResponse(
+    @Json(name = "user") val user: SocialUserInfo
+)
+
 @JsonClass(generateAdapter = true)
 data class UserInfo(
     @Json(name = "id") val id: Int,

@@ -6,10 +6,13 @@ import com.wafflestudio.bunnybunny.data.example.CreateChatRoomRequest
 import com.wafflestudio.bunnybunny.data.example.EditProfileRequest
 import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
+import com.wafflestudio.bunnybunny.data.example.RefAreaRequest
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
+import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
+import com.wafflestudio.bunnybunny.data.example.SocialSignupResponse
 import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.AuctionInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.AuctionRequest
@@ -120,7 +123,7 @@ interface BunnyApi {
     suspend fun socialLoginRequest(@Body request: SocialLoginRequest, @Path("provider") provider: String): SocialLoginResponse
 
     @POST("/signup/{provider}")
-    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): SignupRequest
+    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): SocialSignupResponse
 
     @GET("/area/search")
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
@@ -146,6 +149,18 @@ interface BunnyApi {
     @PUT("/user")
     suspend fun putUserInfo(@Header("Authorization") authToken: String,
                     @Body request: EditProfileRequest): UserInfo
+
+    @GET("/area/{id}")
+    suspend fun getAreaName(@Path("id") id: Int): SimpleAreaData
+
+    @POST("/user/refArea")
+    suspend fun postRefArea(@Header("Authorization") authToken: String,
+                            @Body request: RefAreaRequest
+    ): LoginResponse
+
+    @DELETE("/user/refArea")
+    suspend fun deleteRefArea(@Header("Authorization") authToken: String,
+                              @Body request: RefAreaRequest): LoginResponse
 
     @GET("posts/my")
     suspend fun getMyPostList(@Header("Authorization") authToken: String): List<GoodsPostPreview>
