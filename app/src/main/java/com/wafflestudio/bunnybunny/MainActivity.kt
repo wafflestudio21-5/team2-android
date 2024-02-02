@@ -33,6 +33,7 @@ import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.ProfileEditPage
 import com.wafflestudio.bunnybunny.pages.ProfilePage
+import com.wafflestudio.bunnybunny.pages.SearchPage
 import com.wafflestudio.bunnybunny.pages.SocialAreaChoosePage
 import com.wafflestudio.bunnybunny.pages.SocialSignupPage
 import com.wafflestudio.bunnybunny.pages.StartPage
@@ -234,6 +235,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("ProfileEditPage"){
                     ProfileEditPage(viewModel, navController)
+                }
+                composable("SearchPage"){
+                    SearchPage(navController)
                 }
             }
         }

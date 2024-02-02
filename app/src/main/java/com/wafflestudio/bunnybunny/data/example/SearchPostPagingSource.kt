@@ -17,7 +17,6 @@ import java.io.IOException
  */
 
 data class SearchParam(
-    val keyword:String,
     val cur: Long?,
     val count: Int,
 )
@@ -27,6 +26,7 @@ class SearchPostPagingSource(
     val token:String,
     val distance:Int,
     val areaId:Int,
+    val keyword:String,
 ) : PagingSource<SearchParam, GoodsPostPreview>() {
     override suspend fun load(params: LoadParams<SearchParam>): LoadResult<SearchParam, GoodsPostPreview> {
 
@@ -36,14 +36,14 @@ class SearchPostPagingSource(
         return try {
             // Key may be null during a refresh, if no explicit key is passed into Pager
             // construction. Use 0 as default, because our API is indexed started at index 0
-            val pageNumber = params.key ?: SearchParam(params.key!!.keyword, 0,0)
+            val pageNumber = params.key ?: SearchParam(0,0)
 
             // Suspending network load via Retrofit. This doesn't need to be wrapped in a
             // withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine
             // CallAdapter dispatches on a worker thread.
             val response = api.searchPostList(
                 authToken = token,
-                keyword=params.key!!.keyword,
+                keyword=keyword,
                 cur = params.key?.cur,
                 distance = distance,
                 areaId = areaId,
@@ -52,11 +52,11 @@ class SearchPostPagingSource(
 
             // Since 0 is the lowest page number, return null to signify no more pages should
             // be loaded before it.
-            val prevKey = if (pageNumber.count > 0) SearchParam(params.key!!.keyword,params.key?.cur, params.key?.count ?: 0) else null
+            val prevKey = if (pageNumber.count > 0) SearchParam(params.key?.cur, params.key?.count ?: 0) else null
 
             // This API defines that it's out of data when a page returns empty. When out of
             // data, we return `null` to signify no more pages should be loaded
-            val nextKey = if (response.data.isNotEmpty()) SearchParam(params.key!!.keyword,response.cur,response.count ?: 0) else null
+            val nextKey = if (response.data.isNotEmpty()) SearchParam(response.cur,response.count ?: 0) else null
             LoadResult.Page(
                 data = response.data,
                 prevKey = prevKey,

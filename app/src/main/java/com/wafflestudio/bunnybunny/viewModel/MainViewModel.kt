@@ -32,7 +32,7 @@ import com.wafflestudio.bunnybunny.data.example.LoginRequest
 import com.wafflestudio.bunnybunny.data.example.LoginResponse
 import com.wafflestudio.bunnybunny.data.example.PrefRepository
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
-import com.wafflestudio.bunnybunny.data.example.SearchPostPagingSource
+import com.wafflestudio.bunnybunny.data.example. SearchPostPagingSource
 import com.wafflestudio.bunnybunny.data.example.SignupRequest
 import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
@@ -179,6 +179,7 @@ class MainViewModel @Inject constructor(
             token = "",
             distance = 0,
             areaId = 0,
+            keyword = ""
         )
     )
 
@@ -193,17 +194,16 @@ class MainViewModel @Inject constructor(
     )
 
     suspend fun updateSearchPostList(
-        cur:Long?,
-        seed:Int?,
         distance:Int,
         areaId:Int,
-        count:Int,) {
+        keyword:String) {
         searchQuerySignal.emit(
             SearchPostPagingSource(
                 api = api,
                 token = getTokenHeader()!!,
                 distance = distance,
                 areaId = areaId,
+                keyword=keyword
             )
         )
     }
@@ -220,6 +220,7 @@ class MainViewModel @Inject constructor(
                     token = getTokenHeader()!!,
                     distance=item.distance,
                     areaId=item.areaId,
+                    keyword = item.keyword
                 )
             }
         ).flow
