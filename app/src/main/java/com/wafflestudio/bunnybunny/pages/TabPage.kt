@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Diversity3
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -382,9 +383,23 @@ fun HomeTabPageView(listState:LazyListState,navController: NavController){
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(text = it.sellPrice.toString() + "원", fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            if (it.wishCnt > 0 || it.chatCnt > 0) {
-                                Text(text = (if (it.wishCnt > 0) "관심 " + it.wishCnt.toString() else "") + (if (it.chatCnt > 0) "채팅 " + it.chatCnt.toString() else ""))
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            ) {
+                                Spacer(Modifier.weight(1f))
+                                if (it.wishCnt > 0) {
+                                    Image(
+                                        imageVector = Icons.Outlined.FavoriteBorder,
+                                        contentDescription = null
+                                    )
+                                    Text(text = it.wishCnt.toString())
+                                }
+                                if (it.chatCnt > 0) {
+                                    Text("채팅")
+                                    Text(text = it.chatCnt.toString())
+                                }
                             }
                         }
                     }
