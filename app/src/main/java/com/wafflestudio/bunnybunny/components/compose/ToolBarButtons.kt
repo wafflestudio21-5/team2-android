@@ -19,7 +19,10 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
+import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 
 @Composable
 fun BackButton(navController: NavController){
@@ -87,8 +90,14 @@ fun PersonButton(){
     }
 }
 @Composable
-fun SettingsButton(){
-    IconButton(onClick = {}) {
+fun SettingsButton(navController: NavController){
+    val viewModel = hiltViewModel<MainViewModel>()
+    IconButton(onClick =  {
+        viewModel.logOutApp()
+        navController.navigate("StartPage"){
+            popUpTo("StartPage") { inclusive = false }
+        }
+    }) {
         Icon(
             imageVector = Icons.Outlined.Settings,
             contentDescription = "Settings"

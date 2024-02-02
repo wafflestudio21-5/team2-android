@@ -259,6 +259,9 @@ class MainViewModel @Inject constructor(
         prefRepository.setPref("token",token)
     }
 
+    fun clearToken(){
+        prefRepository.clearPref("token")
+    }
     fun getRefAreaId(): List<Int> {
         return prefRepository.getPref("refAreaId")?.trimEnd()?.split(" ")?.map {
             it.toInt()
@@ -398,6 +401,10 @@ class MainViewModel @Inject constructor(
 
     fun initializeApp() {
         enableCallFirstGoodsPostList()
+    }
+    fun logOutApp() {
+        clearToken()
+        setRefAreaId(listOf())
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList(getTokenHeader()!!)

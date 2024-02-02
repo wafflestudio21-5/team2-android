@@ -255,7 +255,7 @@ fun TabPageToolBar(selectedTabIndex:MutableState<Int>,navController: NavControll
                         NotificationsButton()
                     }
                     3-> {
-                        SettingsButton()
+                        SettingsButton(navController)
                     }
                 }
 
