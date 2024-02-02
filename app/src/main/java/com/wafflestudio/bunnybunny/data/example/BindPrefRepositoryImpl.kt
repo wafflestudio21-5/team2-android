@@ -24,4 +24,11 @@ class BindPrefRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun clearPref(key: String) {
+        with(sharedPref.edit()){
+            this.remove(key)
+            apply()
+        }
+    }
+
 }
