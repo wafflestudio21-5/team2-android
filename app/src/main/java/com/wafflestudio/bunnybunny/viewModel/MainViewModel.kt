@@ -39,6 +39,7 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
+import com.wafflestudio.bunnybunny.data.example.SocialSignupResponse
 import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
@@ -376,7 +377,7 @@ class MainViewModel @Inject constructor(
         return api.socialLoginRequest(data, "kakao")
     }
 
-    suspend fun trySocialSignUp(data: SocialSignupRequest): SignupRequest {
+    suspend fun trySocialSignUp(data: SocialSignupRequest): SocialSignupResponse {
         return api.socialSignUpRequest(data, "kakao")
     }
 

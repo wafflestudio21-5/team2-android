@@ -12,6 +12,7 @@ import com.wafflestudio.bunnybunny.data.example.SignupResponse
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
 import com.wafflestudio.bunnybunny.data.example.SocialLoginRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
+import com.wafflestudio.bunnybunny.data.example.SocialSignupResponse
 import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.AuctionInfo
 import com.wafflestudio.bunnybunny.lib.network.dto.AuctionRequest
@@ -122,7 +123,7 @@ interface BunnyApi {
     suspend fun socialLoginRequest(@Body request: SocialLoginRequest, @Path("provider") provider: String): SocialLoginResponse
 
     @POST("/signup/{provider}")
-    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): SignupRequest
+    suspend fun socialSignUpRequest(@Body request: SocialSignupRequest, @Path("provider") provider: String): SocialSignupResponse
 
     @GET("/area/search")
     suspend fun areaSearch(@Query("query") query: String, @Query("cursor") cursor: Int): AreaSearchResponse
