@@ -108,7 +108,7 @@ val tabBarItems = listOf(homeTab, communityTab, chatTab, myTab)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavController){
+fun TabPage(index:Int?=null,mainViewModel: MainViewModel, chatViewModel: ChatViewModel, navController: NavController){
 
     val viewModel = hiltViewModel<MainViewModel>()
     val selectedTabIndex= rememberSaveable {
@@ -119,7 +119,7 @@ fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavCont
     val homePagelistState = rememberLazyListState()
 
 
-    val token = viewModel.getOriginalToken()
+    val token = mainViewModel.getOriginalToken()
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(token) {
@@ -163,7 +163,7 @@ fun TabPage(index:Int?=null,chatViewModel: ChatViewModel, navController: NavCont
                     }
                 }
                 2-> ChatTabPageView(chatViewModel, navController)
-                3-> MyTabPageView(viewModel = viewModel, navController = navController)
+                3-> MyTabPageView(viewModel = mainViewModel, navController = navController)
             }
         }
     }

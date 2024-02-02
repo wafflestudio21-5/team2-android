@@ -89,7 +89,7 @@ data class RefAreaId(
 
 @JsonClass(generateAdapter = true)
 data class EditProfileRequest(
-    @Json(name = "password") val password: String,
+    @Json(name = "password") val password: String?,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "profileImage") val profileImage: String
 )
