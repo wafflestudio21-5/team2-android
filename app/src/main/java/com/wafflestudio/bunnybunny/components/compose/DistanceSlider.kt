@@ -36,7 +36,7 @@ import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 fun DistanceSlider() {
 
     val viewModel = hiltViewModel<MainViewModel>()
-    var sliderValue by remember { mutableStateOf(0f) }
+    var sliderValue by remember { mutableStateOf(viewModel.getDistance().toFloat()) }
     val steps = 2
 
     Column(

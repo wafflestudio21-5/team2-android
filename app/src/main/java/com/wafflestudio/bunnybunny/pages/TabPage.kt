@@ -307,12 +307,16 @@ fun WritePostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 fun HomeTabPageView(viewModel: MainViewModel, listState:LazyListState, itemList: LazyPagingItems<GoodsPostPreview>, navController: NavController){
 //    val viewModel = hiltViewModel<MainViewModel>()
     var isRefreshing by remember { mutableStateOf(false) }
+
+    val distance = viewModel.currentDistance.collectAsState()
+    val currentRefAreaId = viewModel.currentRefAreaId.collectAsState()
+
     val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = {
         isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.updateGoodsPostList(
-                distance = 0,
-                areaId = viewModel.getRefAreaId()[0],
+                distance = distance.value,
+                areaId = currentRefAreaId.value[0],
                 count = 0, cur = null, seed = null
             )
             isRefreshing = false
@@ -323,8 +327,8 @@ fun HomeTabPageView(viewModel: MainViewModel, listState:LazyListState, itemList:
             viewModel.disableCallFirstGoodsPostList()
             Log.d("aaaa", "updateGoodsPostList called in HomeTabPageView LaunchedEffect")
             viewModel.updateGoodsPostList(
-                distance = 0,
-                areaId = viewModel.getRefAreaId()[0],
+                distance = distance.value,
+                areaId = currentRefAreaId.value[0],
                 count=0,cur=null,seed=null)
         }
     }
@@ -421,6 +425,10 @@ fun CommunityTabPageView(navController: NavController){
     val itemList = viewModel.communityPostList.collectAsLazyPagingItems()
     val listState = rememberLazyListState()
 
+    val mainViewModel = hiltViewModel<MainViewModel>()
+    val distance = mainViewModel.currentDistance.collectAsState()
+    val currentRefAreaId = mainViewModel.currentRefAreaId.collectAsState()
+
     LaunchedEffect(key1 = true){
         Log.d("aaaa123", "hihihi")
 
@@ -428,8 +436,8 @@ fun CommunityTabPageView(navController: NavController){
             viewModel.disableCallFirstCommunityPostList()
             Log.d("aaaa", "updateCommunityPostList called in CommunityTabPageView LaunchedEffect")
             viewModel.updateCommunityPostList(
-                distance = 0,
-                areaId = viewModel.getRefAreaId()[0],
+                distance = distance.value,
+                areaId = currentRefAreaId.value[0],
                 count=0,cur=null,seed=null)
         }
     }

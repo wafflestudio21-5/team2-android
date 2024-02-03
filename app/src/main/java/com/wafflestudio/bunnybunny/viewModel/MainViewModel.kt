@@ -110,6 +110,9 @@ class MainViewModel @Inject constructor(
     private val _currentRefAreaId: MutableStateFlow<MutableList<Int>> = MutableStateFlow(getRefAreaId().toMutableList())
     val currentRefAreaId : StateFlow<MutableList<Int>> = _currentRefAreaId.asStateFlow()
 
+    private val _currentDistance: MutableStateFlow<Int> = MutableStateFlow(0)
+    val currentDistance : StateFlow<Int> = _currentDistance.asStateFlow()
+
     fun updateGoodsPostContent(newContent: GoodsPostContent) {
         _goodsPostContent.value = newContent
     }
@@ -405,8 +408,9 @@ class MainViewModel @Inject constructor(
     }
     fun logOutApp() {
         clearToken()
-        setRefAreaId(listOf())
+//        setRefAreaId(listOf())
         _currentRefAreaId.value = emptyList<Int>().toMutableList()
+        _currentDistance.value = 0
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList()
@@ -442,10 +446,10 @@ class MainViewModel @Inject constructor(
 
     suspend fun addRefAreaId(id: Int) {
         val tokenHeader = getTokenHeader()
-        val response = api.postRefArea(tokenHeader!!, id)
+        val response = api.postRefArea(id)
         setToken(response.token)
-        _currentRefAreaId.value = response.refAreaIds.toMutableList()
-        setRefAreaId(_currentRefAreaId.value)
+        _currentRefAreaId.value.add(id)
+        setRefAreaId(response.refAreaIds.toMutableList())
 
         for (id in _currentRefAreaId.value) {
             fetchAreaName(id)
@@ -454,10 +458,10 @@ class MainViewModel @Inject constructor(
 
     suspend fun deleteRefAreaId(id: Int) {
         val tokenHeader = getTokenHeader()
-        val response = api.deleteRefArea(tokenHeader!!, id)
+        val response = api.deleteRefArea(id)
         setToken(response.token)
-        _currentRefAreaId.value = response.refAreaIds.toMutableList()
-        setRefAreaId(_currentRefAreaId.value)
+        _currentRefAreaId.value.remove(id)
+        setRefAreaId(response.refAreaIds.toMutableList())
 
         for (id in _currentRefAreaId.value) {
             fetchAreaName(id)
@@ -465,10 +469,17 @@ class MainViewModel @Inject constructor(
     }
 
     fun getDistance(): Int {
-        return prefRepository.getPref("distance")!!.toInt()
+        if (prefRepository.getPref("distance") == null) {
+            return 0;
+        }
+        if (_currentDistance.value != prefRepository.getPref("distance")!!.toInt()) {
+            _currentDistance.value = prefRepository.getPref("distance")!!.toInt()
+        }
+        return _currentDistance.value
     }
     fun setDistance(step: Int) {
         prefRepository.setPref("distance","$step")
+        _currentDistance.value = step
     }
 
     fun swapRefAreaIdValues() {

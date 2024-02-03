@@ -33,7 +33,9 @@ import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -128,13 +130,11 @@ interface BunnyApi {
     suspend fun getAreaName(@Path("id") id: Int): SimpleAreaData
 
     @POST("/user/refArea")
-    suspend fun postRefArea(@Header("Authorization") authToken: String,
-                            @Query(value = "refAreaId") refAreaId: Int
+    suspend fun postRefArea(@Query(value = "refAreaId") refAreaId: Int
     ): LoginResponse
 
-    @DELETE("/user/refArea")
-    suspend fun deleteRefArea(@Header("Authorization") authToken: String,
-                              @Query(value = "refAreaId") refAreaId: Int): LoginResponse
+    @POST("/user/refArea/delete")
+    suspend fun deleteRefArea(@Query(value = "refAreaId") refAreaId: Int): LoginResponse
 
     @GET("/channels")
     suspend fun chatChannelRequest(): ChatListResponse
