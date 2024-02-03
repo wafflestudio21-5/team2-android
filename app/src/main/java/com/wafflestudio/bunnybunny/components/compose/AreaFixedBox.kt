@@ -53,7 +53,9 @@ fun AreaFixedBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: Mutabl
             .clickable {
                 CoroutineScope(Dispatchers.IO).launch {
                     viewModel.addRefAreaId(areaId)
-                    navController.popBackStack()
+                    withContext(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
                 }
             }
     ) {
