@@ -131,23 +131,23 @@ fun ChatBox(modifier: Modifier, chatChannel: ChatChannel, viewModel: ChatViewMod
             }
         }
 
-        Column(
-            modifier = Modifier
-                .width(40.dp)
-                .height(40.dp)
-                .background(color = Color(0xFFD9D9D9), shape = RoundedCornerShape(size = 4.dp))
-        ) {
-            // 물품 사진 관련한 데이터로 추후 변경하기
-            Image(
-                painter = rememberImagePainter(
-                    data = chatChannel.profileImg,
-                    builder = {
-                        transformations(CircleCropTransformation())
-                    }),
-                contentDescription = "goods image description",
-                contentScale = ContentScale.FillBounds
-            )
-        }
+//        Column(
+//            modifier = Modifier
+//                .width(40.dp)
+//                .height(40.dp)
+//                .background(color = Color(0xFFD9D9D9), shape = RoundedCornerShape(size = 4.dp))
+//        ) {
+//            // 물품 사진 관련한 데이터로 추후 변경하기
+//            Image(
+//                painter = rememberImagePainter(
+//                    data = chatChannel.profileImg,
+//                    builder = {
+//                        transformations(CircleCropTransformation())
+//                    }),
+//                contentDescription = "goods image description",
+//                contentScale = ContentScale.FillBounds
+//            )
+//        }
         }
 
 
