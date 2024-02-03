@@ -126,8 +126,8 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    suspend fun makeChatRoom(postId: Long) {
-        api.makeChatRoomRequest(CreateChatRoomRequest(postId))
+    suspend fun makeChatRoom(postId: Long): Long {
+        return api.makeChatRoomRequest(CreateChatRoomRequest(postId)).channelId
     }
 
     fun getTokenHeader():String?{

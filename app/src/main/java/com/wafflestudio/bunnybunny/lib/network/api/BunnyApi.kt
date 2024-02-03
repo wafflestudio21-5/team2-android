@@ -140,7 +140,7 @@ interface BunnyApi {
     suspend fun chatChannelRequest(): ChatListResponse
 
     @POST("/channels")
-    suspend fun makeChatRoomRequest(@Body request: CreateChatRoomRequest)
+    suspend fun makeChatRoomRequest(@Body request: CreateChatRoomRequest): CreateChatRoomResponse
 
     @POST("/channels/{channelId}/pin")
     suspend fun postPinRequest(@Path("channelId") channelId: Long)
