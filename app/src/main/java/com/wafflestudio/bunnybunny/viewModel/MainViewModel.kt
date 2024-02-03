@@ -451,7 +451,6 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun addRefAreaId(id: Int) {
-        val tokenHeader = getTokenHeader()
         val response = api.postRefArea(id)
         setToken(response.token)
         _currentRefAreaId.value.add(id)
@@ -463,10 +462,9 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun deleteRefAreaId(id: Int) {
-        val tokenHeader = getTokenHeader()
         val response = api.deleteRefArea(id)
         setToken(response.token)
-        _currentRefAreaId.value.remove(id)
+        _currentRefAreaId.value = response.refAreaIds.toMutableList()
         setRefAreaId(response.refAreaIds.toMutableList())
 
         for (id in _currentRefAreaId.value) {
