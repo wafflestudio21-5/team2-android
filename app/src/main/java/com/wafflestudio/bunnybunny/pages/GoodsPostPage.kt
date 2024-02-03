@@ -298,7 +298,23 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, g
             Text("${goodsPostContent.sellPrice}원", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(if (goodsPostContent.offerYn) "가격 제안 가능" else "가격 제안 불가", fontSize = 15.sp, color = Color.Gray)
         }
-        Spacer(modifier = Modifier.weight(1f))
+        if(goodsPostContent.type == "AUCTION"){
+            Box(modifier = Modifier
+                .padding(end = 12.dp)
+                .height(50.dp)
+                .width(100.dp)
+                .clip(shape = RoundedCornerShape(4.dp))
+                .background(color = bunnyColor)
+                .clickable {
+                    Log.d("aaaa123", goodsPostContent.id.toString() + goodsPostContent.maxBidPrice?.bidPrice.toString())
+                    navController.navigate("AuctionPage?id=${goodsPostContent.id}&maxPrice=${goodsPostContent.maxBidPrice?.bidPrice}")
+                }, contentAlignment = Alignment.Center
+            ) {
+                Text("경매 제안하기", color = Color.White)
+            }
+        } else{
+            Spacer(modifier = Modifier.weight(1f))
+        }
         Box(modifier = Modifier
             .padding(end = 16.dp)
             .height(50.dp)
@@ -310,7 +326,7 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, g
                     val channelId = chatViewModel.makeChatRoom(goodsPostContent.id)
                     Log.d("GoodsPostPage", "$channelId 의 channel 생성 완료")
                     withContext(Dispatchers.Main) {
-                        navController.navigate("ChatRoomPage/${channelId}")
+                        navController.navigate("ChatRoomPage/{channelId}")
                     }
                 }
 

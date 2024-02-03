@@ -29,6 +29,7 @@ import com.wafflestudio.bunnybunny.data.example.SocialSignupRequest
 import com.wafflestudio.bunnybunny.data.example.SocialSignupResponse
 import com.wafflestudio.bunnybunny.data.example.UserInfo
 import com.wafflestudio.bunnybunny.lib.network.api.BunnyApi
+import com.wafflestudio.bunnybunny.lib.network.dto.AuctionRequest
 import com.wafflestudio.bunnybunny.lib.network.dto.CommunityPostList
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostContent
 import com.wafflestudio.bunnybunny.lib.network.dto.GoodsPostPreview
@@ -268,6 +269,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setRefAreaId(refAreaId: List<Int>) {
+        _currentRefAreaId.value = refAreaId.toMutableList()
         val builder = StringBuilder()
         refAreaId.forEach {
             builder.append("$it ")
@@ -403,7 +405,8 @@ class MainViewModel @Inject constructor(
     }
     fun logOutApp() {
         clearToken()
-        // setRefAreaId(listOf())
+        setRefAreaId(listOf())
+        _currentRefAreaId.value = emptyList<Int>().toMutableList()
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList()
@@ -481,4 +484,13 @@ class MainViewModel @Inject constructor(
 
         setRefAreaId(_currentRefAreaId.value)
     }
+    suspend fun postAuction(id: Long, maxPrice: Int){
+        api.postAuction(id, AuctionRequest(maxPrice))
+    }
+    /*suspend fun getBidList(id: Long){
+        api.getBidList(getTokenHeader()!!, id)
+    }
+    suspend fun getMyBidList(){
+        api.getMyBidList(getTokenHeader()!!)
+    }*/
 }

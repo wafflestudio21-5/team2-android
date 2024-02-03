@@ -33,6 +33,7 @@ import com.wafflestudio.bunnybunny.model.ParcelableMutableList
 import com.wafflestudio.bunnybunny.pages.AreaChangePage
 import com.wafflestudio.bunnybunny.pages.AreaChoosePage
 import com.wafflestudio.bunnybunny.pages.AreaSettingPage
+import com.wafflestudio.bunnybunny.pages.AuctionPage
 import com.wafflestudio.bunnybunny.pages.ChatRoomPage
 import com.wafflestudio.bunnybunny.pages.CommunityPostPage
 import com.wafflestudio.bunnybunny.pages.GalleryViewProfilePage
@@ -53,6 +54,7 @@ import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.math.max
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -260,6 +262,14 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("MyItemListPage"){
                     MyItemListPage(viewModel, navController)
+                }
+                composable("AuctionPage"){ navBackStackEntry ->
+                    val idStr = navBackStackEntry.arguments?.getString("id")
+                    val maxPriceStr = navBackStackEntry.arguments?.getString("maxPrice")
+                    val id= idStr?.toLong() ?: 0L
+                    val maxPrice= maxPriceStr?.toInt() ?:0
+                    Log.d("aaaa123","$idStr $maxPriceStr")
+                    AuctionPage(viewModel, navController, id, maxPrice)
                 }
             }
         }

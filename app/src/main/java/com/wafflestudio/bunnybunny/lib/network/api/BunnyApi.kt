@@ -191,7 +191,7 @@ interface BunnyApi {
     suspend fun getMyPostList(): List<GoodsPostPreview>
 
     @GET("posts/auction/{postId}")
-    suspend fun getAuctionList(@Path("postId") postId: Long): List<AuctionInfo>
+    suspend fun getBidList(@Path("postId") postId: Long): List<AuctionInfo>
 
     @POST("posts/auction/{postId}")
     suspend fun postAuction(@Path("postId") postId: Long, @Body request: AuctionRequest)
