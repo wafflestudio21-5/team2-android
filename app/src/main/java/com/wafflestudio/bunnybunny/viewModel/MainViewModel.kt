@@ -261,6 +261,9 @@ class MainViewModel @Inject constructor(
         prefRepository.setPref("token",token)
     }
 
+
+
+
     fun clearToken(){
         prefRepository.clearPref("token")
         prefRepository.clearPref("refAreaId")
@@ -483,6 +486,7 @@ class MainViewModel @Inject constructor(
     fun setDistance(step: Int) {
         prefRepository.setPref("distance","$step")
         _currentDistance.value = step
+        enableCallFirstGoodsPostList()
     }
 
     fun swapRefAreaIdValues() {

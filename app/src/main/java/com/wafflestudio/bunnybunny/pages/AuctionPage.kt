@@ -26,8 +26,9 @@ fun AuctionPage(viewModel: MainViewModel, navController: NavController, id: Long
     LoginInputTextField(value = newPrice,
         onValueChange = {newText -> newPrice = newText},
         placeholder = newPrice)
+    /*
     BunnyButton(
-        modifier = Modifier.size(50.dp, 50.dp),
+        modifier = Modifier.size(50.dp),
         onClick = {
             try {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -36,7 +37,7 @@ fun AuctionPage(viewModel: MainViewModel, navController: NavController, id: Long
             } catch(e: HttpException){
                 Log.d("aaaa", "Can't bid price")
             }
-        }, text = "완료")
+        }, text = "완료")*/
 
 
 }
