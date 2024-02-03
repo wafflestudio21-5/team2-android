@@ -2,6 +2,7 @@ package com.wafflestudio.bunnybunny.pages
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -75,22 +77,29 @@ fun AuctionPage(viewModel: MainViewModel, navController: NavController, id: Long
             LoginInputTextField(value = newPrice,
                 onValueChange = {newText -> newPrice = newText},
                 placeholder = newPrice)
-            Button(
-                modifier = Modifier.size(70.dp, 40.dp).padding(10.dp),
-                onClick = {
-                    try {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            viewModel.postAuction(id, newPrice.toInt())
-                        }
-                    } catch(e: HttpException){
-                        Log.d("aaaa", "Can't bid price")
-                    }
-                },
-                shape = RoundedCornerShape(20),
-                colors = ButtonDefaults.buttonColors(containerColor = bunnyColor),
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(100.dp, 40.dp)
+                    .clip(shape = RoundedCornerShape(20))
+                    .background(color = bunnyColor)
+                    .clickable {
+                        Log.d("aaaaa", "마지막 발악1")
 
+                        try {
+                            Log.d("aaaaa", "마지막 발악2")
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Log.d("aaaaa", "마지막 발악3")
+
+                                //viewModel.postAuction(id, newPrice.toInt())
+                            }
+                        } catch (e: HttpException) {
+                            Log.d("aaaa", "Can't bid price")
+                        }
+                    },
+                contentAlignment = Alignment.Center
             ) {
-                Text("완료", modifier = Modifier.background(Color.Yellow))
+                Text("완료", color = Color.Yellow)
             }
         }
     }
