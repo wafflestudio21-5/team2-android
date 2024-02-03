@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -325,8 +326,10 @@ class MainViewModel @Inject constructor(
 
 
     suspend fun uploadImages(imageUris:List<Uri>,context:Context):postImagesResponse{
-        Log.d("aaaa", imageUris.toString())
-        return api.postImages(prepareMultiPartList(imageUris, context))
+        Log.d("aaaa", "uploadImages called")
+        val imageUrl = api.postImages(prepareMultiPartList(imageUris, context))
+        _profileImage.value = imageUrl.images[0]
+        return imageUrl
     }
 
 

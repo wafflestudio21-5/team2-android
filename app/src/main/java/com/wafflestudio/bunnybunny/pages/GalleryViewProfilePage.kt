@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -42,6 +43,10 @@ import coil.compose.rememberImagePainter
 import com.wafflestudio.bunnybunny.components.compose.BackButton
 import com.wafflestudio.bunnybunny.model.ToggleImageItem
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.File
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -61,7 +66,7 @@ fun GalleryViewProfilePage(viewModel: MainViewModel, navController: NavControlle
 @Composable
 fun GalleryViewProfile(galleryImages:List<ToggleImageItem>, selectedImage:String, viewModel: MainViewModel) {
     Log.d("aaaa","GalleryProfileView called")
-
+    val context = LocalContext.current
 
 
     LazyVerticalGrid(
@@ -82,7 +87,13 @@ fun GalleryViewProfile(galleryImages:List<ToggleImageItem>, selectedImage:String
                 .height(140.dp)
                 .border(width = 1.dp, color = Color.Black)
                 .clickable {
-                    viewModel.updateProfileImage(item.uri.toString())
+                    try {
+                        CoroutineScope(Dispatchers.IO).launch {
+                             viewModel.uploadImages(listOf(item.uri), context)
+                        }
+                    } catch (e: HttpException) {
+                        Log.d("error", "uri failed")
+                    }
                     viewModel.updateIndex(index)
                 }){
                 Image(
@@ -143,8 +154,14 @@ fun GalleryViewProfilePageToolBar(selectedImage: String, viewModel: MainViewMode
                 .then(
                     if (selectedImage.isNotEmpty()) {
                         Modifier.clickable {
+
                             viewModel.updateProfileImage(selectedImage)
-                            Log.d("abcd", navController.currentBackStack.value.map{it.destination.route}.toString())
+                            Log.d(
+                                "abcd",
+                                navController.currentBackStack.value
+                                    .map { it.destination.route }
+                                    .toString()
+                            )
 
                             navController.popBackStack()
                         }
