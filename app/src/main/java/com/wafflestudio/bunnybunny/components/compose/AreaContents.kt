@@ -51,9 +51,8 @@ fun AreaContents(modifier: Modifier, refAreaIds: MutableList<RefArea>, areaDetai
                         areaIds = refAreaIds,
                     )
                 } else {
-
+                    AreaFixedBox(modifier = Modifier, areaDetail = areaDetails[position], areaIds = refAreaIds, navController = navController)
                 }
-
             }
         }
     }
