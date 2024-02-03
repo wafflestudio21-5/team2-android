@@ -322,11 +322,13 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, g
             .clip(shape = RoundedCornerShape(4.dp))
             .background(color = bunnyColor)
             .clickable {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val channelId = chatViewModel.makeChatRoom(goodsPostContent.id)
-                    Log.d("GoodsPostPage", "$channelId 의 channel 생성 완료")
-                    withContext(Dispatchers.Main) {
-                        navController.navigate("ChatRoomPage/{channelId}")
+                if (goodsPostContent.authorId.toInt() != viewModel.userInfo.value.id) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val channelId = chatViewModel.makeChatRoom(goodsPostContent.id)
+                        Log.d("GoodsPostPage", "$channelId 의 channel 생성 완료")
+                        withContext(Dispatchers.Main) {
+                            navController.navigate("ChatRoomPage/{channelId}")
+                        }
                     }
                 }
 
