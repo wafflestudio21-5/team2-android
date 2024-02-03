@@ -300,7 +300,7 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, g
         }
         if(goodsPostContent.type == "AUCTION"){
             Box(modifier = Modifier
-                .padding(end = 12.dp)
+                .padding(start = 12.dp, end = 16.dp)
                 .height(50.dp)
                 .width(100.dp)
                 .clip(shape = RoundedCornerShape(4.dp))
@@ -316,9 +316,8 @@ fun GoodsPostBottomBar(viewModel: MainViewModel, chatViewModel: ChatViewModel, g
             Spacer(modifier = Modifier.weight(1f))
         }
         Box(modifier = Modifier
-            .padding(end = 16.dp)
             .height(50.dp)
-            .width(100.dp)
+            .width(90.dp)
             .clip(shape = RoundedCornerShape(4.dp))
             .background(color = bunnyColor)
             .clickable {

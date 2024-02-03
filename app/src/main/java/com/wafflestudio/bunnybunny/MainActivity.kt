@@ -264,6 +264,7 @@ class MainActivity : ComponentActivity() {
                     MyItemListPage(viewModel, navController)
                 }
                 composable("AuctionPage?id={id}&maxPrice={maxPrice}"){ navBackStackEntry ->
+
                     val idStr = navBackStackEntry.arguments?.getString("id")
                     val maxPriceStr = navBackStackEntry.arguments?.getString("maxPrice")
                     val id= try{idStr?.toLong() ?:0L}catch(e:Exception){0L}
