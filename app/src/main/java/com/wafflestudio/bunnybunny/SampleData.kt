@@ -183,6 +183,7 @@ object SampleData {
         wishCnt = 2,
         chatCnt = 1,
         isWish = false,
+        maxBidPrice = null
     )
 
     val DefaultGoodsPostContentSample=GoodsPostContent(
@@ -207,6 +208,7 @@ object SampleData {
         wishCnt = 0,
         chatCnt = 0,
         isWish=false,
+        maxBidPrice = null
     )
     val CommunityPostListSample=CommunityPostList(
         data = listOf(CommunityPostPreview(

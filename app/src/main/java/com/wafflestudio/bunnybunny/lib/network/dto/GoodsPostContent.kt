@@ -27,4 +27,11 @@ data class GoodsPostContent(
     @Json(name = "wishCnt") var wishCnt: Int,
     @Json(name = "chatCnt") val chatCnt: Int,
     @Json(name = "isWish") var isWish: Boolean,
+    @Json(name = "maxBidPrice") var maxBidPrice: BidUser?
+)
+
+data class BidUser(
+    @Json(name = "userId") val userId: Int,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "bidPrice") val bidPrice: Int,
 )
