@@ -328,12 +328,23 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                         })
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Divider(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp),color= Color.Gray)
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Image(imageVector = Icons.Default.Image, null)
                     Image(imageVector = Icons.Default.AddLocation, null)
                     Row(modifier = Modifier
                         .weight(1f)
-                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp))) {
+                        .fillMaxHeight()
+                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.width(4.dp))
                         BasicTextField(value = writingComment, onValueChange = {
                             writingComment = it
                         }, decorationBox = {
@@ -579,7 +590,9 @@ fun ChildCommentItem(
         }
     }
     Column{
-        Spacer(modifier = Modifier.fillMaxWidth().height(12.dp))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(12.dp))
         Row {
             Image(painter = painter, contentDescription = null,
                 Modifier
@@ -644,7 +657,9 @@ fun ChildCommentItem(
                 }
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(6.dp))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(6.dp))
     }
 }
 fun checkProfileImgData(data:String?):String{

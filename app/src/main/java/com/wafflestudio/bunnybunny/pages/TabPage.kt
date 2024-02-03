@@ -495,7 +495,9 @@ fun CommunityTabPageView(navController: NavController){
                                     contentDescription = null,
                                     modifier = Modifier
                                         .fillMaxHeight()
-                                        .width(60.dp)
+                                        .width(80.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
