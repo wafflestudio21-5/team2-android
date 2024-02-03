@@ -315,19 +315,19 @@ fun HomeTabPageView(viewModel: MainViewModel, listState:LazyListState, itemList:
         isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.updateGoodsPostList(
-                distance = distance.value,
+                distance = viewModel.getDistance(),
                 areaId = currentRefAreaId.value[0],
                 count = 0, cur = null, seed = null
             )
             isRefreshing = false
         }
     })
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = distance.value){
         if(viewModel.CanCallFirstGoodsPostList()){
             viewModel.disableCallFirstGoodsPostList()
             Log.d("aaaa", "updateGoodsPostList called in HomeTabPageView LaunchedEffect")
             viewModel.updateGoodsPostList(
-                distance = distance.value,
+                distance = viewModel.getDistance(),
                 areaId = currentRefAreaId.value[0],
                 count=0,cur=null,seed=null)
         }
@@ -434,7 +434,8 @@ fun CommunityTabPageView(navController: NavController){
 
         if(viewModel.CanCallFirstCommunityPostList()){
             viewModel.disableCallFirstCommunityPostList()
-            Log.d("aaaa", "updateCommunityPostList called in CommunityTabPageView LaunchedEffect")
+            Log.d("aaaa", "updateCommunityPostList called in CommunityTabPageView LaunchedEffect$distance.value")
+
             viewModel.updateCommunityPostList(
                 distance = distance.value,
                 areaId = currentRefAreaId.value[0],

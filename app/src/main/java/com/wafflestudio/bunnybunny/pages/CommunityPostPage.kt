@@ -663,6 +663,7 @@ fun ChildCommentItem(
     }
 }
 fun checkProfileImgData(data:String?):String{
+    Log.d("aaaa", "checkProfileImgData:$data")
     if(data!=null&&data!="") return data
     return "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
 }
