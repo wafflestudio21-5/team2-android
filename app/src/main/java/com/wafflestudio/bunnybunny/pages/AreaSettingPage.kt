@@ -1,6 +1,7 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,11 +41,15 @@ import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 @Composable
 fun AreaSettingPage(viewModel: MainViewModel, navController: NavController) {
 
     val goldenRatio = 1.618f
+
+    val context = LocalContext.current
 
     var firstClicked by remember { mutableStateOf(true) }
     var secondClicked by remember { mutableStateOf(false) }
@@ -79,7 +85,8 @@ fun AreaSettingPage(viewModel: MainViewModel, navController: NavController) {
                         .border(
                             width = 1.dp,
                             color = Color(0xFFE87111),
-                            shape = RoundedCornerShape(percent = 20)),
+                            shape = RoundedCornerShape(percent = 20)
+                        ),
                     color = if (firstClicked) ClickedButtonColors() else NotClickedButtonColors(),
                     text = firstAreaName.value,
                     onClick = {
@@ -98,104 +105,132 @@ fun AreaSettingPage(viewModel: MainViewModel, navController: NavController) {
                         .border(
                             width = 1.dp,
                             color = Color(0xFFE87111),
-                            shape = RoundedCornerShape(percent = 20)),
+                            shape = RoundedCornerShape(percent = 20)
+                        ),
                     color = if (firstClicked) ClickedButtonColors() else NotClickedButtonColors(),
                     text = "지역 삭제하기",
                     onClick = {
                         if (!firstClicked) {
+
                             CoroutineScope(Dispatchers.IO).launch {
-                                if (currentRefAreaId.size != 1) {
-                                    viewModel.deleteRefAreaId(currentRefAreaId[0])
+                                try {
+                                    if (currentRefAreaId.size != 1) {
+                                        viewModel.deleteRefAreaId(currentRefAreaId[0])
+                                    }
+                                } catch (e: HttpException) {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(
+                                            context,
+                                            "지역 삭제가 이루어졌습니다",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    })
+                }
+
+                Spacer(modifier = Modifier.width(16.dp)) // 간격 조절
+
+                if (currentRefAreaId.size == 2) {
+                    Log.d("AreaSettingPage", "${currentRefAreaId}")
+                    Column {
+                        AreaTextButton(
+                            modifier = Modifier
+                                .height(100.dp) // 예시로 100dp로 설정
+                                .width((100.dp * goldenRatio)) // 가로 크기의 1배, 세로 크기의 1.618배
+                                .padding(8.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFE87111),
+                                    shape = RoundedCornerShape(percent = 20)
+                                ),
+
+                            color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
+                            text = secondAreaName.value,
+                            onClick = {
+                                if (!secondClicked) {
+                                    firstClicked = !firstClicked
+                                    secondClicked = !secondClicked
+                                }
+
+                            }
+                        )
+
+                        AreaTextButton(
+                            modifier = Modifier
+                                .height(80.dp) // 예시로 100dp로 설정
+                                .width((100.dp * goldenRatio))
+                                .padding(8.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFE87111),
+                                    shape = RoundedCornerShape(percent = 20)
+                                ),
+                            color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
+                            text = "지역 삭제하기",
+                            onClick = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    try {
+                                        if (currentRefAreaId.size > 1) {
+                                            viewModel.deleteRefAreaId(currentRefAreaId[1])
+                                        }
+                                    } catch (e: HttpException) {
+                                        val message = e.response()?.errorBody()?.toString()
+                                        Log.d("ACP", "error: $message")
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                context,
+                                                "지역 삭제가 이루어졌습니다",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
                                 }
                             }
-                        }
-
-
+                        )
                     }
-                )
-            }
 
-            Spacer(modifier = Modifier.width(16.dp)) // 간격 조절
+                } else if (currentRefAreaId.size == 1) {
 
-            if (currentRefAreaId.size == 2) {
-                Log.d("AreaSettingPage", "${currentRefAreaId}")
-                Column {
-                    AreaTextButton(
-                        modifier = Modifier
-                            .height(100.dp) // 예시로 100dp로 설정
-                            .width((100.dp * goldenRatio)) // 가로 크기의 1배, 세로 크기의 1.618배
-                            .padding(8.dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFFE87111),
-                                shape = RoundedCornerShape(percent = 20)),
+                    Column {
+                        AreaTextButton(
+                            modifier = Modifier
+                                .height(100.dp) // 예시로 100dp로 설정
+                                .width((100.dp * goldenRatio)) // 가로 크기의 1배, 세로 크기의 1.618배
+                                .padding(8.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFE87111),
+                                    shape = RoundedCornerShape(percent = 20)
+                                ),
 
-                        color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
-                        text = secondAreaName.value,
-                        onClick = {
-                            if (!secondClicked) {
-                                firstClicked = !firstClicked
-                                secondClicked = !secondClicked
+                            color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
+                            text = " + ",
+                            onClick = {
+                                navController.navigate("AreaChangePage")
                             }
+                        )
+                    }
 
-                        }
-                    )
 
-                    AreaTextButton(
-                        modifier = Modifier
-                            .height(80.dp) // 예시로 100dp로 설정
-                            .width((100.dp * goldenRatio))
-                            .padding(8.dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFFE87111),
-                                shape = RoundedCornerShape(percent = 20)),
-                        color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
-                        text = "지역 삭제하기",
-                        onClick = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Log.d("ASP", "지역 삭제를 시도합니다.")
-                                viewModel.deleteRefAreaId(currentRefAreaId[1])
-                                Log.d("ASP", "$currentRefAreaId")
-                            }
-                        }
-                    )
                 }
-
-            } else if (currentRefAreaId.size == 1) {
-
-                Column {
-                    AreaTextButton(
-                        modifier = Modifier
-                            .height(100.dp) // 예시로 100dp로 설정
-                            .width((100.dp * goldenRatio)) // 가로 크기의 1배, 세로 크기의 1.618배
-                            .padding(8.dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFFE87111),
-                                shape = RoundedCornerShape(percent = 20)),
-
-                        color = if (secondClicked) ClickedButtonColors() else NotClickedButtonColors(),
-                        text = " + ",
-                        onClick = {
-                            navController.navigate("AreaChangePage")
-                        }
-                    )
-                }
-
-
             }
         }
 
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()) {
-            DistanceSlider()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                DistanceSlider()
+            }
         }
-    }
-
-}
 
 @Composable
 fun ClickedButtonColors(): ButtonColors {
