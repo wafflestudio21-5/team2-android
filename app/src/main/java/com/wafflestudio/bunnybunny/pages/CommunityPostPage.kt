@@ -402,7 +402,7 @@ fun CommentItem(
     onLikeChild: (Long) -> Unit,
     onShowMore: (Long) -> Unit,
 ) {
-    val painter = rememberImagePainter(data = comment.imgUrl)
+    val painter = rememberImagePainter(data = checkProfileImgData(comment.imgUrl))
     Log.d("aaaa",comment.imgUrl)
     val scope = rememberCoroutineScope()
     var childCommentExpanded by remember {
@@ -564,7 +564,7 @@ fun ChildCommentItem(
     onShowMore: (Long) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val painter = rememberImagePainter(data = comment.imgUrl)
+    val painter = rememberImagePainter(data = checkProfileImgData(comment.imgUrl))
     var editingCommentTextFieldValue by remember {
         mutableStateOf(TextFieldValue(
             comment.comment, selection = TextRange(comment.comment.length)
@@ -647,4 +647,7 @@ fun ChildCommentItem(
         Spacer(modifier = Modifier.fillMaxWidth().height(6.dp))
     }
 }
-
+fun checkProfileImgData(data:String?):String{
+    if(data!=null&&data!="") return data
+    return "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+}
