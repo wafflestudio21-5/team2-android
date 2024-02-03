@@ -147,14 +147,28 @@ fun GalleryViewProfilePageToolBar(selectedImage: String, viewModel: MainViewMode
             }
         },
         actions = {
-
             Box(modifier = Modifier
                 .fillMaxHeight()
                 .width(100.dp)
                 .then(
                     if (selectedImage.isNotEmpty()) {
                         Modifier.clickable {
+                            viewModel.updateProfileImage("")
+                            Log.d("abcd", navController.currentBackStack.value.map{it.destination.route}.toString())
 
+                            navController.popBackStack()
+                        }
+                    } else Modifier
+                ),
+                contentAlignment = Alignment.CenterEnd){
+                Text("기본 이미지로 변경", color = Color.Black)
+            }
+            Box(modifier = Modifier
+                .fillMaxHeight()
+                .width(50.dp)
+                .then(
+                    if (selectedImage.isNotEmpty()) {
+                        Modifier.clickable {
                             viewModel.updateProfileImage(selectedImage)
                             Log.d(
                                 "abcd",

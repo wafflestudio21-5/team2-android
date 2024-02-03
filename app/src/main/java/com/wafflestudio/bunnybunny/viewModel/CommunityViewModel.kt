@@ -297,4 +297,5 @@ class CommunityViewModel @Inject constructor(
         return MultipartBody.Part.createFormData(partName, file.name, requestFile)
     }
 
+
 }

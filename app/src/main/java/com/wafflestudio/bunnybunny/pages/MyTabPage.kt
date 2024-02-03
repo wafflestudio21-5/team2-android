@@ -567,7 +567,7 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
             val context = LocalContext.current
-            val painter = rememberImagePainter(data = viewModel.profileImage.collectAsState().value)
+            val painter = rememberImagePainter(data = checkProfileImgData(viewModel.profileImage.collectAsState().value))
             Log.d("abc",viewModel.profileImage.collectAsState().value)
             Image(
                 painter = painter,
@@ -597,6 +597,7 @@ fun ProfileEditPage(viewModel: MainViewModel, navController: NavController){
                 value = newPassword,
                 onValueChange = {newText -> newPassword = newText},
                 placeholder = newPassword,)
+
             Button(
                 modifier = Modifier
                     .align(CenterHorizontally)

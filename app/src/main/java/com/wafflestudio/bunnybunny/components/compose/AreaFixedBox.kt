@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.wafflestudio.bunnybunny.data.example.RefAreaId
 import com.wafflestudio.bunnybunny.data.example.SimpleAreaData
+import com.wafflestudio.bunnybunny.pages.RefArea
 import com.wafflestudio.bunnybunny.viewModel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun AreaFixedBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<Int>, navController: NavController) {
+fun AreaFixedBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: MutableList<RefArea>, navController: NavController) {
 
     val areaId = areaDetail.id
     val context = LocalContext.current
@@ -48,7 +49,7 @@ fun AreaFixedBox(modifier: Modifier, areaDetail: SimpleAreaData, areaIds: Mutabl
 
     Box(
         modifier = modifier
-            .background(if ((isClicked) && (areaIds.contains(areaId))) Color.Gray else Color.White)
+            .background(if ((isClicked) && (areaIds.map { it.id }.contains(areaId))) Color.Gray else Color.White)
             .clickable {
                 CoroutineScope(Dispatchers.IO).launch {
                     viewModel.addRefAreaId(areaId)

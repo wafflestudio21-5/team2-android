@@ -55,23 +55,30 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    fun disconnectFromChatRoom() {
+    suspend fun disconnectFromChatRoom() {
         // 웹소켓 연결 종료
         webSocketManagerImpl.disposeWebSocket()
     }
 
     suspend fun getRecentMessages(cur: Int) {
-            try {
-                webSocketManagerImpl.sendRecentMessageRequest(255)
-                val text = messageStorage.latestMessage.value
+        try {
+            webSocketManagerImpl.sendRecentMessageRequest(255)
+            val text = messageStorage.latestMessage.value
+            Log.d("CVM", "${text == null}")
+            Log.d("CVM", text)
+            if (text != null) {
                 Log.d("ChatVieWModel", text)
                 val response = fromStringToRecentMessagesResponse(text)
                 _messagesStateFlow.value = response.messages
-                Log.d("ChatVieWModel", "${_messagesStateFlow.value}")
-            } catch (e: Exception) {
-                // Handle the exception, log it, or take appropriate action
-                Log.e("ChatVieWModel", "Error getting recent messages: ${e.message}")
+            } else {
+                _messagesStateFlow.value = emptyList()
             }
+
+            Log.d("ChatVieWModel", "${_messagesStateFlow.value}")
+        } catch (e: Exception) {
+            // Handle the exception, log it, or take appropriate action
+            Log.e("ChatVieWModel", "Error getting recent messages: ${e.message}")
+        }
     }
 
     suspend fun getUserMessage() {

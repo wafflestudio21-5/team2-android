@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.bunnybunny.data.example.Message
 import com.wafflestudio.bunnybunny.data.example.RecentMessagesResponse
 import com.wafflestudio.bunnybunny.viewModel.ChatViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.WebSocket
@@ -44,19 +46,15 @@ fun ChatRoomScreen(viewModel: ChatViewModel, channelId: Long) {
     DisposableEffect(Unit) {
         // Cleanup WebSocket on dispose
         onDispose {
-            viewModel.disconnectFromChatRoom()
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.disconnectFromChatRoom()
+            }
         }
     }
 
     LaunchedEffect(channelId) {
-        try {
-            coroutineScope.launch {
-                viewModel.connectToChatRoom(channelId)
-                viewModel.getRecentMessages(255)
-            }
-        } catch (e: Exception) {
-            Log.d("CHAT", e.message!!)
-        }
+        viewModel.connectToChatRoom(channelId)
+        viewModel.getRecentMessages(255)
     }
 
 

@@ -3,6 +3,7 @@
 package com.wafflestudio.bunnybunny.pages
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -71,6 +72,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -220,7 +222,6 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                 LazyColumn(
                     //state = listState,
                     modifier = Modifier
-                        .padding(10.dp)
                         .weight(1f)
                 ) {
                     item{
@@ -279,7 +280,15 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                             fontSize = 15.sp, color = Color.Gray,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp))
+                        Divider(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(5.dp),color= Color.Gray)
                     }
+
                     items(comments) {
                         val editing by remember(editingCommentId) {
                             mutableStateOf(editingCommentId == it.id)
@@ -319,12 +328,23 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                         })
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Divider(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp),color= Color.Gray)
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Image(imageVector = Icons.Default.Image, null)
                     Image(imageVector = Icons.Default.AddLocation, null)
                     Row(modifier = Modifier
                         .weight(1f)
-                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp))) {
+                        .fillMaxHeight()
+                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.width(4.dp))
                         BasicTextField(value = writingComment, onValueChange = {
                             writingComment = it
                         }, decorationBox = {
@@ -332,7 +352,9 @@ fun CommunityPostPage(id: Long, navController: NavController) {
                             if (writingComment.isEmpty()) {
                                 Text(text = "댓글을 입력해주세요.")
                             }
-                        }, modifier = Modifier.weight(1f).focusRequester(focusManager), keyboardActions = KeyboardActions(onSend = {
+                        }, modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusManager), keyboardActions = KeyboardActions(onSend = {
                             scope.launch {
                                 keyboardManager?.hide()
                                 focusManager.freeFocus()
@@ -391,7 +413,8 @@ fun CommentItem(
     onLikeChild: (Long) -> Unit,
     onShowMore: (Long) -> Unit,
 ) {
-    val painter = rememberImagePainter(data = comment.imgUrl)
+    val painter = rememberImagePainter(data = checkProfileImgData(comment.imgUrl))
+    Log.d("aaaa",comment.imgUrl)
     val scope = rememberCoroutineScope()
     var childCommentExpanded by remember {
         mutableStateOf(false)
@@ -413,118 +436,132 @@ fun CommentItem(
         }
     }
 
-    Row {
-        Image(painter = painter, contentDescription = null,
-            Modifier
-                .clip(CircleShape)
-                .size(30.dp))
-        Column {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.weight(1f)) {
-                    Text(text = comment.nickname)
-                    Row {
-                        Text(text = convertEpochMillisToFormattedTime(comment.createdAt))
-                    }
-                }
-                if (comment.nickname == userInfo.nickname) {
-                    Image(imageVector = Icons.Default.MoreVert, contentDescription = null,
-                        modifier = Modifier.clickable {
-                            onShowMore(comment.id)
-                        })
-                }
-            }
+    Column{
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(6.dp))
+        Row{
+            Image(painter = painter, contentDescription = null,
+                Modifier
+                    .padding(horizontal = 12.dp)
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, color = Color.Gray, shape = CircleShape),
+                contentScale = ContentScale.Crop
+            )
+            Column {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.weight(1f)) {
+                        Text(text = comment.nickname)
+                        //Text(text = "·")
+                        Row {
 
-            if (editing) {
-                BasicTextField(value = editingCommentTextFieldValue, onValueChange = {
-                    editingCommentTextFieldValue = it
-                },
-                    decorationBox = {
-                        it()
-                        if (editingCommentTextFieldValue.text.isEmpty()) {
-                            Text(text = "수정 댓글을 입력해주세요.")
                         }
-                    }, modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Color.LightGray,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(5.dp)
-                        .focusRequester(focusRequester)
-                        , keyboardActions = KeyboardActions(onSend = {
-                        scope.launch {
-                            onEditComment(comment.id, editingCommentTextFieldValue.text)
-                        }
-                    }), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send))
-            } else {
-                Text(text = comment.comment)
-            }
-            Row {
-                Row(modifier = Modifier.clickable { onLike() }) {
-                    Image(imageVector = if (comment.isLiked.not()) Icons.Default.ThumbUpOffAlt else Icons.Default.ThumbUp, contentDescription = null)
-                    Text(text = "좋아요")
-                    if (comment.likeCnt != 0) Text(text = comment.likeCnt.toString())
-                }
-                Row(modifier = Modifier.clickable { childCommentExpanded = childCommentExpanded.not() }) {
-                    Image(imageVector = Icons.Default.Comment, null)
-                    if (comment.childComments.isNotEmpty()) {
-                        Text(text = "답글 ${comment.childComments.size}개")
-                    } else {
-                        Text(text = "답글쓰기")
                     }
-
-                }
-            }
-            AnimatedVisibility(visible = childCommentExpanded) {
-                val 대댓글FocusRequester = remember {
-                    FocusRequester()
-                }
-                Column {
-                    comment.childComments.forEach {
-                        val editingChild by remember(editingCommentId) {
-                            mutableStateOf(editingCommentId == it.id)
-                        }
-                        ChildCommentItem(
-                            editing = editingChild,
-                            userInfo = userInfo,
-                            comment = it, onEditChildComment = { childId, edittedComment ->
-                            onEditComment(childId, edittedComment)
-                        }, onLike = {
-                            onLikeChild(it)
-                            writingChildComment = ""
-                        }, onShowMore = {
-                          onShowMore(it)
-                        })
+                    if (comment.nickname == userInfo.nickname) {
+                        Image(imageVector = Icons.Default.MoreVert, contentDescription = null,
+                            modifier = Modifier.clickable {
+                                onShowMore(comment.id)
+                            })
                     }
-                    Row {
-                        Image(imageVector = Icons.Default.Person, contentDescription = null)
-                        BasicTextField(value = writingChildComment, onValueChange = {
-                            writingChildComment = it
-                        }, decorationBox = {
+                }
+                Text(text = convertEpochMillisToFormattedTime(comment.createdAt),color= Color.Gray, fontSize = 10.sp, textAlign = TextAlign.Center)
+                if (editing) {
+                    BasicTextField(value = editingCommentTextFieldValue, onValueChange = {
+                        editingCommentTextFieldValue = it
+                    },
+                        decorationBox = {
                             it()
-                            if (writingChildComment.isEmpty()) {
-                                Text(text = "답글을 입력해주세요.")
+                            if (editingCommentTextFieldValue.text.isEmpty()) {
+                                Text(text = "수정 댓글을 입력해주세요.")
                             }
                         }, modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(대댓글FocusRequester)
                             .border(
                                 width = 1.dp,
                                 color = Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
-                            ), keyboardActions = KeyboardActions(onSend = {
+                            )
+                            .padding(5.dp)
+                            .focusRequester(focusRequester)
+                        , keyboardActions = KeyboardActions(onSend = {
                             scope.launch {
-                                대댓글FocusRequester.freeFocus()
-                               onComment(writingChildComment)
-                                writingChildComment = ""
+                                onEditComment(comment.id, editingCommentTextFieldValue.text)
                             }
                         }), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send))
+                } else {
+                    Text(text = comment.comment)
+                }
+                Row (Modifier.padding(vertical = 6.dp)){
+                    Row(modifier = Modifier.clickable { onLike() }) {
+                        Image(imageVector = if (comment.isLiked.not()) Icons.Default.ThumbUpOffAlt else Icons.Default.ThumbUp, contentDescription = null)
+                        Text(text = "좋아요")
+                        if (comment.likeCnt != 0) Text(text = comment.likeCnt.toString())
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Row(modifier = Modifier.clickable { childCommentExpanded = childCommentExpanded.not() }) {
+                        Image(imageVector = Icons.Default.Comment, null)
+                        if (comment.childComments.isNotEmpty()) {
+                            Text(text = "답글 ${comment.childComments.size}개")
+                        } else {
+                            Text(text = "답글쓰기")
+                        }
+
+                    }
+                }
+                AnimatedVisibility(visible = childCommentExpanded) {
+                    val 대댓글FocusRequester = remember {
+                        FocusRequester()
+                    }
+                    Column {
+                        comment.childComments.forEach {
+                            val editingChild by remember(editingCommentId) {
+                                mutableStateOf(editingCommentId == it.id)
+                            }
+                            ChildCommentItem(
+                                editing = editingChild,
+                                userInfo = userInfo,
+                                comment = it, onEditChildComment = { childId, edittedComment ->
+                                    onEditComment(childId, edittedComment)
+                                }, onLike = {
+                                    onLikeChild(it)
+                                    writingChildComment = ""
+                                }, onShowMore = {
+                                    onShowMore(it)
+                                })
+                        }
+                        Row {
+                            Image(imageVector = Icons.Default.Person, contentDescription = null)
+                            BasicTextField(value = writingChildComment, onValueChange = {
+                                writingChildComment = it
+                            }, decorationBox = {
+                                it()
+                                if (writingChildComment.isEmpty()) {
+                                    Text(text = "답글을 입력해주세요.")
+                                }
+                            }, modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(대댓글FocusRequester)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.LightGray,
+                                    shape = RoundedCornerShape(8.dp)
+                                ), keyboardActions = KeyboardActions(onSend = {
+                                scope.launch {
+                                    대댓글FocusRequester.freeFocus()
+                                    onComment(writingChildComment)
+                                    writingChildComment = ""
+                                }
+                            }), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send))
+                        }
+
                     }
 
                 }
-
             }
         }
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(12.dp))
     }
 }
 
@@ -538,7 +575,7 @@ fun ChildCommentItem(
     onShowMore: (Long) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val painter = rememberImagePainter(data = comment.imgUrl)
+    val painter = rememberImagePainter(data = checkProfileImgData(comment.imgUrl))
     var editingCommentTextFieldValue by remember {
         mutableStateOf(TextFieldValue(
             comment.comment, selection = TextRange(comment.comment.length)
@@ -552,61 +589,80 @@ fun ChildCommentItem(
             focusRequester.requestFocus()
         }
     }
-    Row {
-        Image(painter = painter, contentDescription = null,
-            Modifier
-                .clip(CircleShape)
-                .size(30.dp))
-        Column {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.weight(1f)) {
-                    Text(text = comment.nickname)
-                    Row {
-                        Text(text = convertEpochMillisToFormattedTime(comment.createdAt))
+    Column{
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(12.dp))
+        Row {
+            Image(painter = painter, contentDescription = null,
+                Modifier
+                    .padding(horizontal = 6.dp)
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, color = Color.Gray, shape = CircleShape),
+                contentScale = ContentScale.Crop
+            )
+            Column {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.weight(1f)) {
+                        Text(text = comment.nickname)
+                        Row {
+                            //Text(text = convertEpochMillisToFormattedTime(comment.createdAt))
+                        }
+                    }
+                    if (comment.nickname == userInfo.nickname) {
+                        Image(imageVector = Icons.Default.MoreVert, contentDescription = null,
+                            modifier = Modifier.clickable {
+                                onShowMore(comment.id)
+                            })
                     }
                 }
-                if (comment.nickname == userInfo.nickname) {
-                    Image(imageVector = Icons.Default.MoreVert, contentDescription = null,
-                        modifier = Modifier.clickable {
-                            onShowMore(comment.id)
-                        })
+                Text(text = convertEpochMillisToFormattedTime(comment.createdAt),color= Color.Gray, fontSize = 10.sp, textAlign = TextAlign.Center)
+
+                if (editing) {
+                    BasicTextField(value = editingCommentTextFieldValue, onValueChange = {
+                        editingCommentTextFieldValue = it
+                    },
+                        decorationBox = {
+                            it()
+                            if (editingCommentTextFieldValue.text.isEmpty()) {
+                                Text(text = "수정 댓글을 입력해주세요.")
+                            }
+                        }, modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(5.dp)
+                            .focusRequester(focusRequester)
+                        , keyboardActions = KeyboardActions(onSend = {
+                            scope.launch {
+                                focusRequester.freeFocus()
+                                onEditChildComment(comment.id, editingCommentTextFieldValue.text)
+                            }
+                        }), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send))
+                } else {
+                    Text(text = comment.comment)
+                }
+                Row(modifier = Modifier
+                    .padding(vertical = 6.dp)
+                    .clickable {
+                        onLike(comment.id)
+
+                    }) {
+                    Image(imageVector = if (comment.isLiked.not()) Icons.Default.ThumbUpOffAlt else Icons.Default.ThumbUp, contentDescription = null)
+                    Text(text = "좋아요")
+                    if (comment.likeCnt != 0) Text(text = comment.likeCnt.toString())
                 }
             }
-            if (editing) {
-                BasicTextField(value = editingCommentTextFieldValue, onValueChange = {
-                    editingCommentTextFieldValue = it
-                },
-                    decorationBox = {
-                        it()
-                        if (editingCommentTextFieldValue.text.isEmpty()) {
-                            Text(text = "수정 댓글을 입력해주세요.")
-                        }
-                    }, modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Color.LightGray,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(5.dp)
-                        .focusRequester(focusRequester)
-                    , keyboardActions = KeyboardActions(onSend = {
-                        scope.launch {
-                            focusRequester.freeFocus()
-                            onEditChildComment(comment.id, editingCommentTextFieldValue.text)
-                        }
-                    }), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send))
-            } else {
-                Text(text = comment.comment)
-            }
-            Row(modifier = Modifier.clickable {
-                onLike(comment.id)
-
-            }) {
-                Image(imageVector = if (comment.isLiked.not()) Icons.Default.ThumbUpOffAlt else Icons.Default.ThumbUp, contentDescription = null)
-                Text(text = "좋아요")
-                if (comment.likeCnt != 0) Text(text = comment.likeCnt.toString())
-            }
         }
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(6.dp))
     }
 }
-
+fun checkProfileImgData(data:String?):String{
+    if(data!=null&&data!="") return data
+    return "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+}
