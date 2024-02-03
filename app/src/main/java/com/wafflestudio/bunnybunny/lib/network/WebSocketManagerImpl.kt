@@ -12,15 +12,15 @@ import javax.inject.Inject
 import javax.inject.Named
 
 interface WebSocketManager {
-    fun createChannelWebSocket(channelId: Long)
+    suspend fun createChannelWebSocket(channelId: Long)
 
-    fun createUserWebSocket()
-    fun disposeWebSocket()
-    fun isWebSocketAvailable(): Boolean
+    suspend fun createUserWebSocket()
+    suspend fun disposeWebSocket()
+    suspend fun isWebSocketAvailable(): Boolean
 
-    fun sendMessage(message: String)
-    fun sendRecentMessageRequest(cur: Int)
-    fun sendTextMessage(body: String)
+    suspend fun sendMessage(message: String)
+    suspend fun sendRecentMessageRequest(cur: Int)
+    suspend fun sendTextMessage(body: String)
 }
 
 class WebSocketManagerImpl @Inject constructor(
@@ -31,7 +31,7 @@ class WebSocketManagerImpl @Inject constructor(
     var webSocket: WebSocket? = null
     var userWebSocket: WebSocket? = null
 
-    override fun createChannelWebSocket(channelId: Long) {
+    override suspend fun createChannelWebSocket(channelId: Long) {
         val address = "banibani.shop"
         val token = prefRepository.getPref("token")
         val webSocketUrl =
@@ -43,7 +43,7 @@ class WebSocketManagerImpl @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, webSocketListener)
     }
 
-    override fun createUserWebSocket(){
+    override suspend fun createUserWebSocket(){
         val address = "banibani.shop"
         val token = prefRepository.getPref("token")
         val webSocketUrl = "ws://$address/ws/users?token=$token"
@@ -55,26 +55,26 @@ class WebSocketManagerImpl @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, webSocketListener)
     }
 
-    override fun disposeWebSocket() {
+    override suspend fun disposeWebSocket() {
         webSocket?.close(1000, "Disconnected by client")
         webSocket = null
     }
 
-    override fun isWebSocketAvailable(): Boolean {
+    override suspend fun isWebSocketAvailable(): Boolean {
         return webSocket != null
     }
 
-    override fun sendMessage(message: String) {
+    override suspend fun sendMessage(message: String) {
         webSocket?.send(message)
     }
 
-    override fun sendRecentMessageRequest(cur: Int)  {
+    override suspend fun sendRecentMessageRequest(cur: Int)  {
         // RECENT_MESSAGE 메시지 포맷 작성
         val formattedMessage = "RECENT_MESSAGE\ncur:$cur\n"
         webSocket?.send(formattedMessage)
     }
 
-    override fun sendTextMessage(body: String) {
+    override suspend fun sendTextMessage(body: String) {
         // SEND_TEXT 메시지 포맷 작성
         val formattedMessage = "SEND_TEXT\n\n$body\n"
 

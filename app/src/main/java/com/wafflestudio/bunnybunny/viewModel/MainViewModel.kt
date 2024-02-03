@@ -269,6 +269,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setRefAreaId(refAreaId: List<Int>) {
+        _currentRefAreaId.value = refAreaId.toMutableList()
         val builder = StringBuilder()
         refAreaId.forEach {
             builder.append("$it ")
@@ -404,7 +405,8 @@ class MainViewModel @Inject constructor(
     }
     fun logOutApp() {
         clearToken()
-        // setRefAreaId(listOf())
+        setRefAreaId(listOf())
+        _currentRefAreaId.value = emptyList<Int>().toMutableList()
     }
     suspend fun getWishList(){
         _wishList.value = api.getWishList()
